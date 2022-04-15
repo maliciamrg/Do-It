@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -55,6 +56,10 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
                 }
             }
         });
+        if (position%2==1) {
+            holder.childList.setVisibility(View.VISIBLE);
+            holder.childList.setText("result1\nresult2\n");
+        }
     }
 
     private boolean toBoolean(int n) {
@@ -94,10 +99,11 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox task;
-
+        TextView childList;
         ViewHolder(View view) {
             super(view);
             task = view.findViewById(R.id.todoCheckBox);
+            childList = view.findViewById(R.id.textView);
         }
     }
 }

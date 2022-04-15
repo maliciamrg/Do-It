@@ -9,18 +9,25 @@
     android:layout_marginVertical="8dp">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp">
-
-        <CheckBox
-            android:id="@+id/todoCheckBox"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:paddingStart="8dp"
-            android:buttonTint="@android:color/holo_green_dark"
-            tools:text="Go to the market and bring vegetables immediately today."/>
+            android:layout_height="match_parent"
+            android:padding="8dp">
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <CheckBox
+                    android:id="@+id/todoCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    android:buttonTint="@android:color/holo_green_dark"
+                    tools:text="Go to the market and bring vegetables immediately today."/>
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/textView" android:visibility="gone"/>
+        </LinearLayout>
 
     </RelativeLayout>
 

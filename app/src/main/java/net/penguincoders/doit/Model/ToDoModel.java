@@ -3,6 +3,15 @@ package net.penguincoders.doit.Model;
 public class ToDoModel {
     private int id, status;
     private String task;
+    private int[] childTask;
+
+    public int[] getChildTask() {
+        return childTask;
+    }
+
+    public void setChildTask(int[] childTask) {
+        this.childTask = childTask;
+    }
 
     public int getId() {
         return id;
