@@ -1,5 +1,6 @@
 package net.penguincoders.doit.Adapters;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -56,10 +57,25 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
                 }
             }
         });
-        if (position%2==1) {
+        List<ToDoModel> childList = item.getChildList();
+        if (childList != null && childList.size()>0) {
             holder.childList.setVisibility(View.VISIBLE);
-            holder.childList.setText("result1\nresult2\n");
+            holder.childList.setText(childListToString(childList));
+        } else {
+            holder.childList.setVisibility(View.GONE);
+            holder.childList.setText("");
         }
+    }
+
+    private String childListToString(List<ToDoModel> childList) {
+        StringBuilder str = new StringBuilder();
+        for (ToDoModel element : childList) {
+            str.append(element.getStatus()==1?"☒":"☐");
+            str.append("-");
+            str.append(element.getTask());
+            str.append("\n" );
+        }
+        return str.toString();
     }
 
     private boolean toBoolean(int n) {
@@ -84,7 +100,8 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         ToDoModel item = todoList.get(position);
         db.deleteTask(item.getId());
         todoList.remove(position);
-        notifyItemRemoved(position);
+//        notifyItemRemoved(position);
+        notifyDataSetChanged();
     }
 
     public void editItem(int position) {
@@ -95,6 +112,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         AddNewTask fragment = new AddNewTask();
         fragment.setArguments(bundle);
         fragment.show(activity.getSupportFragmentManager(), AddNewTask.TAG);
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

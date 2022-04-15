@@ -1,16 +1,39 @@
 package net.penguincoders.doit.Model;
 
-public class ToDoModel {
-    private int id, status;
-    private String task;
-    private int[] childTask;
+import java.util.List;
 
-    public int[] getChildTask() {
-        return childTask;
+public class ToDoModel {
+    private int id;
+    private int status;
+    private List<ToDoModel> childList;
+    private String task;
+
+    @Override
+    public String toString() {
+        return "ToDoModel{" +
+                "id=" + id +
+                ", status=" + status +
+                ", childList=" + childList +
+                ", task='" + task + '\'' +
+                '}';
     }
 
-    public void setChildTask(int[] childTask) {
-        this.childTask = childTask;
+    public ToDoModel(int id,
+                     String task,
+                     int status,
+                     List<ToDoModel> childList) {
+        this.id = id;
+        this.task = task;
+        this.status = status;
+        this.childList = childList;
+    }
+
+    public List<ToDoModel> getChildList() {
+        return childList;
+    }
+
+    public void setChildList(List<ToDoModel> childList) {
+        this.childList = childList;
     }
 
     public int getId() {

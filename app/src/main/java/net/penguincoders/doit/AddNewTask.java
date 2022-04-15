@@ -6,13 +6,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
 
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -23,6 +21,7 @@ import net.penguincoders.doit.Adapters.ToDoAdapter;
 import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.Utils.DatabaseHandler;
 
+import java.util.List;
 import java.util.Objects;
 
 public class AddNewTask extends BottomSheetDialogFragment {
@@ -33,7 +32,8 @@ public class AddNewTask extends BottomSheetDialogFragment {
 
     private DatabaseHandler db;
 
-    public static AddNewTask newInstance(){
+
+    public static AddNewTask newInstance() {
         return new AddNewTask();
     }
 
@@ -63,12 +63,12 @@ public class AddNewTask extends BottomSheetDialogFragment {
         boolean isUpdate = false;
 
         final Bundle bundle = getArguments();
-        if(bundle != null){
+        if (bundle != null) {
             isUpdate = true;
             String task = bundle.getString("task");
             newTaskText.setText(task);
             assert task != null;
-            if(task.length()>0)
+            if (task.length() > 0)
                 newTaskSaveButton.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorPrimaryDark));
         }
 
@@ -82,11 +82,10 @@ public class AddNewTask extends BottomSheetDialogFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.toString().equals("")){
+                if (s.toString().equals("")) {
                     newTaskSaveButton.setEnabled(false);
                     newTaskSaveButton.setTextColor(Color.GRAY);
-                }
-                else{
+                } else {
                     newTaskSaveButton.setEnabled(true);
                     newTaskSaveButton.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorPrimaryDark));
                 }
@@ -102,24 +101,40 @@ public class AddNewTask extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 String text = newTaskText.getText().toString();
-                if(finalIsUpdate){
-                    db.updateTask(bundle.getInt("id"), text);
-                }
-                else {
-                    ToDoModel task = new ToDoModel();
-                    task.setTask(text);
-                    task.setStatus(0);
-                    db.insertTask(task);
+                //todo get parent
+                int[] parent = {1, 3};
+                if (finalIsUpdate) {
+                    db.updateTask(bundle.getInt("id"), text, parent);
+                } else {
+                    db.insertTask(text, parent);
                 }
                 dismiss();
             }
         });
+
+//        //todo
+//        newTaskParentButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {;
+//                List<ToDoModel> parentList = db.getPotentialParentTasks(1);
+//                StringBuilder str = new StringBuilder();
+//                for (ToDoModel element : parentList) {
+//                    str.append(element.getStatus() == 1 ? "☒" : "☐");
+//                    str.append("-");
+//                    str.append(element.getTask());
+//                    str.append("\n");
+//                }
+//                Toast toast = Toast.makeText(v.getContext(), str.toString(), Toast.LENGTH_LONG);
+//                toast.setGravity(Gravity.TOP | Gravity.CENTER, 20, 30);
+//                toast.show();
+//            }
+//        });
     }
 
     @Override
-    public void onDismiss(@NonNull DialogInterface dialog){
+    public void onDismiss(@NonNull DialogInterface dialog) {
         Activity activity = getActivity();
-        if(activity instanceof DialogCloseListener)
-            ((DialogCloseListener)activity).handleDialogClose(dialog);
+        if (activity instanceof DialogCloseListener)
+            ((DialogCloseListener) activity).handleDialogClose(dialog);
     }
 }

@@ -15,15 +15,6 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:hint="@string/new_task" android:minHeight="48dp"/>
         <Button
-                android:id="@+id/newTaskParent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:background="@android:color/transparent"
-                android:text="Add parent"
-                android:textAllCaps="false"
-                android:textColor="@android:color/darker_gray"/>
-        <Button
                 android:id="@+id/newTaskButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
