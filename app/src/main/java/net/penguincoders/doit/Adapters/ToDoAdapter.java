@@ -45,15 +45,25 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         db.openDatabase();
 
         final ToDoModel item = todoList.get(position);
-        holder.task.setText(item.getTask());
-        holder.task.setChecked(toBoolean(item.getStatus()));
+
+//        StringBuilder str = new StringBuilder();
+//        str.append("\n" );
+//        for (ToDoModel element : todoList) {
+//            str.append(element.toString());
+//            str.append("\n" );
+//        }
+//        System.out.println(str.toString());
+
+        holder.task.setText(String.valueOf(position) + " - " +String.valueOf(item.getId()) + " - " + item.getTask());
+        holder.task.setOnCheckedChangeListener(null);//evite le pb de refresh quand on ajoute une ligne
+        holder.task.setChecked(item.getStatus());
         holder.task.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    db.updateStatus(item.getId(), 1);
+                    db.updateStatus(item.getId(), true);
                 } else {
-                    db.updateStatus(item.getId(), 0);
+                    db.updateStatus(item.getId(), false);
                 }
             }
         });
@@ -70,7 +80,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     private String childListToString(List<ToDoModel> childList) {
         StringBuilder str = new StringBuilder();
         for (ToDoModel element : childList) {
-            str.append(element.getStatus()==1?"☒":"☐");
+            str.append(element.getStatus()?"☒":"☐");
             str.append("-");
             str.append(element.getTask());
             str.append("\n" );
@@ -112,7 +122,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         AddNewTask fragment = new AddNewTask();
         fragment.setArguments(bundle);
         fragment.show(activity.getSupportFragmentManager(), AddNewTask.TAG);
-        notifyDataSetChanged();
+//        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

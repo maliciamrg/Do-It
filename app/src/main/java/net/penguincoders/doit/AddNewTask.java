@@ -102,7 +102,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
             public void onClick(View v) {
                 String text = newTaskText.getText().toString();
                 //todo get parent
-                int[] parent = {1, 3};
+                int[] parent = {24, 32};
                 if (finalIsUpdate) {
                     db.updateTask(bundle.getInt("id"), text, parent);
                 } else {

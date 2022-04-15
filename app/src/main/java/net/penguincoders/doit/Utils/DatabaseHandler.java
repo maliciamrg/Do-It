@@ -46,9 +46,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private final String SELECT_PARENT_TODO =
             "SELECT " +
-                    "t." + ID  + " " +
-                    "ISNULL("+ IDPARENT + ",'0') as " + STATUS + " " +
-                    "t." + TASK  + " " +
+                    "t." + ID + " " +
+                    "ISNULL(" + IDPARENT + ",'0') as " + STATUS + " " +
+                    "t." + TASK + " " +
                     "FROM " + TODO_TABLE + " t " +
                     " LEFT OUTER JOIN " + LINK_TABLE + " l " +
                     "  ON t." + ID + "=l." + IDPARENT + " " +
@@ -87,7 +87,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void insertTask(String task, int[] parent) {
         ContentValues cv = new ContentValues();
         cv.put(TASK, task);
-        cv.put(STATUS, 0);
+        cv.put(STATUS, false);
         long id = db.insert(TODO_TABLE, null, cv);
         if (id > -1) {
             deleteLink((int) id);
@@ -105,8 +105,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 if (cur.moveToFirst()) {
                     do {
                         int curId = cur.getInt(cur.getColumnIndex(ID));
-                        List<ToDoModel> childList = getAllChildTasks(curId);
-                        ToDoModel task = new ToDoModel(curId,cur.getString(cur.getColumnIndex(TASK)),cur.getInt(cur.getColumnIndex(STATUS)),childList);
+                        ToDoModel task = new ToDoModel(curId, cur.getString(cur.getColumnIndex(TASK)), cur.getInt(cur.getColumnIndex(STATUS)) > 0, new ArrayList<ToDoModel>());
                         taskList.add(task);
                     }
                     while (cur.moveToNext());
@@ -116,6 +115,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.endTransaction();
             assert cur != null;
             cur.close();
+        }
+        for (ToDoModel task : taskList) {
+            List<ToDoModel> childList = getAllChildTasks(task.getId());
+            task.setChildList(childList);
         }
         return taskList;
     }
@@ -129,7 +132,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             if (cur != null) {
                 if (cur.moveToFirst()) {
                     do {
-                        ToDoModel task = new ToDoModel(cur.getInt(cur.getColumnIndex(ID)),cur.getString(cur.getColumnIndex(TASK)),cur.getInt(cur.getColumnIndex(STATUS)), new ArrayList<ToDoModel>());
+                        ToDoModel task = new ToDoModel(cur.getInt(cur.getColumnIndex(ID)), cur.getString(cur.getColumnIndex(TASK)), cur.getInt(cur.getColumnIndex(STATUS)) > 0, new ArrayList<ToDoModel>());
                         childList.add(task);
                     }
                     while (cur.moveToNext());
@@ -152,7 +155,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             if (cur != null) {
                 if (cur.moveToFirst()) {
                     do {
-                        ToDoModel task = new ToDoModel(cur.getInt(cur.getColumnIndex(ID)),cur.getString(cur.getColumnIndex(TASK)),cur.getInt(cur.getColumnIndex(STATUS)), new ArrayList<ToDoModel>());
+                        ToDoModel task = new ToDoModel(cur.getInt(cur.getColumnIndex(ID)), cur.getString(cur.getColumnIndex(TASK)), cur.getInt(cur.getColumnIndex(STATUS)) > 0, new ArrayList<ToDoModel>());
                         parentList.add(task);
                     }
                     while (cur.moveToNext());
@@ -166,7 +169,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return parentList;
     }
 
-    public void updateStatus(int id, int status) {
+    public void updateStatus(int id, boolean status) {
         ContentValues cv = new ContentValues();
         cv.put(STATUS, status);
         db.update(TODO_TABLE, cv, ID + "= ?", new String[]{String.valueOf(id)});
@@ -178,7 +181,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put(TASK, task);
         db.update(TODO_TABLE, cv, ID + "= ?", new String[]{String.valueOf(id)});
-        deleteLink(id);
+        deleteLinkChild(id);
         addlink(id, parent);
     }
 
@@ -188,16 +191,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public void deleteLink(int id) {
-        db.delete(LINK_TABLE, IDPARENT + "= ?", new String[]{String.valueOf(id)});
+        deleteLinkParent(id);
+        deleteLinkChild(id);
+    }
+
+    public void deleteLinkChild(int id) {
         db.delete(LINK_TABLE, IDCHILD + "= ?", new String[]{String.valueOf(id)});
     }
 
-    public void addlink(int id, int[] parent) {
+    public void deleteLinkParent(int id) {
+        db.delete(LINK_TABLE, IDPARENT + "= ?", new String[]{String.valueOf(id)});
+    }
+
+    public void addlink(int childId, int[] parent) {
         for (int element : parent) {
-            ContentValues cv = new ContentValues();
-            cv.put(IDCHILD, id);
-            cv.put(IDPARENT, element);
-            db.insert(LINK_TABLE, null, cv);
+            if (childId != element) {
+                ContentValues cv = new ContentValues();
+                cv.put(IDCHILD, childId);
+                cv.put(IDPARENT, element);
+                db.insert(LINK_TABLE, null, cv);
+            }
         }
     }
 }

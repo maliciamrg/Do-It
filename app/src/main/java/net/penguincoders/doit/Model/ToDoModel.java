@@ -4,7 +4,7 @@ import java.util.List;
 
 public class ToDoModel {
     private int id;
-    private int status;
+    private boolean status;
     private List<ToDoModel> childList;
     private String task;
 
@@ -20,7 +20,7 @@ public class ToDoModel {
 
     public ToDoModel(int id,
                      String task,
-                     int status,
+                     boolean status,
                      List<ToDoModel> childList) {
         this.id = id;
         this.task = task;
@@ -44,11 +44,11 @@ public class ToDoModel {
         this.id = id;
     }
 
-    public int getStatus() {
+    public boolean getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 
