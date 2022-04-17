@@ -2,6 +2,7 @@ package net.penguincoders.doit;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -24,11 +25,14 @@ import net.penguincoders.doit.Utils.DatabaseHandler;
 import java.util.List;
 import java.util.Objects;
 
+import static android.app.Activity.RESULT_OK;
+
 public class AddNewTask extends BottomSheetDialogFragment {
 
     public static final String TAG = "ActionBottomDialog";
     private EditText newTaskText;
     private Button newTaskSaveButton;
+    private Button button;
 
     private DatabaseHandler db;
 
@@ -59,6 +63,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
         super.onViewCreated(view, savedInstanceState);
         newTaskText = Objects.requireNonNull(getView()).findViewById(R.id.newTaskText);
         newTaskSaveButton = getView().findViewById(R.id.newTaskButton);
+        button = getView().findViewById(R.id.button);
 
         boolean isUpdate = false;
 
@@ -82,10 +87,15 @@ public class AddNewTask extends BottomSheetDialogFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().equals("")) {
+                if(s.toString().equals("")){
+                    button.setEnabled(false);
+                    button.setTextColor(Color.GRAY);
                     newTaskSaveButton.setEnabled(false);
                     newTaskSaveButton.setTextColor(Color.GRAY);
-                } else {
+                }
+                else{
+                    button.setEnabled(true);
+                    button.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorPrimaryDark));
                     newTaskSaveButton.setEnabled(true);
                     newTaskSaveButton.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorPrimaryDark));
                 }
@@ -112,23 +122,18 @@ public class AddNewTask extends BottomSheetDialogFragment {
             }
         });
 
-//        //todo
-//        newTaskParentButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {;
-//                List<ToDoModel> parentList = db.getPotentialParentTasks(1);
-//                StringBuilder str = new StringBuilder();
-//                for (ToDoModel element : parentList) {
-//                    str.append(element.getStatus() == 1 ? "☒" : "☐");
-//                    str.append("-");
-//                    str.append(element.getTask());
-//                    str.append("\n");
-//                }
-//                Toast toast = Toast.makeText(v.getContext(), str.toString(), Toast.LENGTH_LONG);
-//                toast.setGravity(Gravity.TOP | Gravity.CENTER, 20, 30);
-//                toast.show();
-//            }
-//        });
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent messageIntent = new Intent(v.getContext(), ParentTask.class);
+                messageIntent.putExtra(MainActivity.EXTRA_MESSAGE1, "this is my message numero 1");
+                messageIntent.putExtra(MainActivity.EXTRA_MESSAGE2, "this the second my message");
+                messageIntent.putExtra(MainActivity.EXTRA_MESSAGE3, "third is my message");
+                startActivityForResult(messageIntent,MainActivity.TEXT_REQUEST);
+
+            }
+        });
+
     }
 
     @Override
@@ -136,5 +141,15 @@ public class AddNewTask extends BottomSheetDialogFragment {
         Activity activity = getActivity();
         if (activity instanceof DialogCloseListener)
             ((DialogCloseListener) activity).handleDialogClose(dialog);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode,  Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == MainActivity.TEXT_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                String reply = data.getStringExtra(MainActivity.RETURN_MESSAGE);
+                button.setText(reply);
+            }
+        }
     }
 }

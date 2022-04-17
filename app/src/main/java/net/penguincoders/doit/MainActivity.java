@@ -29,6 +29,12 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements DialogCloseListener{
 
+    public static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
+    public static final String EXTRA_MESSAGE1 = "EXTRA_MESSAGE1";
+    public static final String EXTRA_MESSAGE2 = "EXTRA_MESSAGE2";
+    public static final String EXTRA_MESSAGE3 = "EXTRA_MESSAGE3";
+    public static final int TEXT_REQUEST = 1;
+    public static final String RETURN_MESSAGE = "RETURN_MESSAGE";
     private DatabaseHandler db;
 
     private RecyclerView tasksRecyclerView;
