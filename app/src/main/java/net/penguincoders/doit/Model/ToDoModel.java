@@ -7,6 +7,7 @@ public class ToDoModel {
     private boolean status;
     private List<ToDoModel> childList;
     private String task;
+    private boolean isParent;
 
     @Override
     public String toString() {
@@ -58,5 +59,13 @@ public class ToDoModel {
 
     public void setTask(String task) {
         this.task = task;
+    }
+
+    public void setParent(boolean isParent) {
+        this.isParent = isParent;
+    }
+
+    public boolean isParent() {
+        return isParent;
     }
 }

@@ -122,9 +122,9 @@ public class AddNewTask extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 Intent messageIntent = new Intent(v.getContext(), ParentTask.class);
-                messageIntent.putExtra(MainActivity.EXTRA_MESSAGE1, "this is my message numero 1");
-                messageIntent.putExtra(MainActivity.EXTRA_MESSAGE2, "this the second my message");
-                messageIntent.putExtra(MainActivity.EXTRA_MESSAGE3, "third is my message");
+//                messageIntent.putExtra(MainActivity.EXTRA_MESSAGE1, "this is my message numero 1");
+//                messageIntent.putExtra(MainActivity.EXTRA_MESSAGE2, "this the second my message");
+//                messageIntent.putExtra(MainActivity.EXTRA_MESSAGE3, "third is my message");
                 if (finalIsUpdate) {
                     messageIntent.putExtra(ParentTask.EXTRA_ID, bundle.getInt("id"));
                 } else {
@@ -142,6 +142,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
         Activity activity = getActivity();
         if (activity instanceof DialogCloseListener)
             ((DialogCloseListener) activity).handleDialogClose(dialog);
+        dismiss();
     }
 
     public void onActivityResult(int requestCode, int resultCode,  Intent data) {
@@ -149,7 +150,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
         if (requestCode == MainActivity.TEXT_REQUEST) {
             if (resultCode == RESULT_OK) {
                 String reply = data.getStringExtra(ParentTask.RETURN_EXTRA_ID);
-                button.setText(reply);
+//                button.setText(reply);
             }
         }
     }

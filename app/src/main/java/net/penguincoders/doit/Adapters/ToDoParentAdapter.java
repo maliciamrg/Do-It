@@ -37,8 +37,9 @@ public class ToDoParentAdapter extends RecyclerView.Adapter<ToDoParentAdapter.Vi
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final ToDoModel item = todoList.get(position);
 
-        holder.task.setText(String.valueOf(position) + " - " +String.valueOf(item.getId()) + " - " + item.getTask());
-        holder.task.setChecked(item.getStatus());
+        holder.task.setText(String.valueOf(position) + " -- " +String.valueOf(item.getId()) + " - " + item.getTask());
+
+        holder.task.setChecked(item.isParent());
 
         List<ToDoModel> childList = item.getChildList();
         if (childList != null && childList.size()>0) {

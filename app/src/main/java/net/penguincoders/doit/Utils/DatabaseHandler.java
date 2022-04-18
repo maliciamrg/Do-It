@@ -46,13 +46,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private final String SELECT_PARENT_TODO =
             "SELECT " +
-                    "t." + ID + " " +
-                    "ISNULL(" + IDPARENT + ",'0') as " + STATUS + " " +
-                    "t." + TASK + " " +
+//                    "t.* " +
+                    "t." + ID + ", " +
+//                    "ISNULL( l." + IDPARENT + ",'0') as " + STATUS + ", " +
+                    "t." + STATUS + ", " +
+                    "t." + TASK + ", " +
+                    "l." + IDPARENT + ", " +
+                    "l." + IDCHILD + " " +
                     "FROM " + TODO_TABLE + " t " +
-                    " LEFT OUTER JOIN " + LINK_TABLE + " l " +
+                    " LEFT JOIN " + LINK_TABLE + " l " +
                     "  ON t." + ID + "=l." + IDPARENT + " " +
-                    " WHERE l." + IDCHILD + "=? " +
+                    "  AND l." + IDCHILD + "=? " +
+ //                   " WHERE l." + IDCHILD + "=? " +
                     " ORDER BY t." + TASK + " ASC ";
 
     private SQLiteDatabase db;
@@ -156,6 +161,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 if (cur.moveToFirst()) {
                     do {
                         ToDoModel task = new ToDoModel(cur.getInt(cur.getColumnIndex(ID)), cur.getString(cur.getColumnIndex(TASK)), cur.getInt(cur.getColumnIndex(STATUS)) > 0, new ArrayList<ToDoModel>());
+                        task.setParent(cur.getInt(cur.getColumnIndex(IDCHILD))==id && cur.getString(cur.getColumnIndex(IDPARENT))!=null);
                         parentList.add(task);
                     }
                     while (cur.moveToNext());

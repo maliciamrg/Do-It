@@ -63,7 +63,7 @@ public class ParentTask extends AppCompatActivity implements DialogCloseListener
             @Override
             public void onClick(View v) {
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra(RETURN_EXTRA_ID, text1.getText());
+                returnIntent.putExtra(RETURN_EXTRA_ID, 1);
                 setResult(RESULT_OK,returnIntent);
                 finish();
             }
