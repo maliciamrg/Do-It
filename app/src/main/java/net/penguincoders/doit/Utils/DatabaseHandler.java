@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 import net.penguincoders.doit.Model.ToDoModel;
 
 import java.util.ArrayList;
@@ -15,10 +14,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final int VERSION = 2;
     private static final String NAME = "toDoListDatabase";
-
     private static final String TODO_TABLE = "todo";
     private static final String LINK_TABLE = "link";
-
     private static final String ID = "id";
     private static final String TASK = "task";
     private static final String STATUS = "status";
@@ -43,7 +40,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     "  ON t." + ID + "=l." + IDCHILD + " " +
                     " WHERE l." + IDPARENT + "=? " +
                     " ORDER BY t." + TASK + " ASC ";
+    private final String SELECT_PARENT_TODO =
+            "SELECT t.* FROM " + TODO_TABLE + " t " +
+                    " INNER JOIN " + LINK_TABLE + " l " +
+                    "  ON t." + ID + "=l." + IDPARENT + " " +
+                    " WHERE l." + IDCHILD + "=? " +
+                    " ORDER BY t." + TASK + " ASC ";
 
+/*
     private final String SELECT_PARENT_TODO =
             "SELECT " +
                     "t." + ID + " " +
@@ -53,7 +57,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     " LEFT OUTER JOIN " + LINK_TABLE + " l " +
                     "  ON t." + ID + "=l." + IDPARENT + " " +
                     " WHERE l." + IDCHILD + "=? " +
-                    " ORDER BY t." + TASK + " ASC ";
+                    " ORDER BY t." + TASK + " ASC ";*/
 
     private SQLiteDatabase db;
 
@@ -84,7 +88,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db = this.getWritableDatabase();
     }
 
-    public void insertTask(String task, int[] parent) {
+    public void insertTask(String task, Integer[] parent) {
         ContentValues cv = new ContentValues();
         cv.put(TASK, task);
         cv.put(STATUS, false);
@@ -105,7 +109,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 if (cur.moveToFirst()) {
                     do {
                         int curId = cur.getInt(cur.getColumnIndex(ID));
-                        ToDoModel task = new ToDoModel(curId, cur.getString(cur.getColumnIndex(TASK)), cur.getInt(cur.getColumnIndex(STATUS)) > 0, new ArrayList<ToDoModel>());
+                        ToDoModel task = new ToDoModel(curId,
+                                cur.getString(cur.getColumnIndex(TASK)),
+                                cur.getInt(cur.getColumnIndex(STATUS)) > 0,
+                                new ArrayList<ToDoModel>(),
+                                new ArrayList<ToDoModel>());
                         taskList.add(task);
                     }
                     while (cur.moveToNext());
@@ -119,11 +127,40 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         for (ToDoModel task : taskList) {
             List<ToDoModel> childList = getAllChildTasks(task.getId());
             task.setChildList(childList);
+            List<ToDoModel> parentList = getAllParentTasks(task.getId());
+            task.setParentList(parentList);
         }
         return taskList;
     }
 
-    public List<ToDoModel> getAllChildTasks(int id) {
+    private List<ToDoModel> getAllParentTasks(int id) {
+        List<ToDoModel> parentList = new ArrayList<>();
+        Cursor cur = null;
+        db.beginTransaction();
+        try {
+            cur = db.rawQuery(SELECT_PARENT_TODO, new String[]{String.valueOf(id)});
+            if (cur != null) {
+                if (cur.moveToFirst()) {
+                    do {
+                        ToDoModel task = new ToDoModel(cur.getInt(cur.getColumnIndex(ID)),
+                                cur.getString(cur.getColumnIndex(TASK)),
+                                cur.getInt(cur.getColumnIndex(STATUS)) > 0,
+                                new ArrayList<ToDoModel>(),
+                                new ArrayList<ToDoModel>());
+                        parentList.add(task);
+                    }
+                    while (cur.moveToNext());
+                }
+            }
+        } finally {
+            db.endTransaction();
+            assert cur != null;
+            cur.close();
+        }
+        return parentList;
+    }
+
+    private List<ToDoModel> getAllChildTasks(int id) {
         List<ToDoModel> childList = new ArrayList<>();
         Cursor cur = null;
         db.beginTransaction();
@@ -132,7 +169,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             if (cur != null) {
                 if (cur.moveToFirst()) {
                     do {
-                        ToDoModel task = new ToDoModel(cur.getInt(cur.getColumnIndex(ID)), cur.getString(cur.getColumnIndex(TASK)), cur.getInt(cur.getColumnIndex(STATUS)) > 0, new ArrayList<ToDoModel>());
+                        ToDoModel task = new ToDoModel(cur.getInt(cur.getColumnIndex(ID)),
+                                cur.getString(cur.getColumnIndex(TASK)),
+                                cur.getInt(cur.getColumnIndex(STATUS)) > 0,
+                                new ArrayList<ToDoModel>(),
+                                new ArrayList<ToDoModel>());
                         childList.add(task);
                     }
                     while (cur.moveToNext());
@@ -146,6 +187,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return childList;
     }
 
+    /*
     public List<ToDoModel> getPotentialParentTasks(int id) {
         List<ToDoModel> parentList = new ArrayList<>();
         Cursor cur = null;
@@ -167,7 +209,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cur.close();
         }
         return parentList;
-    }
+    }*/
 
     public void updateStatus(int id, boolean status) {
         ContentValues cv = new ContentValues();
@@ -177,7 +219,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //        addlink(id,parent);
     }
 
-    public void updateTask(int id, String task, int[] parent) {
+    public void updateTask(int id, String task, Integer[] parent) {
         ContentValues cv = new ContentValues();
         cv.put(TASK, task);
         db.update(TODO_TABLE, cv, ID + "= ?", new String[]{String.valueOf(id)});
@@ -203,7 +245,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.delete(LINK_TABLE, IDPARENT + "= ?", new String[]{String.valueOf(id)});
     }
 
-    public void addlink(int childId, int[] parent) {
+    public void addlink(int childId, Integer[] parent) {
         for (int element : parent) {
             if (childId != element) {
                 ContentValues cv = new ContentValues();

@@ -7,30 +7,37 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-
+import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.Utils.DatabaseHandler;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
+import static net.penguincoders.doit.Model.ToDoModel.parentListToString;
 
 public class AddNewTask extends BottomSheetDialogFragment {
 
     public static final String TAG = "ActionBottomDialog";
     private EditText newTaskText;
+    private TextView textViewParent;
     private Button newTaskSaveButton;
-    private Button button;
 
     private DatabaseHandler db;
+    private ToDoModel item;
+    private List<ToDoModel> listParent;
 
 
     public static AddNewTask newInstance() {
@@ -59,18 +66,21 @@ public class AddNewTask extends BottomSheetDialogFragment {
         super.onViewCreated(view, savedInstanceState);
         newTaskText = Objects.requireNonNull(getView()).findViewById(R.id.newTaskText);
         newTaskSaveButton = getView().findViewById(R.id.newTaskButton);
-        button = getView().findViewById(R.id.button);
+        textViewParent = getView().findViewById(R.id.textViewParent);
 
         boolean isUpdate = false;
 
         final Bundle bundle = getArguments();
         if (bundle != null) {
             isUpdate = true;
-            String task = bundle.getString("task");
+            item = (ToDoModel) bundle.getSerializable("taskClass");
+
+            String task = item.getTask();
             newTaskText.setText(task);
             assert task != null;
             if (task.length() > 0)
-                newTaskSaveButton.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorPrimaryDark));
+                newTaskSaveButton.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()),
+                        R.color.colorPrimaryDark));
         }
 
         db = new DatabaseHandler(getActivity());
@@ -83,15 +93,12 @@ public class AddNewTask extends BottomSheetDialogFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.toString().equals("")){
-                    button.setEnabled(false);
-                    button.setTextColor(Color.GRAY);
+                if (s.toString().equals("")) {
+                    textViewParent.setEnabled(false);
                     newTaskSaveButton.setEnabled(false);
                     newTaskSaveButton.setTextColor(Color.GRAY);
-                }
-                else{
-                    button.setEnabled(true);
-                    button.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorPrimaryDark));
+                } else {
+                    textViewParent.setEnabled(true);
                     newTaskSaveButton.setEnabled(true);
                     newTaskSaveButton.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorPrimaryDark));
                 }
@@ -108,30 +115,31 @@ public class AddNewTask extends BottomSheetDialogFragment {
             public void onClick(View v) {
                 String text = newTaskText.getText().toString();
                 //todo get parent
-                int[] parent = {24, 32};
+                List<Integer> parent = new ArrayList<Integer>();
+                for (ToDoModel element : listParent) {
+                    parent.add(element.getId());
+                }
+                Integer[] parentArray = parent.toArray(new Integer[0]);
                 if (finalIsUpdate) {
-                    db.updateTask(bundle.getInt("id"), text, parent);
+                    db.updateTask(item.getId(), text, parentArray);
                 } else {
-                    db.insertTask(text, parent);
+                    db.insertTask(text, parentArray);
                 }
                 dismiss();
             }
         });
 
-        button.setOnClickListener(new View.OnClickListener() {
+        listParent = isUpdate ? item.getParentList() : new ArrayList<ToDoModel>();
+        textViewParent.setText(ToDoModel.parentListToString(listParent));
+        textViewParent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent messageIntent = new Intent(v.getContext(), ParentTask.class);
-                messageIntent.putExtra(MainActivity.EXTRA_MESSAGE1, "this is my message numero 1");
-                messageIntent.putExtra(MainActivity.EXTRA_MESSAGE2, "this the second my message");
-                messageIntent.putExtra(MainActivity.EXTRA_MESSAGE3, "third is my message");
-                if (finalIsUpdate) {
-                    messageIntent.putExtra(ParentTask.EXTRA_ID, bundle.getInt("id"));
-                } else {
-                    messageIntent.putExtra(ParentTask.EXTRA_ID, 0);
+                if (newTaskText.getText().toString().compareTo("")!=0) {
+                    Intent messageIntent = new Intent(v.getContext(), ParentTask.class);
+                    messageIntent.putExtra(ParentTask.EXTRA_ID, finalIsUpdate ? bundle.getInt("id") : 0);
+                    messageIntent.putExtra(ParentTask.EXTRA_TEXT, newTaskText.getText());
+                    startActivityForResult(messageIntent, ParentTask.TEXT_REQUEST);
                 }
-                startActivityForResult(messageIntent,MainActivity.TEXT_REQUEST);
-
             }
         });
 
@@ -144,12 +152,13 @@ public class AddNewTask extends BottomSheetDialogFragment {
             ((DialogCloseListener) activity).handleDialogClose(dialog);
     }
 
-    public void onActivityResult(int requestCode, int resultCode,  Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == MainActivity.TEXT_REQUEST) {
+        if (requestCode == ParentTask.TEXT_REQUEST) {
             if (resultCode == RESULT_OK) {
-                String reply = data.getStringExtra(ParentTask.RETURN_EXTRA_ID);
-                button.setText(reply);
+                List<ToDoModel> parentList = (List<ToDoModel>) data.getSerializableExtra(ParentTask.DATA_SERIALIZABLE_EXTRA);
+                listParent = parentList.size() > 0 ? parentList : new ArrayList<ToDoModel>();
+                textViewParent.setText(parentListToString(listParent));
             }
         }
     }

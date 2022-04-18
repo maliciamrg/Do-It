@@ -16,13 +16,13 @@
             android:textSize="32sp"
             android:text="@string/tasks" />
 
-        <androidx.recyclerview.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/tasksRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tasksText"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:nestedScrollingEnabled="true" />
+            android:nestedScrollingEnabled="true"/>
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

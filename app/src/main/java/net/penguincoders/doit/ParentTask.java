@@ -2,29 +2,32 @@ package net.penguincoders.doit;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import net.penguincoders.doit.Adapters.ToDoAdapter;
-import net.penguincoders.doit.Adapters.ToDoParentAdapter;
+import net.penguincoders.doit.Adapters.ParentAdapter;
 import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.Utils.DatabaseHandler;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ParentTask extends AppCompatActivity implements DialogCloseListener{
+public class ParentTask extends AppCompatActivity implements DialogCloseListener {
 
     public static final String EXTRA_ID = "EXTRA_ID";
-    public static final String RETURN_EXTRA_ID = "RETURN_MESSAGE";
+    public static final String DATA_SERIALIZABLE_EXTRA = "RETURN_MESSAGE";
+    public static final int TEXT_REQUEST = 1;
+    public static final String EXTRA_TEXT = "EXTRA_TEXT" ;
     private DatabaseHandler db;
     private RecyclerView tasksRecyclerView;
-    private ToDoParentAdapter tasksAdapter;
+    private ParentAdapter tasksAdapter;
     private TextView TaskText;
     private FloatingActionButton fab;
     private List<ToDoModel> taskList;
@@ -40,11 +43,15 @@ public class ParentTask extends AppCompatActivity implements DialogCloseListener
         db.openDatabase();
 
         TaskText = findViewById(R.id.tasksText);
-        TaskText.setText("Parents Task");
+
+        String stringExtra = intent.getExtras().get(EXTRA_TEXT).toString();
+        String stringExtraMod = ToDoModel.stringMax(stringExtra);
+        TaskText.setText("Parents Task of :\n" + stringExtraMod);
+
 
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        tasksAdapter = new ToDoParentAdapter();
+        tasksAdapter = new ParentAdapter();
         tasksRecyclerView.setAdapter(tasksAdapter);
 
 /*        ItemTouchHelper itemTouchHelper = new
@@ -52,19 +59,28 @@ public class ParentTask extends AppCompatActivity implements DialogCloseListener
         itemTouchHelper.attachToRecyclerView(tasksRecyclerView);*/
 
         int intExtra = intent.getIntExtra(EXTRA_ID, 0);
-        taskList = db.getPotentialParentTasks(intExtra);
+        taskList = db.getAllTasks();
         Collections.reverse(taskList);
+        tasksAdapter.setTasks(taskList, intExtra);
 
-        tasksAdapter.setTasks(taskList);
-        
+
         fab = findViewById(R.id.fab);
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                List<ToDoModel> todoList = new ArrayList<ToDoModel>();
+                for (int i = 0; i < tasksAdapter.getItemCount(); i++) {
+                    View viewByPosition = tasksRecyclerView.getLayoutManager().findViewByPosition(i);
+                    CheckBox check = viewByPosition.findViewById(R.id.todoCheckBox);
+                    if (check.isChecked()) {
+                        todoList.add(taskList.get(i));
+                    }
+                }
+
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra(RETURN_EXTRA_ID, text1.getText());
-                setResult(RESULT_OK,returnIntent);
+                returnIntent.putExtra(DATA_SERIALIZABLE_EXTRA, (Serializable) todoList);
+                setResult(RESULT_OK, returnIntent);
                 finish();
             }
         });
@@ -111,6 +127,6 @@ public class ParentTask extends AppCompatActivity implements DialogCloseListener
 
     @Override
     public void handleDialogClose(DialogInterface dialog) {
-        
+
     }
 }

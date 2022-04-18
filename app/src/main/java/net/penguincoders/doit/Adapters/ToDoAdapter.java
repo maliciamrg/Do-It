@@ -54,9 +54,9 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 //        }
 //        System.out.println(str.toString());
 
-        holder.task.setText(String.valueOf(position) + " - " +String.valueOf(item.getId()) + " - " + item.getTask());
+        holder.task.setText(item.getTask());
         holder.task.setOnCheckedChangeListener(null);//evite le pb de refresh quand on ajoute une ligne
-        holder.task.setChecked(item.getStatus());
+        holder.task.setChecked(item.isStatus());
         holder.task.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -67,29 +67,23 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
                 }
             }
         });
-        List<ToDoModel> childList = item.getChildList();
-        if (childList != null && childList.size()>0) {
+
+        List<ToDoModel> parentList = item.getParentList();
+        if (parentList != null && parentList.size()>0) {
             holder.childList.setVisibility(View.VISIBLE);
-            holder.childList.setText(childListToString(childList));
+            holder.childList.setText(ToDoModel.parentListToString(parentList));
         } else {
             holder.childList.setVisibility(View.GONE);
             holder.childList.setText("");
         }
-    }
-
-    private String childListToString(List<ToDoModel> childList) {
-        StringBuilder str = new StringBuilder();
-        for (ToDoModel element : childList) {
-            str.append(element.getStatus()?"☒":"☐");
-            str.append("-");
-            str.append(element.getTask());
-            str.append("\n" );
+        List<ToDoModel> childList = item.getChildList();
+        if (childList != null && childList.size()>0) {
+            holder.childList.setVisibility(View.VISIBLE);
+            holder.childList.setText(holder.childList.getText() + ToDoModel.childListToString(childList));
+        } else {
+            holder.childList.setVisibility(View.GONE);
+            holder.childList.setText("");
         }
-        return str.toString();
-    }
-
-    private boolean toBoolean(int n) {
-        return n != 0;
     }
 
     @Override
@@ -119,6 +113,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         Bundle bundle = new Bundle();
         bundle.putInt("id", item.getId());
         bundle.putString("task", item.getTask());
+        bundle.putSerializable("taskClass", item);
         AddNewTask fragment = new AddNewTask();
         fragment.setArguments(bundle);
         fragment.show(activity.getSupportFragmentManager(), AddNewTask.TAG);
