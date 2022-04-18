@@ -11,18 +11,14 @@ import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
 
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import net.penguincoders.doit.Adapters.ToDoAdapter;
-import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.Utils.DatabaseHandler;
 
-import java.util.List;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
@@ -129,6 +125,11 @@ public class AddNewTask extends BottomSheetDialogFragment {
                 messageIntent.putExtra(MainActivity.EXTRA_MESSAGE1, "this is my message numero 1");
                 messageIntent.putExtra(MainActivity.EXTRA_MESSAGE2, "this the second my message");
                 messageIntent.putExtra(MainActivity.EXTRA_MESSAGE3, "third is my message");
+                if (finalIsUpdate) {
+                    messageIntent.putExtra(ParentTask.EXTRA_ID, bundle.getInt("id"));
+                } else {
+                    messageIntent.putExtra(ParentTask.EXTRA_ID, 0);
+                }
                 startActivityForResult(messageIntent,MainActivity.TEXT_REQUEST);
 
             }
@@ -147,7 +148,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == MainActivity.TEXT_REQUEST) {
             if (resultCode == RESULT_OK) {
-                String reply = data.getStringExtra(MainActivity.RETURN_MESSAGE);
+                String reply = data.getStringExtra(ParentTask.RETURN_EXTRA_ID);
                 button.setText(reply);
             }
         }
