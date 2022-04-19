@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class ParentTask extends AppCompatActivity implements DialogCloseListener {
 
@@ -69,12 +70,13 @@ public class ParentTask extends AppCompatActivity implements DialogCloseListener
             @Override
             public void onClick(View v) {
 
+                Map checkOutBox = tasksAdapter.getCheckBoxOut();
+
                 List<ToDoModel> todoList = new ArrayList<ToDoModel>();
-                for (int i = 0; i < tasksAdapter.getItemCount(); i++) {
-                    View viewByPosition = tasksRecyclerView.getLayoutManager().findViewByPosition(i);
-                    CheckBox check = viewByPosition.findViewById(R.id.todoCheckBox);
-                    if (check.isChecked()) {
-                        todoList.add(taskList.get(i));
+                for (ToDoModel element : taskList) {
+                    Object o = checkOutBox.get(element.getId());
+                    if (o!=null && (Boolean) o){
+                        todoList.add(element);
                     }
                 }
 

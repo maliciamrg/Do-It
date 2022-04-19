@@ -4,19 +4,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.collection.ArraySet;
 import androidx.recyclerview.widget.RecyclerView;
 import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.R;
+import org.json.JSONArray;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder> {
 
     private List<ToDoModel> todoList;
     private int intExtra;
+    private final Map checkBoxOut = new Hashtable();
+
     public ParentAdapter() {
+    }
+
+    public Map getCheckBoxOut() {
+        return checkBoxOut;
     }
 
     public List<ToDoModel> getTodoList() {
@@ -39,9 +51,17 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
 
         boolean checked = item.isParent(intExtra);
         holder.task.setChecked(checked);
+        checkBoxOut.put(item.getId(), checked);
+        holder.task.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                checkBoxOut.put(item.getId(), isChecked);
+            }
+        });
+
 
         List<ToDoModel> parentList = item.getParentList();
-        if (parentList != null && parentList.size()>0) {
+        if (parentList != null && parentList.size() > 0) {
             holder.childList.setVisibility(View.VISIBLE);
             holder.childList.setText(ToDoModel.parentListToString(parentList));
         } else {
@@ -49,7 +69,7 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
             holder.childList.setText("");
         }
         List<ToDoModel> childList = item.getChildList();
-        if (childList != null && childList.size()>0) {
+        if (childList != null && childList.size() > 0) {
             holder.childList.setVisibility(View.VISIBLE);
             holder.childList.setText(holder.childList.getText() + ToDoModel.childListToString(childList));
         } else {
@@ -62,6 +82,7 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
     public int getItemCount() {
         return todoList.size();
     }
+
 
     public void setTasks(List<ToDoModel> todoList, int intExtra) {
         this.todoList = todoList;
