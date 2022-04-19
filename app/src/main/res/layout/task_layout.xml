@@ -1,17 +1,17 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    app:cardElevation="4dp"
-    app:cardCornerRadius="8dp"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginVertical="8dp">
+                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                   xmlns:tools="http://schemas.android.com/tools"
+                                   android:layout_width="match_parent"
+                                   android:layout_height="wrap_content"
+                                   app:cardElevation="2dp"
+                                   app:cardCornerRadius="2dp"
+                                   android:layout_marginHorizontal="16dp"
+                                   android:layout_marginVertical="8dp">
 
     <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:padding="8dp">
+            android:padding="2dp">
 
         <LinearLayout
                 android:orientation="vertical"
@@ -21,7 +21,7 @@
                     android:id="@+id/todoCheckBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingStart="8dp"
+                    android:paddingStart="2dp"
                     android:buttonTint="@android:color/holo_green_dark"
                     tools:text="Go to the market and bring vegetables immediately today."/>
             <TextView
