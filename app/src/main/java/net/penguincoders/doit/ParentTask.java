@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import net.penguincoders.doit.Adapters.ParentAdapter;
 import net.penguincoders.doit.Model.ToDoModel;
@@ -28,6 +29,7 @@ public class ParentTask extends AppCompatActivity implements DialogCloseListener
     public static final String EXTRA_TEXT = "EXTRA_TEXT" ;
     private DatabaseHandler db;
     private RecyclerView tasksRecyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private ParentAdapter tasksAdapter;
     private TextView TaskText;
     private FloatingActionButton fab;
@@ -59,11 +61,17 @@ public class ParentTask extends AppCompatActivity implements DialogCloseListener
                 ItemTouchHelper(new RecyclerItemTouchHelper(tasksAdapter));
         itemTouchHelper.attachToRecyclerView(tasksRecyclerView);*/
 
-        int intExtra = intent.getIntExtra(EXTRA_ID, 0);
-        taskList = db.getAllTasks();
-        Collections.reverse(taskList);
-        tasksAdapter.setTasks(taskList, intExtra);
+        refreshData(intent);
 
+        swipeRefreshLayout = ( SwipeRefreshLayout ) findViewById ( R.id.swiperefreshlayout ) ;
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {@Override
+        public void onRefresh() {
+            refreshData(intent);
+            //setting Refreshing to false
+            swipeRefreshLayout.setRefreshing(false);
+
+        }
+        });
 
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -125,6 +133,13 @@ public class ParentTask extends AppCompatActivity implements DialogCloseListener
                 finish();
             }
         });*/
+    }
+
+    private void refreshData(Intent intent) {
+        int intExtra = intent.getIntExtra(EXTRA_ID, 0);
+        taskList = db.getAllTasks();
+        Collections.reverse(taskList);
+        tasksAdapter.setTasks(taskList, intExtra);
     }
 
     @Override
