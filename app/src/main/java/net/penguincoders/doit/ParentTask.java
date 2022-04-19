@@ -34,7 +34,9 @@ public class ParentTask extends AppCompatActivity implements DialogCloseListener
     private TextView TaskText;
     private FloatingActionButton fab;
     private List<ToDoModel> taskList;
-
+    private FloatingActionButton fabUp1;
+    private FloatingActionButton fabUp2;
+    private FloatingActionButton fabUp3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +51,7 @@ public class ParentTask extends AppCompatActivity implements DialogCloseListener
 
         String stringExtra = intent.getExtras().get(EXTRA_TEXT).toString();
         String stringExtraMod = ToDoModel.stringMax(stringExtra);
-        TaskText.setText("Parents Task of :\n" + stringExtraMod);
+        TaskText.setText("Parents of :\n" + stringExtraMod);
 
 
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
@@ -94,6 +96,24 @@ public class ParentTask extends AppCompatActivity implements DialogCloseListener
                 finish();
             }
         });
+
+        fabUp1 = findViewById(R.id.fabUp1);
+        fabUp1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tasksAdapter.swapDetailVisibility();
+                if (tasksAdapter.isDetailVisible()){
+                    fabUp1.setImageResource(android.R.drawable.btn_minus);
+                } else {
+                    fabUp1.setImageResource(android.R.drawable.btn_plus);
+                }
+                refreshData(intent);
+            }
+        });
+
+        fabUp2 = findViewById(R.id.fabUp2);
+        fabUp3 = findViewById(R.id.fabUp3);
+
 /*
         Serializable input = intent.getSerializableExtra(MainActivity.EXTRA_MESSAGE);
 

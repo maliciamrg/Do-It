@@ -1,6 +1,5 @@
 package net.penguincoders.doit.Adapters;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,6 +22,7 @@ import java.util.List;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
+    private Integer detailVisility = View.VISIBLE;
     private List<ToDoModel> todoList;
     private DatabaseHandler db;
     private MainActivity activity;
@@ -72,7 +72,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         List<ToDoModel> parentList = item.getParentList();
         List<ToDoModel> childList = item.getChildList();
         if ((parentList != null && parentList.size()>0)||(childList != null && childList.size()>0)) {
-            holder.childList.setVisibility(View.VISIBLE);
+            holder.childList.setVisibility(detailVisility);
         } else {
             holder.childList.setVisibility(View.GONE);
         }
@@ -117,6 +117,21 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         fragment.setArguments(bundle);
         fragment.show(activity.getSupportFragmentManager(), AddNewTask.TAG);
 //        notifyDataSetChanged();
+    }
+
+
+    public void swapDetailVisibility() {
+        if (detailVisility == View.VISIBLE) {
+            detailVisility = View.GONE;
+        } else {
+            detailVisility = View.VISIBLE;
+        }
+    }
+    public boolean isDetailVisible() {
+        if (detailVisility == View.VISIBLE) {
+            return true;
+        }
+        return false;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

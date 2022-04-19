@@ -20,6 +20,7 @@ import java.util.Map;
 
 public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder> {
 
+    private Integer detailVisility = View.VISIBLE;
     private List<ToDoModel> todoList;
     private int intExtra;
     private final Map checkBoxOut = new Hashtable();
@@ -63,7 +64,7 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
         List<ToDoModel> parentList = item.getParentList();
         List<ToDoModel> childList = item.getChildList();
         if ((parentList != null && parentList.size()>0)||(childList != null && childList.size()>0)) {
-            holder.childList.setVisibility(View.VISIBLE);
+            holder.childList.setVisibility(detailVisility);
         } else {
             holder.childList.setVisibility(View.GONE);
         }
@@ -87,6 +88,20 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
         this.todoList = todoList;
         this.intExtra = intExtra;
         notifyDataSetChanged();
+    }
+
+    public void swapDetailVisibility() {
+        if (detailVisility == View.VISIBLE) {
+            detailVisility = View.GONE;
+        } else {
+            detailVisility = View.VISIBLE;
+        }
+    }
+    public boolean isDetailVisible() {
+        if (detailVisility == View.VISIBLE) {
+            return true;
+        }
+        return false;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

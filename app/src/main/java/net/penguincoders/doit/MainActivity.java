@@ -27,6 +27,9 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
     private SwipeRefreshLayout swipeRefreshLayout;
     private ToDoAdapter tasksAdapter;
     private FloatingActionButton fab;
+    private FloatingActionButton fabUp1;
+    private FloatingActionButton fabUp2;
+    private FloatingActionButton fabUp3;
 
     private List<ToDoModel> taskList;
 
@@ -61,13 +64,30 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         });
 
         fab = findViewById(R.id.fab);
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
             }
         });
+
+        fabUp1 = findViewById(R.id.fabUp1);
+        fabUp1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tasksAdapter.swapDetailVisibility();
+                if (tasksAdapter.isDetailVisible()){
+                    fabUp1.setImageResource(android.R.drawable.btn_minus);
+                } else {
+                    fabUp1.setImageResource(android.R.drawable.btn_plus);
+                }
+
+                refreshData();
+            }
+        });
+
+        fabUp2 = findViewById(R.id.fabUp2);
+        fabUp3 = findViewById(R.id.fabUp3);
     }
 
     private void refreshData() {
