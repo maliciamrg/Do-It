@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import net.penguincoders.doit.Adapters.ToDoAdapter;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
 
     private DatabaseHandler db;
     private RecyclerView tasksRecyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private ToDoAdapter tasksAdapter;
     private FloatingActionButton fab;
 
@@ -46,10 +48,17 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
                 ItemTouchHelper(new RecyclerItemTouchHelper(tasksAdapter));
         itemTouchHelper.attachToRecyclerView(tasksRecyclerView);
 
-        taskList = db.getAllTasks();
-        Collections.reverse(taskList);
+        refreshData();
 
-        tasksAdapter.setTasks(taskList);
+        swipeRefreshLayout = ( SwipeRefreshLayout ) findViewById ( R.id.swiperefreshlayout ) ;
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {@Override
+        public void onRefresh() {
+            refreshData();
+            //setting Refreshing to false
+            swipeRefreshLayout.setRefreshing(false);
+
+        }
+        });
 
         fab = findViewById(R.id.fab);
 
@@ -61,11 +70,15 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         });
     }
 
-    @Override
-    public void handleDialogClose(DialogInterface dialog){
+    private void refreshData() {
         taskList = db.getAllTasks();
         Collections.reverse(taskList);
         tasksAdapter.setTasks(taskList);
+    }
+
+    @Override
+    public void handleDialogClose(DialogInterface dialog){
+        refreshData();
         tasksAdapter.notifyDataSetChanged();
     }
 }
