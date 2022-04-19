@@ -68,22 +68,21 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
             }
         });
 
+        String text = "";
         List<ToDoModel> parentList = item.getParentList();
-        if (parentList != null && parentList.size()>0) {
-            holder.childList.setVisibility(View.VISIBLE);
-            holder.childList.setText(ToDoModel.parentListToString(parentList));
-        } else {
-            holder.childList.setVisibility(View.GONE);
-            holder.childList.setText("");
-        }
         List<ToDoModel> childList = item.getChildList();
-        if (childList != null && childList.size()>0) {
+        if ((parentList != null && parentList.size()>0)||(childList != null && childList.size()>0)) {
             holder.childList.setVisibility(View.VISIBLE);
-            holder.childList.setText(holder.childList.getText() + ToDoModel.childListToString(childList));
         } else {
             holder.childList.setVisibility(View.GONE);
-            holder.childList.setText("");
         }
+        if (parentList != null && parentList.size()>0) {
+            text = text + ToDoModel.parentListToString(parentList);
+        }
+        if (childList != null && childList.size()>0) {
+            text = text + ToDoModel.childListToString(childList);
+        }
+        holder.childList.setText(text);
     }
 
     @Override
