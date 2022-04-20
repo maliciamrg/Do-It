@@ -14,6 +14,10 @@
                 android:background="@null"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:hint="@string/new_task" android:minHeight="48dp"/>
+        <CheckBox
+                android:text="Is Task-Projet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/checkBox" android:minHeight="48dp"/>
         <TextView
                 android:text="TextView"
                 android:layout_width="match_parent"

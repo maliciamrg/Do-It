@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -32,6 +33,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
 
     public static final String TAG = "ActionBottomDialog";
     private EditText newTaskText;
+    private CheckBox checkBox;
     private TextView textViewParent;
     private Button newTaskSaveButton;
 
@@ -67,6 +69,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
         newTaskText = Objects.requireNonNull(getView()).findViewById(R.id.newTaskText);
         newTaskSaveButton = getView().findViewById(R.id.newTaskButton);
         textViewParent = getView().findViewById(R.id.textViewParent);
+        checkBox = getView().findViewById(R.id.checkBox);
 
         boolean isUpdate = false;
 
@@ -94,10 +97,12 @@ public class AddNewTask extends BottomSheetDialogFragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.toString().equals("")) {
+                    checkBox.setEnabled(false);
                     textViewParent.setEnabled(false);
                     newTaskSaveButton.setEnabled(false);
                     newTaskSaveButton.setTextColor(Color.GRAY);
                 } else {
+                    checkBox.setEnabled(true);
                     textViewParent.setEnabled(true);
                     newTaskSaveButton.setEnabled(true);
                     newTaskSaveButton.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorPrimaryDark));
@@ -110,20 +115,27 @@ public class AddNewTask extends BottomSheetDialogFragment {
         });
 
         final boolean finalIsUpdate = isUpdate;
+
+        if (finalIsUpdate) {
+            checkBox.setChecked(item.isProject());
+        } else {
+            checkBox.setChecked(false);
+        }
+
         newTaskSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String text = newTaskText.getText().toString();
-                //todo get parent
+
                 List<Integer> parent = new ArrayList<Integer>();
                 for (ToDoModel element : listParent) {
                     parent.add(element.getId());
                 }
                 Integer[] parentArray = parent.toArray(new Integer[0]);
                 if (finalIsUpdate) {
-                    db.updateTask(item.getId(), text, parentArray);
+                    db.updateTask(item.getId(), text, parentArray,checkBox.isChecked());
                 } else {
-                    db.insertTask(text, parentArray);
+                    db.insertTask(text, parentArray,checkBox.isChecked());
                 }
                 dismiss();
             }

@@ -54,9 +54,14 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 //        }
 //        System.out.println(str.toString());
 
+        holder.project.setText(item.getTask());
         holder.task.setText(item.getTask());
+
+        holder.project.setVisibility(item.isProject()?View.VISIBLE:View.GONE);
+        holder.task.setVisibility(item.isProject()?View.GONE:View.VISIBLE);
+
         holder.task.setOnCheckedChangeListener(null);//evite le pb de refresh quand on ajoute une ligne
-        holder.task.setChecked(item.isStatus());
+        holder.task.setChecked(item.isStatus() && !item.isProject());
         holder.task.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -67,6 +72,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
                 }
             }
         });
+
 
         String text = "";
         List<ToDoModel> parentList = item.getParentList();
@@ -80,7 +86,8 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
             text = text + ToDoModel.parentListToString(parentList);
         }
         if (childList != null && childList.size()>0) {
-            text = text + ToDoModel.childListToString(childList);
+            String sepa = text != "" ? "\n" : "";
+            text = text + sepa + ToDoModel.childListToString(childList);
         }
         holder.childList.setText(text);
     }
@@ -137,9 +144,11 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox task;
         TextView childList;
+        TextView project;
         ViewHolder(View view) {
             super(view);
             task = view.findViewById(R.id.todoCheckBox);
+            project = view.findViewById(R.id.textView3);
             childList = view.findViewById(R.id.textView);
         }
     }

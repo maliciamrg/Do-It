@@ -50,8 +50,15 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
 
         holder.task.setText(item.getTask());
 
+        holder.project.setText("--project--");
+        holder.task.setText(item.getTask());
+
+        holder.project.setVisibility(item.isProject()?View.VISIBLE:View.GONE);
+        holder.task.setVisibility(View.VISIBLE);
+
         boolean checked = item.isParent(intExtra);
         holder.task.setChecked(checked);
+
         checkBoxOut.put(item.getId(), checked);
         holder.task.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -72,7 +79,8 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
             text = text + ToDoModel.parentListToString(parentList);
         }
         if (childList != null && childList.size()>0) {
-            text = text + ToDoModel.childListToString(childList);
+            String sepa = text != "" ? "\n" : "";
+            text = text + sepa + ToDoModel.childListToString(childList);
         }
         holder.childList.setText(text);
 
@@ -107,10 +115,11 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox task;
         TextView childList;
-
+        TextView project;
         ViewHolder(View view) {
             super(view);
             task = view.findViewById(R.id.todoCheckBox);
+            project = view.findViewById(R.id.textView3);
             childList = view.findViewById(R.id.textView);
         }
     }

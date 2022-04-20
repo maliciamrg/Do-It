@@ -6,6 +6,7 @@ import java.util.List;
 public class ToDoModel implements Serializable {
     private static final long serialVersionUID = 0;
     private int id;
+    private boolean isProject;
     private boolean status;
     private String task;
     private List<ToDoModel> childList;
@@ -13,11 +14,13 @@ public class ToDoModel implements Serializable {
 
     public ToDoModel(int id,
                      String task,
+                     boolean isProject,
                      boolean status,
                      List<ToDoModel> childList,
                      List<ToDoModel> parentList) {
         this.id = id;
         this.task = task;
+        this.isProject = isProject;
         this.status = status;
         this.childList = childList;
         this.parentList = parentList;
@@ -43,6 +46,7 @@ public class ToDoModel implements Serializable {
     public String toString() {
         return "ToDoModel{" +
                 "id=" + id +
+                ", isProject=" + isProject +
                 ", status=" + status +
                 ", task='" + task + '\'' +
                 ", childList=" + childList +
@@ -85,13 +89,13 @@ public class ToDoModel implements Serializable {
     public static String childListToString(List<ToDoModel> childList) {
         StringBuilder str = new StringBuilder();
         str.append("Child(s):");
-        str.append("\n");
         for (ToDoModel element : childList) {
+            str.append("\n");
             str.append(" ");
             str.append(element.isStatus() ? "☒" : "☐");
             str.append("-");
             str.append(stringMax(element.getTask()));
-            str.append("\n");
+//            str.append("\n");
         }
         return str.toString();
     }
@@ -99,18 +103,26 @@ public class ToDoModel implements Serializable {
     public static  String parentListToString(List<ToDoModel> parentList) {
         StringBuilder str = new StringBuilder();
         str.append("Parent(s):");
-        str.append("\n");
         for (ToDoModel element : parentList) {
+            str.append("\n");
             str.append(" --> ");
             str.append(element.isStatus() ? "☒" : "☐");
             str.append("-");
             str.append(stringMax(element.getTask()));
-            str.append("\n");
+//            str.append("\n");
         }
         return str.toString();
     }
     public static  String stringMax(String stringExtra) {
         int imax = 60;
         return stringExtra.length() > imax ? stringExtra.substring(0, imax) : stringExtra;
+    }
+
+    public boolean isProject() {
+        return isProject;
+    }
+
+    public void setProject(boolean project) {
+        isProject = project;
     }
 }

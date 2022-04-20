@@ -22,6 +22,7 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements DialogCloseListener{
 
+    public static final String LOG_TAG = "DoIt_App";
     private DatabaseHandler db;
     private RecyclerView tasksRecyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;

@@ -17,6 +17,11 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+            <TextView
+                    android:text="project"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/textView3" tools:visibility="visible"
+                    android:textSize="20sp" android:textColor="@android:color/black" android:textAlignment="center"/>
             <CheckBox
                     android:id="@+id/todoCheckBox"
                     android:layout_width="wrap_content"
@@ -26,7 +31,7 @@
                     tools:text="Go to the market and bring vegetables immediately today."/>
             <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/textView" android:visibility="gone"/>
+                    android:layout_height="wrap_content" android:id="@+id/textView" android:text="parent-child" tools:visibility="visible"/>
         </LinearLayout>
 
     </RelativeLayout>
