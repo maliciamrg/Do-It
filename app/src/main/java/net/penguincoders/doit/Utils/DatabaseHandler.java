@@ -6,12 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.CheckBox;
+import com.malicia.mrg.BuildHierarchyTree;
 import net.penguincoders.doit.MainActivity;
+import net.penguincoders.doit.Model.ToDoLinkModel;
 import net.penguincoders.doit.Model.ToDoModel;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -41,7 +41,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final String ALTER_TODO_TABLE =
             "ALTER TABLE " + TODO_TABLE + " " +
-                    "ADD COLUMN " + ISPROJECT +  " BOOLEAN ";
+                    "ADD COLUMN " + ISPROJECT + " BOOLEAN ";
 
     private final String SELECT_CHILD_TODO =
             "SELECT t.* FROM " + TODO_TABLE + " t " +
@@ -56,6 +56,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     " WHERE l." + IDCHILD + "=? " +
                     " ORDER BY t." + TASK + " ASC ";
 
+    private final String SELECT_LINK_TODO =
+            "SELECT " +
+                    "t." + TASK + " , " +
+                    "l." + ID + " , " +
+                    "t." + ID + " as " + IDCHILD + " , " +
+                    "l." + IDPARENT + " " +
+                    "FROM " + TODO_TABLE + " t " +
+                    " LEFT JOIN " + LINK_TABLE + " l " +
+                    "  ON l." + IDCHILD + "=t." + ID + " ";
 /*
     private final String SELECT_PARENT_TODO =
             "SELECT " +
@@ -84,18 +93,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         int upgradeVersion = oldVersion;
         if (upgradeVersion == 1) {
-            Log.i(MainActivity.LOG_TAG,"Upgrade database version "+ upgradeVersion + " to +1");
+            Log.i(MainActivity.LOG_TAG, "Upgrade database version " + upgradeVersion + " to +1");
             db.execSQL(CREATE_LINK_TABLE);
             upgradeVersion++;
         }
         if (upgradeVersion == 2) {
-            Log.i(MainActivity.LOG_TAG,"Upgrade database version "+ upgradeVersion + " to +1");
+            Log.i(MainActivity.LOG_TAG, "Upgrade database version " + upgradeVersion + " to +1");
             db.execSQL(ALTER_TODO_TABLE);
             upgradeVersion++;
         }
 
         if (newVersion > upgradeVersion) {
-            Log.i(MainActivity.LOG_TAG,"Recreate database version to "+ newVersion );
+            Log.i(MainActivity.LOG_TAG, "Recreate database version to " + newVersion);
             // Drop older table if existed
             db.execSQL("DROP TABLE IF EXISTS " + TODO_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + LINK_TABLE);
@@ -121,12 +130,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
-    public List<ToDoModel> getAllTasks() {
-        List<ToDoModel> taskList = new ArrayList<>();
+    public Map<Integer, ToDoModel> getAllTasks() {
+        Map<Integer,ToDoModel> taskList = new LinkedHashMap<>();
         Cursor cur = null;
         db.beginTransaction();
         try {
-            cur = db.query(TODO_TABLE, null, null, null, null, null, null, null);
+            cur = db.query(TODO_TABLE, null, null, null, null, null, TASK, null);
             if (cur != null) {
                 if (cur.moveToFirst()) {
                     do {
@@ -137,7 +146,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                                 cur.getInt(cur.getColumnIndex(STATUS)) > 0,
                                 new ArrayList<ToDoModel>(),
                                 new ArrayList<ToDoModel>());
-                        taskList.add(task);
+                        taskList.put(task.getId(),task);
                     }
                     while (cur.moveToNext());
                 }
@@ -147,12 +156,40 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             assert cur != null;
             cur.close();
         }
-        for (ToDoModel task : taskList) {
+
+
+        BuildHierarchyTree taskTree = new BuildHierarchyTree(getAllLinks());
+        for (ToDoModel task : taskList.values()) {
+
             List<ToDoModel> childList = getAllChildTasks(task.getId());
             task.setChildList(childList);
+
             List<ToDoModel> parentList = getAllParentTasks(task.getId());
             task.setParentList(parentList);
+
+            //, "HierarchyTree \n empty project:"
+            //, "HierarchyTree \n solo task:"
+            //, "HierarchyTree \n project:"
+            //, "HierarchyTree \n master task:"
+            if (task.getParentList().size() == 0 ) {
+                taskTree.buildHierarchyTree(task.getId());
+                Map<Integer, Integer> hierarchyTasks = taskTree.printHierarchyTree(task.getId(), 0);
+                int rank = 0;
+                for (Integer subTaskId : hierarchyTasks.keySet()) {
+                    ToDoModel ele = taskList.get(subTaskId);
+                    if (rank==0) {
+                        ele.setHierarchicalRootNbSubtask(hierarchyTasks.size());
+                    }
+                    ele.setHierarchicalRoot(task.getId());
+                    ele.setHierarchicalRank(rank);
+                    ele.setHierarchicalLevel(hierarchyTasks.get(subTaskId));
+                    taskList.put(subTaskId,ele);
+                    rank++;
+                }
+            }
+
         }
+
         return taskList;
     }
 
@@ -281,5 +318,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 db.insert(LINK_TABLE, null, cv);
             }
         }
+    }
+
+    public List<ToDoLinkModel> getAllLinks() {
+        List<ToDoLinkModel> linkList = new ArrayList<>();
+
+        Cursor cur = null;
+        db.beginTransaction();
+        try {
+            cur = db.rawQuery(SELECT_LINK_TODO, new String[]{});
+            if (cur != null) {
+                if (cur.moveToFirst()) {
+                    do {
+                        ToDoLinkModel linkModel = new ToDoLinkModel(
+                                cur.getInt(cur.getColumnIndex(ID)),
+                                cur.getInt(cur.getColumnIndex(IDCHILD)),
+                                cur.getString(cur.getColumnIndex(TASK)),
+                                cur.getInt(cur.getColumnIndex(IDPARENT)));
+                        linkList.add(linkModel);
+                    }
+                    while (cur.moveToNext());
+                }
+            }
+        } finally {
+            db.endTransaction();
+            assert cur != null;
+            cur.close();
+        }
+
+
+        return linkList;
     }
 }

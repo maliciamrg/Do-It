@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+                xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -32,25 +32,25 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:backgroundTint="@color/colorPrimaryDark"
-                        android:src="@android:drawable/btn_minus"
+                        android:src="@android:drawable/arrow_down_float"
                         app:maxImageSize="48dp" app:useCompatPadding="false" app:fabSize="auto" android:layout_marginStart="2dp"
                         android:layout_marginTop="2dp" android:layout_marginBottom="2dp" android:layout_marginEnd="2dp"/>
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                         android:id="@+id/fabUp2"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:backgroundTint="@android:color/holo_green_dark"
-                        android:src="@drawable/ic_baseline_add_24" android:layout_marginTop="2dp" android:layout_marginStart="2dp"
+                        android:src="@android:drawable/ic_menu_sort_by_size" android:layout_marginTop="2dp" android:layout_marginStart="2dp"
                         android:layout_marginEnd="2dp"
-                        android:layout_marginBottom="2dp" android:layout_weight="1"/>
+                        android:layout_marginBottom="2dp" app:maxImageSize="48dp"/>
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                         android:id="@+id/fabUp3"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:backgroundTint="@android:color/holo_green_dark"
-                        android:src="@drawable/ic_baseline_add_24" android:layout_marginTop="2dp" android:layout_marginStart="2dp"
+                        android:src="@android:drawable/ic_media_ff" android:layout_marginTop="2dp" android:layout_marginStart="2dp"
                         android:layout_marginEnd="2dp"
-                        android:layout_marginBottom="2dp" android:layout_weight="1"/>
+                        android:layout_marginBottom="2dp" app:maxImageSize="48dp" android:layout_weight="1"/>
             </LinearLayout>
         </LinearLayout>
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

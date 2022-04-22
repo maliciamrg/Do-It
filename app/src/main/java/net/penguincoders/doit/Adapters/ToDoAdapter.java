@@ -5,10 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.*;
 
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,13 +17,16 @@ import net.penguincoders.doit.R;
 import net.penguincoders.doit.Utils.DatabaseHandler;
 
 import java.util.List;
+import java.util.Map;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
-    private Integer detailVisility = View.VISIBLE;
-    private List<ToDoModel> todoList;
-    private DatabaseHandler db;
-    private MainActivity activity;
+    private final DatabaseHandler db;
+    private final MainActivity activity;
+    private Integer detailVisibility = View.VISIBLE;
+    private boolean hierarchicalView = true;
+    private Map<Integer, ToDoModel> todoList;
+    private View itemView;
 
     public ToDoAdapter(DatabaseHandler db, MainActivity activity) {
         this.db = db;
@@ -35,7 +36,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
+        itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.task_layout, parent, false);
         return new ViewHolder(itemView);
     }
@@ -44,7 +45,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         db.openDatabase();
 
-        final ToDoModel item = todoList.get(position);
+        final ToDoModel item = (ToDoModel) todoList.values().toArray()[position];
 
 //        StringBuilder str = new StringBuilder();
 //        str.append("\n" );
@@ -54,22 +55,35 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 //        }
 //        System.out.println(str.toString());
 
-        holder.project.setText(item.getTask());
-        holder.task.setText(item.getTask());
+        String task = item.getTask();
+        holder.project.setText(task);
+        holder.task.setText(task);
 
-        holder.project.setVisibility(item.isProject()?View.VISIBLE:View.GONE);
-        holder.task.setVisibility(item.isProject()?View.GONE:View.VISIBLE);
+        holder.project.setVisibility(item.isProject() ? View.VISIBLE : View.GONE);
+        holder.task.setVisibility(item.isProject() ? View.GONE : View.VISIBLE);
 
         holder.task.setOnCheckedChangeListener(null);//evite le pb de refresh quand on ajoute une ligne
         holder.task.setChecked(item.isStatus() && !item.isProject());
+
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.task.getLayoutParams();
+        int levelHierarchical = 0;
+        if (isHierarchicalView()) {
+            levelHierarchical = item.getHierarchicalLevel() * 50;
+        }
+        params.setMarginStart(levelHierarchical);
+        holder.task.setLayoutParams(params);
+
+        int nbSubTask = item.getHierarchicalRootNbSubtask();
+        if (nbSubTask > 0 && isHierarchicalView()) {
+            holder.nbSub.setText(String.valueOf(nbSubTask));
+        } else {
+            holder.nbSub.setText("");
+        }
+
         holder.task.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    db.updateStatus(item.getId(), true);
-                } else {
-                    db.updateStatus(item.getId(), false);
-                }
+                db.updateStatus(item.getId(), isChecked);
             }
         });
 
@@ -77,15 +91,15 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         String text = "";
         List<ToDoModel> parentList = item.getParentList();
         List<ToDoModel> childList = item.getChildList();
-        if ((parentList != null && parentList.size()>0)||(childList != null && childList.size()>0)) {
-            holder.childList.setVisibility(detailVisility);
+        if ((parentList != null && parentList.size() > 0) || (childList != null && childList.size() > 0)) {
+            holder.childList.setVisibility(detailVisibility);
         } else {
             holder.childList.setVisibility(View.GONE);
         }
-        if (parentList != null && parentList.size()>0) {
+        if (parentList != null && parentList.size() > 0) {
             text = text + ToDoModel.parentListToString(parentList);
         }
-        if (childList != null && childList.size()>0) {
+        if (childList != null && childList.size() > 0) {
             String sepa = text != "" ? "\n" : "";
             text = text + sepa + ToDoModel.childListToString(childList);
         }
@@ -101,21 +115,21 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         return activity;
     }
 
-    public void setTasks(List<ToDoModel> todoList) {
+    public void setTasks(Map<Integer, ToDoModel> todoList) {
         this.todoList = todoList;
         notifyDataSetChanged();
     }
 
     public void deleteItem(int position) {
-        ToDoModel item = todoList.get(position);
+        ToDoModel item = (ToDoModel) todoList.values().toArray()[position];
         db.deleteTask(item.getId());
-        todoList.remove(position);
+        todoList.remove(item.getId());
 //        notifyItemRemoved(position);
         notifyDataSetChanged();
     }
 
     public void editItem(int position) {
-        ToDoModel item = todoList.get(position);
+        ToDoModel item = (ToDoModel) todoList.values().toArray()[position];
         Bundle bundle = new Bundle();
         bundle.putInt("id", item.getId());
         bundle.putString("task", item.getTask());
@@ -128,28 +142,37 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
 
     public void swapDetailVisibility() {
-        if (detailVisility == View.VISIBLE) {
-            detailVisility = View.GONE;
+        if (detailVisibility == View.VISIBLE) {
+            detailVisibility = View.GONE;
         } else {
-            detailVisility = View.VISIBLE;
+            detailVisibility = View.VISIBLE;
         }
     }
+
     public boolean isDetailVisible() {
-        if (detailVisility == View.VISIBLE) {
-            return true;
-        }
-        return false;
+        return detailVisibility == View.VISIBLE;
+    }
+
+    public void swapHierarchicalView() {
+        hierarchicalView = !hierarchicalView;
+    }
+
+    public boolean isHierarchicalView() {
+        return hierarchicalView;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox task;
         TextView childList;
         TextView project;
+        TextView nbSub;
+
         ViewHolder(View view) {
             super(view);
             task = view.findViewById(R.id.todoCheckBox);
             project = view.findViewById(R.id.textView3);
             childList = view.findViewById(R.id.textView);
+            nbSub = view.findViewById(R.id.nbSub);
         }
     }
 }

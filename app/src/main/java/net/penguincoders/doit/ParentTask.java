@@ -33,7 +33,7 @@ public class ParentTask extends AppCompatActivity implements DialogCloseListener
     private ParentAdapter tasksAdapter;
     private TextView TaskText;
     private FloatingActionButton fab;
-    private List<ToDoModel> taskList;
+    private Map<Integer, ToDoModel> taskList;
     private FloatingActionButton fabUp1;
     private FloatingActionButton fabUp2;
     private FloatingActionButton fabUp3;
@@ -83,7 +83,7 @@ public class ParentTask extends AppCompatActivity implements DialogCloseListener
                 Map checkOutBox = tasksAdapter.getCheckBoxOut();
 
                 List<ToDoModel> todoList = new ArrayList<ToDoModel>();
-                for (ToDoModel element : taskList) {
+                for (ToDoModel element : taskList.values()) {
                     Object o = checkOutBox.get(element.getId());
                     if (o!=null && (Boolean) o){
                         todoList.add(element);
@@ -103,9 +103,9 @@ public class ParentTask extends AppCompatActivity implements DialogCloseListener
             public void onClick(View v) {
                 tasksAdapter.swapDetailVisibility();
                 if (tasksAdapter.isDetailVisible()){
-                    fabUp1.setImageResource(android.R.drawable.btn_minus);
+                    fabUp1.setImageResource(android.R.drawable.arrow_up_float);
                 } else {
-                    fabUp1.setImageResource(android.R.drawable.btn_plus);
+                    fabUp1.setImageResource(android.R.drawable.arrow_down_float);
                 }
                 refreshData(intent);
             }
@@ -158,7 +158,7 @@ public class ParentTask extends AppCompatActivity implements DialogCloseListener
     private void refreshData(Intent intent) {
         int intExtra = intent.getIntExtra(EXTRA_ID, 0);
         taskList = db.getAllTasks();
-        Collections.reverse(taskList);
+//        Collections.reverse(taskList);
         tasksAdapter.setTasks(taskList, intExtra);
     }
 

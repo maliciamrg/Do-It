@@ -11,6 +11,10 @@ public class ToDoModel implements Serializable {
     private String task;
     private List<ToDoModel> childList;
     private List<ToDoModel> parentList;
+    private int hierarchicalRoot;
+    private int hierarchicalRank;
+    private int hierarchicalLevel;
+    private int hierarchicalRootNbSubtask;
 
     public ToDoModel(int id,
                      String task,
@@ -124,5 +128,37 @@ public class ToDoModel implements Serializable {
 
     public void setProject(boolean project) {
         isProject = project;
+    }
+
+    public void setHierarchicalRoot(int hierarchicalRoot) {
+        this.hierarchicalRoot = hierarchicalRoot;
+    }
+
+    public int getHierarchicalRoot() {
+        return hierarchicalRoot;
+    }
+
+    public void setHierarchicalRank(int hierarchicalRank) {
+        this.hierarchicalRank = hierarchicalRank;
+    }
+
+    public int getHierarchicalRank() {
+        return hierarchicalRank;
+    }
+
+    public void setHierarchicalLevel(int hierarchicalLevel) {
+        this.hierarchicalLevel = hierarchicalLevel;
+    }
+
+    public int getHierarchicalLevel() {
+        return hierarchicalLevel;
+    }
+
+    public void setHierarchicalRootNbSubtask(int hierarchicalRootNbSubtask) {
+        this.hierarchicalRootNbSubtask = hierarchicalRootNbSubtask;
+    }
+
+    public int getHierarchicalRootNbSubtask() {
+        return hierarchicalRootNbSubtask;
     }
 }

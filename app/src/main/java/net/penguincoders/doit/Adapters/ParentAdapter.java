@@ -7,13 +7,10 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.collection.ArraySet;
 import androidx.recyclerview.widget.RecyclerView;
 import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.R;
-import org.json.JSONArray;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +18,7 @@ import java.util.Map;
 public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder> {
 
     private Integer detailVisility = View.VISIBLE;
-    private List<ToDoModel> todoList;
+    private Map<Integer, ToDoModel> todoList;
     private int intExtra;
     private final Map checkBoxOut = new Hashtable();
 
@@ -32,7 +29,7 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
         return checkBoxOut;
     }
 
-    public List<ToDoModel> getTodoList() {
+    public Map<Integer, ToDoModel> getTodoList() {
         return todoList;
     }
 
@@ -46,7 +43,7 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        final ToDoModel item = todoList.get(position);
+        final ToDoModel item = (ToDoModel) todoList.values().toArray()[position];
 
         holder.task.setText(item.getTask());
 
@@ -92,7 +89,7 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ViewHolder
     }
 
 
-    public void setTasks(List<ToDoModel> todoList, int intExtra) {
+    public void setTasks(Map<Integer, ToDoModel> todoList, int intExtra) {
         this.todoList = todoList;
         this.intExtra = intExtra;
         notifyDataSetChanged();

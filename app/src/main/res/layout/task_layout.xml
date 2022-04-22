@@ -17,18 +17,32 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-            <TextView
-                    android:text="project"
+            <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/textView3" tools:visibility="visible"
-                    android:textSize="20sp" android:textColor="@android:color/black" android:textAlignment="center"/>
-            <CheckBox
-                    android:id="@+id/todoCheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="2dp"
-                    android:buttonTint="@android:color/holo_green_dark"
-                    tools:text="Go to the market and bring vegetables immediately today."/>
+                    android:layout_height="match_parent">
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="330dp"
+                        android:layout_height="wrap_content">
+                    <TextView
+                            android:text="project"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" android:id="@+id/textView3" tools:visibility="visible"
+                            android:textSize="20sp" android:textColor="@android:color/black" android:textAlignment="center"/>
+                    <CheckBox
+                            android:id="@+id/todoCheckBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="2dp"
+                            android:buttonTint="@android:color/holo_green_dark"
+                            tools:text="Go to the market and bring vegetables immediately today."/>
+                </LinearLayout>
+                <TextView
+                        android:text="TextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" android:id="@+id/nbSub" android:layout_weight="1" android:textSize="14sp" android:gravity="right"/>
+            </LinearLayout>
             <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" android:id="@+id/textView" android:text="parent-child" tools:visibility="visible"/>
