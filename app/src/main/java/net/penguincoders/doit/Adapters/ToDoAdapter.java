@@ -1,6 +1,7 @@
 package net.penguincoders.doit.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import net.penguincoders.doit.Utils.DatabaseHandler;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
@@ -25,12 +27,22 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     private final MainActivity activity;
     private Integer detailVisibility = View.VISIBLE;
     private boolean hierarchicalView = true;
+    private boolean onlyRootView = false;
     private Map<Integer, ToDoModel> todoList;
     private View itemView;
+    private int expandInOnlyRootView = 0;
 
     public ToDoAdapter(DatabaseHandler db, MainActivity activity) {
         this.db = db;
         this.activity = activity;
+    }
+
+    public int getExpandInOnlyRootView() {
+        return expandInOnlyRootView;
+    }
+
+    public void setExpandInOnlyRootView(int expandInOnlyRootView) {
+        this.expandInOnlyRootView = expandInOnlyRootView;
     }
 
     @NonNull
@@ -54,6 +66,20 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 //            str.append("\n" );
 //        }
 //        System.out.println(str.toString());
+
+        int backgroundColor=0;
+        if (item.getHierarchicalRoot() == item.getId()) {
+            Random rnd = new Random();
+            backgroundColor = Color.argb(20, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+            item.setBackgroundColor(backgroundColor);
+        } else {
+            backgroundColor = todoList.get(item.getHierarchicalRoot()).getBackgroundColor();
+        }
+        holder.project.setBackgroundColor(backgroundColor);
+        holder.task.setBackgroundColor(backgroundColor);
+        holder.nbSub.setBackgroundColor(backgroundColor);
+        holder.childList.setBackgroundColor(backgroundColor);
+        holder.ll1.setBackgroundColor(backgroundColor);
 
         String task = item.getTask();
         holder.project.setText(task);
@@ -86,6 +112,18 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
                 db.updateStatus(item.getId(), isChecked);
             }
         });
+        holder.project.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switcheExtendTask(item);
+            }
+        });
+        holder.nbSub.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switcheExtendTask(item);
+            }
+        });
 
 
         String text = "";
@@ -104,6 +142,15 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
             text = text + sepa + ToDoModel.childListToString(childList);
         }
         holder.childList.setText(text);
+    }
+
+    private void switcheExtendTask(ToDoModel item) {
+        if (isOnlyRootView() && expandInOnlyRootView != item.getId()) {
+            expandInOnlyRootView = item.getId();
+        } else {
+            expandInOnlyRootView = 0;
+        }
+        activity.refreshData();
     }
 
     @Override
@@ -161,11 +208,20 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         return hierarchicalView;
     }
 
+    public void swapOnlyRootView() {
+        onlyRootView = !onlyRootView;
+    }
+
+    public boolean isOnlyRootView() {
+        return onlyRootView;
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox task;
         TextView childList;
         TextView project;
         TextView nbSub;
+        LinearLayout ll1;
 
         ViewHolder(View view) {
             super(view);
@@ -173,6 +229,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
             project = view.findViewById(R.id.textView3);
             childList = view.findViewById(R.id.textView);
             nbSub = view.findViewById(R.id.nbSub);
+            ll1 = view.findViewById(R.id.ll1);
         }
     }
 }

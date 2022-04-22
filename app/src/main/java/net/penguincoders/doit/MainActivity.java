@@ -108,11 +108,11 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         fabUp3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tasksAdapter.swapHierarchicalView();
-                if (tasksAdapter.isHierarchicalView()) {
-                    fabUp3.setImageResource(android.R.drawable.ic_media_ff);
-                } else {
+                tasksAdapter.swapOnlyRootView();
+                if (tasksAdapter.isOnlyRootView()) {
                     fabUp3.setImageResource(android.R.drawable.ic_media_rew);
+                } else {
+                    fabUp3.setImageResource(android.R.drawable.ic_media_ff);
                 }
                 refreshData();
             }
@@ -138,23 +138,22 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         dialog.show();
     }
 
-    private void refreshData() {
+    public void refreshData() {
         taskList = db.getAllTasks();
 
         Map<Integer, ToDoModel> orderedTaskList = new LinkedHashMap<>();
-
-        if (tasksAdapter.isHierarchicalView()){
+        if (tasksAdapter.isHierarchicalView()) {
             //tri hierarchically
-            Map< Integer , Map < Integer ,ToDoModel>> hHerar = new LinkedHashMap<>();
+            Map<Integer, Map<Integer, ToDoModel>> hHerar = new LinkedHashMap<>();
             for (ToDoModel todoEle : taskList.values()) {
-                Map<Integer , ToDoModel> hRank = new HashMap<>();
-                if (hHerar.containsKey(todoEle.getHierarchicalRoot())){
-                    hRank=hHerar.get(todoEle.getHierarchicalRoot());
-                    hRank.put(todoEle.getHierarchicalRank(),todoEle);
-                    hHerar.put(todoEle.getHierarchicalRoot(),hRank);
-                }else {
-                    hRank.put(todoEle.getHierarchicalRank(),todoEle);
-                    hHerar.put(todoEle.getHierarchicalRoot(),hRank);
+                Map<Integer, ToDoModel> hRank = new HashMap<>();
+                if (hHerar.containsKey(todoEle.getHierarchicalRoot())) {
+                    hRank = hHerar.get(todoEle.getHierarchicalRoot());
+                    hRank.put(todoEle.getHierarchicalRank(), todoEle);
+                    hHerar.put(todoEle.getHierarchicalRoot(), hRank);
+                } else {
+                    hRank.put(todoEle.getHierarchicalRank(), todoEle);
+                    hHerar.put(todoEle.getHierarchicalRoot(), hRank);
                 }
             }
             //mise en forme
@@ -168,7 +167,20 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
             orderedTaskList = taskList;
         }
 
-        tasksAdapter.setTasks(orderedTaskList);
+        Map<Integer, ToDoModel> orderedAndFilteredTaskList = new LinkedHashMap<>();
+        if (tasksAdapter.isOnlyRootView()) {
+            for (ToDoModel todoEle : orderedTaskList.values()) {
+                if(todoEle.getParentList().size()==0 || tasksAdapter.getExpandInOnlyRootView()==todoEle.getHierarchicalRoot()){
+                    orderedAndFilteredTaskList.put(todoEle.getId(), todoEle);
+                }
+            }
+        } else {
+            tasksAdapter.setExpandInOnlyRootView(0);
+            orderedAndFilteredTaskList = orderedTaskList;
+        }
+
+
+        tasksAdapter.setTasks(orderedAndFilteredTaskList);
     }
 
     @Override

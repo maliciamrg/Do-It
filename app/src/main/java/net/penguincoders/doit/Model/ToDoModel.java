@@ -15,6 +15,7 @@ public class ToDoModel implements Serializable {
     private int hierarchicalRank;
     private int hierarchicalLevel;
     private int hierarchicalRootNbSubtask;
+    private int backgroundColor;
 
     public ToDoModel(int id,
                      String task,
@@ -160,5 +161,13 @@ public class ToDoModel implements Serializable {
 
     public int getHierarchicalRootNbSubtask() {
         return hierarchicalRootNbSubtask;
+    }
+
+    public void setBackgroundColor(int backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public int getBackgroundColor() {
+        return backgroundColor;
     }
 }
