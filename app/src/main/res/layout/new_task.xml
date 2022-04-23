@@ -18,16 +18,16 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+            <CheckBox
+                    android:text="Is Task-Projet"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" android:id="@+id/checkBox" android:minHeight="48dp" android:layout_weight=".9"/>
             <View
                     android:id="@+id/preview_selected_color"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:background="@android:color/darker_gray"
-                    android:layout_gravity="left"/>
-            <CheckBox
-                    android:text="Is Task-Projet"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent" android:id="@+id/checkBox" android:minHeight="48dp"/>
+                    android:layout_gravity="right"/>
             <!--sample view to preview selected color by user-->
             <!--by default this has been set to darker gery-->
             <!--this can be overridden after user chose the
