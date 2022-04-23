@@ -23,8 +23,7 @@
                     android:layout_height="match_parent">
                 <LinearLayout
                         android:orientation="vertical"
-                        android:layout_width="330dp"
-                        android:layout_height="wrap_content" android:id="@+id/ll1">
+                        android:layout_height="wrap_content" android:id="@+id/ll1" android:layout_weight=".9" android:layout_width="0dp">
                     <TextView
                             android:text="project"
                             android:layout_width="match_parent"
@@ -40,8 +39,9 @@
                 </LinearLayout>
                 <TextView
                         android:text="TextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent" android:id="@+id/nbSub" android:layout_weight="1" android:textSize="20sp" android:gravity="right"/>
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" android:id="@+id/nbSub" android:layout_weight=".1" android:textSize="20sp"
+                        android:gravity="right"/>
             </LinearLayout>
             <TextView
                     android:layout_width="match_parent"
