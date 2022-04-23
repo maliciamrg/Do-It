@@ -103,13 +103,13 @@ public class AddNewTask extends BottomSheetDialogFragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.toString().equals("")) {
-                    checkBox.setEnabled(false);
-                    textViewParent.setEnabled(false);
+//                    checkBox.setEnabled(false);
+//                    textViewParent.setEnabled(false);
                     newTaskSaveButton.setEnabled(false);
                     newTaskSaveButton.setTextColor(Color.GRAY);
                 } else {
-                    checkBox.setEnabled(true);
-                    textViewParent.setEnabled(true);
+  //                  checkBox.setEnabled(true);
+  //                  textViewParent.setEnabled(true);
                     newTaskSaveButton.setEnabled(true);
                     newTaskSaveButton.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorPrimaryDark));
                 }
