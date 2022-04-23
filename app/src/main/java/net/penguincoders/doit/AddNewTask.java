@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.Utils.DatabaseHandler;
+import yuku.ambilwarna.AmbilWarnaDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,11 +37,15 @@ public class AddNewTask extends BottomSheetDialogFragment {
     private CheckBox checkBox;
     private TextView textViewParent;
     private Button newTaskSaveButton;
+    private View mColorPreview;
 
     private DatabaseHandler db;
     private ToDoModel item;
     private List<ToDoModel> listParent;
 
+
+    // this is the default color of the preview box
+    private int mDefaultColor;
 
     public static AddNewTask newInstance() {
         return new AddNewTask();
@@ -70,6 +75,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
         newTaskSaveButton = getView().findViewById(R.id.newTaskButton);
         textViewParent = getView().findViewById(R.id.textViewParent);
         checkBox = getView().findViewById(R.id.checkBox);
+        mColorPreview = getView().findViewById(R.id.preview_selected_color);
 
         boolean isUpdate = false;
 
@@ -155,6 +161,22 @@ public class AddNewTask extends BottomSheetDialogFragment {
             }
         });
 
+        // set the default color to 0 as it is black
+        mDefaultColor = 0;
+
+        // button open the AmbilWanra color picker dialog.
+        mColorPreview.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // to make code look cleaner the color
+                        // picker dialog functionality are
+                        // handled in openColorPickerDialogue()
+                        // function
+                        openColorPickerDialogue(v);
+                    }
+                });
+
     }
 
     @Override
@@ -174,5 +196,41 @@ public class AddNewTask extends BottomSheetDialogFragment {
                 textViewParent.setText(parentListToString(listParent));
             }
         }
+    }
+    // the dialog functionality is handled separately
+    // using openColorPickerDialog this is triggered as
+    // soon as the user clicks on the Pick Color button And
+    // the AmbilWarnaDialog has 2 methods to be overridden
+    // those are onCancel and onOk which handle the "Cancel"
+    // and "OK" button of color picker dialog
+    public void openColorPickerDialogue(View v) {
+
+        // the AmbilWarnaDialog callback needs 3 parameters
+        // one is the context, second is default color,
+        final AmbilWarnaDialog colorPickerDialogue = new AmbilWarnaDialog(v.getContext(), mDefaultColor,
+                new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                    @Override
+                    public void onCancel(AmbilWarnaDialog dialog) {
+                        // leave this function body as
+                        // blank, as the dialog
+                        // automatically closes when
+                        // clicked on cancel button
+                    }
+
+                    @Override
+                    public void onOk(AmbilWarnaDialog dialog, int color) {
+                        // change the mDefaultColor to
+                        // change the GFG text color as
+                        // it is returned when the OK
+                        // button is clicked from the
+                        // color picker dialog
+                        mDefaultColor = color;
+
+                        // now change the picked color
+                        // preview box to mDefaultColor
+                        mColorPreview.setBackgroundColor(mDefaultColor);
+                    }
+                });
+        colorPickerDialogue.show();
     }
 }

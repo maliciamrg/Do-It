@@ -20,6 +20,7 @@ import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.Utils.DatabaseHandler;
 
 import java.util.*;
+import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class MainActivity extends AppCompatActivity implements DialogCloseListener {
 
