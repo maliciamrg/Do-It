@@ -18,9 +18,9 @@
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
                     android:textColor="@android:color/black"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginBottom="2dp"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="16dp"
                     android:textSize="32sp"
                     android:text="@string/tasks"/>
             <LinearLayout

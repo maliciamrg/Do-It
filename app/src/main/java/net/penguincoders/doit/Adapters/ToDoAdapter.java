@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.penguincoders.doit.AddNewTask;
@@ -70,16 +71,12 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         int backgroundColor=0;
         if (item.getHierarchicalRoot() == item.getId()) {
             Random rnd = new Random();
-            backgroundColor = Color.argb(20, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+            backgroundColor = Color.argb(40, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
             item.setBackgroundColor(backgroundColor);
         } else {
             backgroundColor = todoList.get(item.getHierarchicalRoot()).getBackgroundColor();
         }
-        holder.project.setBackgroundColor(backgroundColor);
-        holder.task.setBackgroundColor(backgroundColor);
-        holder.nbSub.setBackgroundColor(backgroundColor);
-        holder.childList.setBackgroundColor(backgroundColor);
-        holder.ll1.setBackgroundColor(backgroundColor);
+        holder.rl1.setBackgroundColor(backgroundColor);
 
         String task = item.getTask();
         holder.project.setText(task);
@@ -221,8 +218,9 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         TextView childList;
         TextView project;
         TextView nbSub;
+        RelativeLayout rl1;
         LinearLayout ll1;
-
+        CardView cv;
         ViewHolder(View view) {
             super(view);
             task = view.findViewById(R.id.todoCheckBox);
@@ -230,6 +228,8 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
             childList = view.findViewById(R.id.textView);
             nbSub = view.findViewById(R.id.nbSub);
             ll1 = view.findViewById(R.id.ll1);
+            rl1 = view.findViewById(R.id.rl1);
+            cv = view.findViewById(R.id.cv);
         }
     }
 }

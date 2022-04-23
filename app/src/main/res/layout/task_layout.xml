@@ -3,15 +3,15 @@
                                    xmlns:tools="http://schemas.android.com/tools"
                                    android:layout_width="match_parent"
                                    android:layout_height="wrap_content"
-                                   app:cardElevation="2dp"
-                                   app:cardCornerRadius="2dp"
+                                   app:cardElevation="4dp"
+                                   app:cardCornerRadius="8dp"
                                    android:layout_marginHorizontal="16dp"
-                                   android:layout_marginVertical="8dp">
+                                   android:layout_marginVertical="8dp" android:id="@+id/cv">
 
     <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:padding="2dp">
+            android:layout_height="wrap_content"
+            android:padding="8dp" android:id="@+id/rl1">
 
         <LinearLayout
                 android:orientation="vertical"
@@ -29,23 +29,24 @@
                             android:text="project"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" android:id="@+id/textView3" tools:visibility="visible"
-                            android:textSize="20sp" android:textColor="@android:color/black" android:textAlignment="center"/>
+                            android:textSize="20sp" android:textColor="@android:color/black" android:textAlignment="textStart"/>
                     <CheckBox
                             android:id="@+id/todoCheckBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingStart="2dp"
+                            android:paddingStart="8dp"
                             android:buttonTint="@android:color/holo_green_dark"
                             tools:text="Go to the market and bring vegetables immediately today."/>
                 </LinearLayout>
                 <TextView
                         android:text="TextView"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent" android:id="@+id/nbSub" android:layout_weight="1" android:textSize="14sp" android:gravity="right"/>
+                        android:layout_height="match_parent" android:id="@+id/nbSub" android:layout_weight="1" android:textSize="20sp" android:gravity="right"/>
             </LinearLayout>
             <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/textView" android:text="parent-child" tools:visibility="visible"/>
+                    android:layout_height="wrap_content" android:id="@+id/textView" android:text="parent-child" tools:visibility="visible"
+                    android:textSize="14sp"/>
         </LinearLayout>
 
     </RelativeLayout>
