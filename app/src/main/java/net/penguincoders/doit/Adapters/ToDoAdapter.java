@@ -109,10 +109,22 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
                 db.updateStatus(item.getId(), isChecked);
             }
         });
+        holder.task.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return false;
+            }
+        });
         holder.project.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switcheExtendTask(item);
+            }
+        });
+        holder.project.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return false;
             }
         });
         holder.nbSub.setOnClickListener(new View.OnClickListener() {
