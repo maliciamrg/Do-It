@@ -55,13 +55,13 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
                 ItemTouchHelper(new RecyclerItemTouchHelper(tasksAdapter));
         itemTouchHelper.attachToRecyclerView(tasksRecyclerView);
 
-        refreshData();
+        refreshData(true);
 
         swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshData();
+                refreshData(true);
                 //setting Refreshing to false
                 swipeRefreshLayout.setRefreshing(false);
 
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
                     fabUp1.setImageResource(android.R.drawable.arrow_up_float);
                 }
 
-                refreshData();
+                refreshData(false);
             }
         });
 
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
                 } else {
                     fabUp2.setImageResource(android.R.drawable.ic_menu_sort_alphabetically);
                 }
-                refreshData();
+                refreshData(false);
             }
         });
 
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
                 } else {
                     fabUp3.setImageResource(android.R.drawable.ic_media_ff);
                 }
-                refreshData();
+                refreshData(false);
             }
         });
     }
@@ -139,8 +139,10 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         dialog.show();
     }
 
-    public void refreshData() {
-        taskList = db.getAllTasks();
+    public void refreshData(Boolean refreskTaskList) {
+        if (refreskTaskList) {
+            taskList = db.getAllTasks();
+        }
 
         Map<Integer, ToDoModel> orderedTaskList = new LinkedHashMap<>();
         if (tasksAdapter.isHierarchicalView()) {
@@ -186,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
 
     @Override
     public void handleDialogClose(DialogInterface dialog) {
-        refreshData();
+        refreshData(true);
         tasksAdapter.notifyDataSetChanged();
     }
 }

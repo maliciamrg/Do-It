@@ -196,7 +196,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         } else {
             expandInOnlyRootView = 0;
         }
-        activity.refreshData();
+        activity.refreshData(false);
     }
 
     @Override
