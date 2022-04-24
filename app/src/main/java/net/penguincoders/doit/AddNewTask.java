@@ -80,6 +80,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
         mColorPreview = getView().findViewById(R.id.preview_selected_color);
 
         boolean isUpdate = false;
+        listParent = new ArrayList<ToDoModel>();
 
         final Bundle bundle = getArguments();
         if (bundle != null) {
