@@ -24,6 +24,7 @@ import net.penguincoders.doit.Utils.DatabaseHandler;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,6 +42,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
 
     private DatabaseHandler db;
     private ToDoModel item;
+    private ToDoModel itemParent;
     private List<ToDoModel> listParent;
 
 
@@ -82,18 +84,21 @@ public class AddNewTask extends BottomSheetDialogFragment {
         final Bundle bundle = getArguments();
         if (bundle != null) {
 
-            //todo
-            listParent = new ArrayList<ToDoModel>();
+            itemParent = (ToDoModel) bundle.getSerializable("parentClass");
+            if (itemParent == null) {
+                listParent = new ArrayList<ToDoModel>();
+                isUpdate = true;
+                item = (ToDoModel) bundle.getSerializable("taskClass");
 
-            isUpdate = true;
-            item = (ToDoModel) bundle.getSerializable("taskClass");
-
-            String task = item.getTask();
-            newTaskText.setText(task);
-            assert task != null;
-            if (task.length() > 0)
-                newTaskSaveButton.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()),
-                        R.color.colorPrimaryDark));
+                String task = item.getTask();
+                newTaskText.setText(task);
+                assert task != null;
+                if (task.length() > 0)
+                    newTaskSaveButton.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()),
+                            R.color.colorPrimaryDark));
+            }else {
+                listParent = new ArrayList<ToDoModel>(Arrays.asList(itemParent));
+            }
         }
 
         db = new DatabaseHandler(getActivity());
@@ -158,7 +163,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
             }
         });
 
-        listParent = isUpdate ? item.getParentList() : new ArrayList<ToDoModel>();
+//        listParent = isUpdate ? item.getParentList() : new ArrayList<ToDoModel>();
         textViewParent.setText(ToDoModel.parentListToString(listParent));
         textViewParent.setOnClickListener(new View.OnClickListener() {
             @Override
