@@ -120,25 +120,6 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         });
     }
 
-    private void displayHierarchy(View v, String textout) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-        builder.setTitle("printHierarchyTree");
-        builder.setMessage(textout);
-        builder.setPositiveButton("Confirm",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
     public void refreshData(Boolean refreskTaskList) {
         if (refreskTaskList) {
             taskList = db.getAllTasks();
