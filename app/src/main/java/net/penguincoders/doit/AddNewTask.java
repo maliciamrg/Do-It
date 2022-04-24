@@ -81,6 +81,10 @@ public class AddNewTask extends BottomSheetDialogFragment {
 
         final Bundle bundle = getArguments();
         if (bundle != null) {
+
+            //todo
+            listParent = new ArrayList<ToDoModel>();
+
             isUpdate = true;
             item = (ToDoModel) bundle.getSerializable("taskClass");
 

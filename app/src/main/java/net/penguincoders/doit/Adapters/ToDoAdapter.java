@@ -87,16 +87,19 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
             holder.nbSub.setText("");
         }
 
+
         holder.task.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 db.updateStatus(item.getId(), isChecked);
             }
         });
-        holder.task.setOnLongClickListener(new View.OnLongClickListener() {
+
+
+        holder.task.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                return false;
+            public void onClick(View v) {
+                switcheExtendTask(item);
             }
         });
         holder.project.setOnClickListener(new View.OnClickListener() {
@@ -105,16 +108,53 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
                 switcheExtendTask(item);
             }
         });
-        holder.project.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                return false;
-            }
-        });
         holder.nbSub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switcheExtendTask(item);
+            }
+        });
+        holder.childList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switcheExtendTask(item);
+            }
+        });
+
+
+        holder.task.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                ToDoModel item = (ToDoModel) todoList.values().toArray()[position];
+                Bundle bundle = new Bundle();
+                bundle.putInt("id", item.getId());
+                bundle.putString("task", item.getTask());
+                bundle.putSerializable("taskClass", item);
+                AddNewTask fragment = new AddNewTask();
+                fragment.setArguments(bundle);
+                fragment.show(activity.getSupportFragmentManager(), AddNewTask.TAG);
+                return true;
+            }
+        });
+        holder.project.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AddNewTask.newInstance().show(activity.getSupportFragmentManager(), AddNewTask.TAG);
+                return true;
+            }
+        });
+        holder.nbSub.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AddNewTask.newInstance().show(activity.getSupportFragmentManager(), AddNewTask.TAG);
+                return true;
+            }
+        });
+        holder.childList.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AddNewTask.newInstance().show(activity.getSupportFragmentManager(), AddNewTask.TAG);
+                return true;
             }
         });
 
