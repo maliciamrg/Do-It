@@ -60,23 +60,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
         final ToDoModel item = (ToDoModel) todoList.values().toArray()[position];
 
-//        StringBuilder str = new StringBuilder();
-//        str.append("\n" );
-//        for (ToDoModel element : todoList) {
-//            str.append(element.toString());
-//            str.append("\n" );
-//        }
-//        System.out.println(str.toString());
-
-        int backgroundColor=0;
-        if (item.getHierarchicalRoot() == item.getId()) {
-            Random rnd = new Random();
-            backgroundColor = Color.argb(40, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-            item.setBackgroundColor(backgroundColor);
-        } else {
-            backgroundColor = todoList.get(item.getHierarchicalRoot()).getBackgroundColor();
-        }
-        holder.rl1.setBackgroundColor(backgroundColor);
+        holder.rl1.setBackgroundColor(todoList.get(item.getHierarchicalRoot()).getBackgroundColor());
 
         String task = item.getTask();
         holder.project.setText(task);

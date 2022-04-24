@@ -26,8 +26,9 @@
                     android:id="@+id/preview_selected_color"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:background="@android:color/darker_gray"
-                    android:layout_gravity="right"/>
+                    android:background="@color/colorAccent"
+                    android:layout_gravity="right" android:foreground="@drawable/logo"
+                    android:foregroundTint="#000000"/>
             <!--sample view to preview selected color by user-->
             <!--by default this has been set to darker gery-->
             <!--this can be overridden after user chose the

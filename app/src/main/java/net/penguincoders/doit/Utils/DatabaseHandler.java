@@ -15,7 +15,7 @@ import java.util.*;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
-    private static final int VERSION = 3;
+    private static final int VERSION = 4;
     private static final String NAME = "toDoListDatabase";
     private static final String TODO_TABLE = "todo";
     private static final String LINK_TABLE = "link";
@@ -25,6 +25,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String ISPROJECT = "isproject";
     private static final String IDPARENT = "idparent";
     private static final String IDCHILD = "idchild";
+    private static final String NUMCOLOR = "numcolor";
 
     private static final String CREATE_LINK_TABLE =
             "CREATE TABLE " + LINK_TABLE + " " +
@@ -37,11 +38,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     "(" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + TASK + " TEXT, "
                     + ISPROJECT + " BOOLEAN, "
-                    + STATUS + " INTEGER)";
+                    + STATUS + " INTEGER, "
+                    + NUMCOLOR + " INTEGER)";
 
-    private static final String ALTER_TODO_TABLE =
+    private static final String ALTER_TODO_TABLE_V2 =
             "ALTER TABLE " + TODO_TABLE + " " +
                     "ADD COLUMN " + ISPROJECT + " BOOLEAN ";
+
+    private static final String ALTER_TODO_TABLE_V3 =
+            "ALTER TABLE " + TODO_TABLE + " " +
+                    "ADD COLUMN " + NUMCOLOR + " INTEGER ";
 
     private final String SELECT_CHILD_TODO =
             "SELECT t.* FROM " + TODO_TABLE + " t " +
@@ -99,7 +105,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         if (upgradeVersion == 2) {
             Log.i(MainActivity.LOG_TAG, "Upgrade database version " + upgradeVersion + " to +1");
-            db.execSQL(ALTER_TODO_TABLE);
+            db.execSQL(ALTER_TODO_TABLE_V2);
+            upgradeVersion++;
+        }
+        if (upgradeVersion == 3) {
+            Log.i(MainActivity.LOG_TAG, "Upgrade database version " + upgradeVersion + " to +1");
+            db.execSQL(ALTER_TODO_TABLE_V3);
             upgradeVersion++;
         }
 
@@ -118,11 +129,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db = this.getWritableDatabase();
     }
 
-    public void insertTask(String task, Integer[] parent, Boolean isProject) {
+    public void insertTask(String task, Integer[] parent, Boolean isProject, int mDefaultColor) {
         ContentValues cv = new ContentValues();
         cv.put(TASK, task);
         cv.put(STATUS, false);
         cv.put(ISPROJECT, isProject);
+        cv.put(NUMCOLOR, mDefaultColor);
         long id = db.insert(TODO_TABLE, null, cv);
         if (id > -1) {
             deleteLink((int) id);
@@ -144,6 +156,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                                 cur.getString(cur.getColumnIndex(TASK)),
                                 cur.getInt(cur.getColumnIndex(ISPROJECT)) > 0,
                                 cur.getInt(cur.getColumnIndex(STATUS)) > 0,
+                                cur.getInt(cur.getColumnIndex(NUMCOLOR)) ,
                                 new ArrayList<ToDoModel>(),
                                 new ArrayList<ToDoModel>());
                         taskList.put(task.getId(),task);
@@ -206,6 +219,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                                 cur.getString(cur.getColumnIndex(TASK)),
                                 cur.getInt(cur.getColumnIndex(ISPROJECT)) > 0,
                                 cur.getInt(cur.getColumnIndex(STATUS)) > 0,
+                                cur.getInt(cur.getColumnIndex(NUMCOLOR)) ,
                                 new ArrayList<ToDoModel>(),
                                 new ArrayList<ToDoModel>());
                         parentList.add(task);
@@ -234,6 +248,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                                 cur.getString(cur.getColumnIndex(TASK)),
                                 cur.getInt(cur.getColumnIndex(ISPROJECT)) > 0,
                                 cur.getInt(cur.getColumnIndex(STATUS)) > 0,
+                                cur.getInt(cur.getColumnIndex(NUMCOLOR)) ,
                                 new ArrayList<ToDoModel>(),
                                 new ArrayList<ToDoModel>());
                         childList.add(task);
@@ -282,10 +297,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //        addlink(id,parent);
     }
 
-    public void updateTask(int id, String task, Integer[] parent, Boolean isProject) {
+    public void updateTask(int id, String task, Integer[] parent, Boolean isProject, int mDefaultColor) {
         ContentValues cv = new ContentValues();
         cv.put(TASK, task);
         cv.put(ISPROJECT, isProject);
+        cv.put(NUMCOLOR, mDefaultColor);
         db.update(TODO_TABLE, cv, ID + "= ?", new String[]{String.valueOf(id)});
         deleteLinkChild(id);
         addlink(id, parent);

@@ -9,26 +9,69 @@ public class ToDoModel implements Serializable {
     private boolean isProject;
     private boolean status;
     private String task;
+    private int backgroundColor;
     private List<ToDoModel> childList;
     private List<ToDoModel> parentList;
     private int hierarchicalRoot;
     private int hierarchicalRank;
     private int hierarchicalLevel;
     private int hierarchicalRootNbSubtask;
-    private int backgroundColor;
 
     public ToDoModel(int id,
                      String task,
                      boolean isProject,
                      boolean status,
+                     int backgroundColor,
                      List<ToDoModel> childList,
                      List<ToDoModel> parentList) {
         this.id = id;
         this.task = task;
         this.isProject = isProject;
         this.status = status;
+        this.backgroundColor = backgroundColor;
         this.childList = childList;
         this.parentList = parentList;
+    }
+
+    public static String childListToString(List<ToDoModel> childList) {
+        StringBuilder str = new StringBuilder();
+        str.append("Child(s):");
+        for (ToDoModel element : childList) {
+            str.append("\n");
+            str.append(" ");
+            str.append(element.isStatus() ? "☒" : "☐");
+            str.append("-");
+            str.append(stringMax(element.getTask()));
+//            str.append("\n");
+        }
+        return str.toString();
+    }
+
+    public static String parentListToString(List<ToDoModel> parentList) {
+        StringBuilder str = new StringBuilder();
+        str.append("Parent(s):");
+        for (ToDoModel element : parentList) {
+            str.append("\n");
+            str.append(" --> ");
+            str.append(element.isStatus() ? "☒" : "☐");
+            str.append("-");
+            str.append(stringMax(element.getTask()));
+//            str.append("\n");
+        }
+        return str.toString();
+    }
+
+    public static String stringMax(String stringExtra) {
+        int imax = 60;
+        return stringExtra.length() > imax ? stringExtra.substring(0, imax) : stringExtra;
+    }
+
+    public int getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(int backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 
     public boolean isStatus() {
@@ -54,8 +97,13 @@ public class ToDoModel implements Serializable {
                 ", isProject=" + isProject +
                 ", status=" + status +
                 ", task='" + task + '\'' +
+                ", backgroundColor=" + backgroundColor +
                 ", childList=" + childList +
                 ", parentList=" + parentList +
+                ", hierarchicalRoot=" + hierarchicalRoot +
+                ", hierarchicalRank=" + hierarchicalRank +
+                ", hierarchicalLevel=" + hierarchicalLevel +
+                ", hierarchicalRootNbSubtask=" + hierarchicalRootNbSubtask +
                 '}';
     }
 
@@ -85,42 +133,11 @@ public class ToDoModel implements Serializable {
 
     public boolean isParent(int intExtra) {
         for (ToDoModel element : childList) {
-            if(element.getId()==intExtra){return true;}
+            if (element.getId() == intExtra) {
+                return true;
+            }
         }
         return false;
-    }
-
-
-    public static String childListToString(List<ToDoModel> childList) {
-        StringBuilder str = new StringBuilder();
-        str.append("Child(s):");
-        for (ToDoModel element : childList) {
-            str.append("\n");
-            str.append(" ");
-            str.append(element.isStatus() ? "☒" : "☐");
-            str.append("-");
-            str.append(stringMax(element.getTask()));
-//            str.append("\n");
-        }
-        return str.toString();
-    }
-
-    public static  String parentListToString(List<ToDoModel> parentList) {
-        StringBuilder str = new StringBuilder();
-        str.append("Parent(s):");
-        for (ToDoModel element : parentList) {
-            str.append("\n");
-            str.append(" --> ");
-            str.append(element.isStatus() ? "☒" : "☐");
-            str.append("-");
-            str.append(stringMax(element.getTask()));
-//            str.append("\n");
-        }
-        return str.toString();
-    }
-    public static  String stringMax(String stringExtra) {
-        int imax = 60;
-        return stringExtra.length() > imax ? stringExtra.substring(0, imax) : stringExtra;
     }
 
     public boolean isProject() {
@@ -131,43 +148,35 @@ public class ToDoModel implements Serializable {
         isProject = project;
     }
 
-    public void setHierarchicalRoot(int hierarchicalRoot) {
-        this.hierarchicalRoot = hierarchicalRoot;
-    }
-
     public int getHierarchicalRoot() {
         return hierarchicalRoot;
     }
 
-    public void setHierarchicalRank(int hierarchicalRank) {
-        this.hierarchicalRank = hierarchicalRank;
+    public void setHierarchicalRoot(int hierarchicalRoot) {
+        this.hierarchicalRoot = hierarchicalRoot;
     }
 
     public int getHierarchicalRank() {
         return hierarchicalRank;
     }
 
-    public void setHierarchicalLevel(int hierarchicalLevel) {
-        this.hierarchicalLevel = hierarchicalLevel;
+    public void setHierarchicalRank(int hierarchicalRank) {
+        this.hierarchicalRank = hierarchicalRank;
     }
 
     public int getHierarchicalLevel() {
         return hierarchicalLevel;
     }
 
-    public void setHierarchicalRootNbSubtask(int hierarchicalRootNbSubtask) {
-        this.hierarchicalRootNbSubtask = hierarchicalRootNbSubtask;
+    public void setHierarchicalLevel(int hierarchicalLevel) {
+        this.hierarchicalLevel = hierarchicalLevel;
     }
 
     public int getHierarchicalRootNbSubtask() {
         return hierarchicalRootNbSubtask;
     }
 
-    public void setBackgroundColor(int backgroundColor) {
-        this.backgroundColor = backgroundColor;
-    }
-
-    public int getBackgroundColor() {
-        return backgroundColor;
+    public void setHierarchicalRootNbSubtask(int hierarchicalRootNbSubtask) {
+        this.hierarchicalRootNbSubtask = hierarchicalRootNbSubtask;
     }
 }

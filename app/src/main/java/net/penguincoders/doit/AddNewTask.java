@@ -139,9 +139,16 @@ public class AddNewTask extends BottomSheetDialogFragment {
                 }
                 Integer[] parentArray = parent.toArray(new Integer[0]);
                 if (finalIsUpdate) {
-                    db.updateTask(item.getId(), text, parentArray,checkBox.isChecked());
+                    db.updateTask(item.getId(),
+                            text,
+                            parentArray,
+                            checkBox.isChecked(),
+                            mDefaultColor);
                 } else {
-                    db.insertTask(text, parentArray,checkBox.isChecked());
+                    db.insertTask(text,
+                            parentArray,
+                            checkBox.isChecked(),
+                            mDefaultColor);
                 }
                 dismiss();
             }
@@ -162,8 +169,8 @@ public class AddNewTask extends BottomSheetDialogFragment {
         });
 
         // set the default color to 0 as it is black
-        mDefaultColor = 0;
-
+        mDefaultColor = isUpdate ? item.getBackgroundColor() : 0;
+        mColorPreview.setBackgroundColor(mDefaultColor);
         // button open the AmbilWanra color picker dialog.
         mColorPreview.setOnClickListener(
                 new View.OnClickListener() {
