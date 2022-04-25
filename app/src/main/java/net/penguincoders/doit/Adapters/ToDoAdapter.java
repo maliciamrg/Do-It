@@ -55,10 +55,10 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder,int position) {
         db.openDatabase();
-
-        final ToDoModel item = (ToDoModel) todoList.values().toArray()[position];
+        int holderPosition = holder.getAdapterPosition();
+        final ToDoModel item = (ToDoModel) todoList.values().toArray()[holderPosition];
 
         holder.rl1.setBackgroundColor(todoList.get(item.getHierarchicalRoot()).getBackgroundColor());
 
@@ -92,6 +92,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 db.updateStatus(item.getId(), isChecked);
+                activity.refreshData(true);
             }
         });
 
@@ -125,7 +126,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         holder.task.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                ToDoModel item = (ToDoModel) todoList.values().toArray()[position];
+                ToDoModel item = (ToDoModel) todoList.values().toArray()[holderPosition];
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("parentClass", item);
                 AddNewTask fragment = new AddNewTask();
@@ -137,7 +138,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         holder.project.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                ToDoModel item = (ToDoModel) todoList.values().toArray()[position];
+                ToDoModel item = (ToDoModel) todoList.values().toArray()[holderPosition];
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("parentClass", item);
                 AddNewTask fragment = new AddNewTask();
@@ -149,7 +150,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         holder.nbSub.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                ToDoModel item = (ToDoModel) todoList.values().toArray()[position];
+                ToDoModel item = (ToDoModel) todoList.values().toArray()[holderPosition];
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("parentClass", item);
                 AddNewTask fragment = new AddNewTask();
@@ -161,7 +162,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         holder.childList.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                ToDoModel item = (ToDoModel) todoList.values().toArray()[position];
+                ToDoModel item = (ToDoModel) todoList.values().toArray()[holderPosition];
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("parentClass", item);
                 AddNewTask fragment = new AddNewTask();
