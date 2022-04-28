@@ -4,24 +4,24 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.malicia.mrg.activity.RootActivity;
+import com.malicia.mrg.adapters.TaskAdapter;
 import net.penguincoders.doit.Adapters.ParentAdapter;
 import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.Utils.DatabaseHandler;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class ParentTask extends AppCompatActivity implements DialogCloseListener {
+public class ParentActivity extends RootActivity {
 
     public static final String EXTRA_ID = "EXTRA_ID";
     public static final String DATA_SERIALIZABLE_EXTRA = "RETURN_MESSAGE";
@@ -155,6 +155,21 @@ public class ParentTask extends AppCompatActivity implements DialogCloseListener
         });*/
     }
 
+    @Override
+    protected void fabOnClick() {
+
+    }
+
+    @Override
+    protected TaskAdapter getTasksAdapter(DatabaseHandler db) {
+        return null;
+    }
+
+    @Override
+    protected Map<Integer, ToDoModel> getTaskList(DatabaseHandler db) {
+        return null;
+    }
+
     private void refreshData(Intent intent) {
         int intExtra = intent.getIntExtra(EXTRA_ID, 0);
         taskList = db.getAllTasks();
@@ -162,8 +177,5 @@ public class ParentTask extends AppCompatActivity implements DialogCloseListener
         tasksAdapter.setTasks(taskList, intExtra);
     }
 
-    @Override
-    public void handleDialogClose(DialogInterface dialog) {
 
-    }
 }

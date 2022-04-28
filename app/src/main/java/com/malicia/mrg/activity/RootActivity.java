@@ -10,9 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.malicia.mrg.adapters.TaskAdapter;
-import com.malicia.mrg.utils.BuildHierarchyTree;
-import net.penguincoders.doit.Adapters.ToDoAdapter;
-import net.penguincoders.doit.AddNewTask;
 import net.penguincoders.doit.DialogCloseListener;
 import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.R;
@@ -24,7 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class RootActivity extends AppCompatActivity implements DialogCloseListener {
+public abstract class RootActivity extends AppCompatActivity implements DialogCloseListener {
 
     private DatabaseHandler db;
     private RecyclerView tasksRecyclerView;
@@ -50,7 +47,7 @@ public class RootActivity extends AppCompatActivity implements DialogCloseListen
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        tasksAdapter = new TaskAdapter(db, RootActivity.this);
+        tasksAdapter = getTasksAdapter(db);
 
         tasksRecyclerView.setAdapter(tasksAdapter);
 
@@ -75,7 +72,7 @@ public class RootActivity extends AppCompatActivity implements DialogCloseListen
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
+                fabOnClick();
             }
         });
 
@@ -123,9 +120,15 @@ public class RootActivity extends AppCompatActivity implements DialogCloseListen
         });
     }
 
+    protected abstract void fabOnClick();
+
+
+    protected abstract TaskAdapter getTasksAdapter(DatabaseHandler db);
+
+
     public void refreshData(Boolean refreskTaskList) {
         if (refreskTaskList) {
-            taskList = db.getAllTasks();
+            taskList = getTaskList(db);
         }
 
         Map<Integer, ToDoModel> orderedTaskList = new LinkedHashMap<>();
@@ -169,6 +172,8 @@ public class RootActivity extends AppCompatActivity implements DialogCloseListen
 
         tasksAdapter.setTasks(orderedAndFilteredTaskList);
     }
+
+    protected abstract Map<Integer, ToDoModel> getTaskList(DatabaseHandler db);
 
     @Override
     public void handleDialogClose(DialogInterface dialog) {

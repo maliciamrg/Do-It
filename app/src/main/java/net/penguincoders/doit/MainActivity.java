@@ -1,22 +1,14 @@
 package net.penguincoders.doit;
 
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.View;
-
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.malicia.mrg.activity.RootActivity;
+import com.malicia.mrg.adapters.TaskAdapter;
 import net.penguincoders.doit.Adapters.ToDoAdapter;
 import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.Utils.DatabaseHandler;
 
-import java.util.*;
+import java.util.Map;
 
 public class MainActivity extends RootActivity {
 
@@ -25,6 +17,21 @@ public class MainActivity extends RootActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void fabOnClick() {
+        AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
+    }
+
+    @Override
+    protected TaskAdapter getTasksAdapter(DatabaseHandler db) {
+        return new ToDoAdapter(db, MainActivity.this);
+    }
+
+    @Override
+    protected Map<Integer, ToDoModel> getTaskList(DatabaseHandler db) {
+        return db.getAllTasks();
     }
 
 }
