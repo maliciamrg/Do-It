@@ -13,13 +13,14 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.malicia.mrg.adapters.TaskAdapter;
 import net.penguincoders.doit.Adapters.ToDoAdapter;
 
 public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 
-    private ToDoAdapter adapter;
+    private TaskAdapter adapter;
 
-    public RecyclerItemTouchHelper(ToDoAdapter adapter) {
+    public RecyclerItemTouchHelper(TaskAdapter adapter) {
         super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         this.adapter = adapter;
     }

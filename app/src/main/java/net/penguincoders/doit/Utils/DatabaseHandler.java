@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import com.malicia.mrg.BuildHierarchyTree;
+import com.malicia.mrg.utils.BuildHierarchyTree;
 import net.penguincoders.doit.MainActivity;
 import net.penguincoders.doit.Model.ToDoLinkModel;
 import net.penguincoders.doit.Model.ToDoModel;

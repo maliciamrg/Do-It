@@ -1,4 +1,4 @@
-package com.malicia.mrg;
+package com.malicia.mrg.utils;
 
 import net.penguincoders.doit.Model.ToDoLinkModel;
 
