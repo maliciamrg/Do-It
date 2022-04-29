@@ -23,7 +23,8 @@ import java.util.Objects;
 
 public abstract class RootActivity extends AppCompatActivity implements DialogCloseListener {
 
-    private DatabaseHandler db;
+    protected DatabaseHandler db;
+    protected Map<Integer, ToDoModel> taskList;
     private RecyclerView tasksRecyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private TaskAdapter tasksAdapter;
@@ -32,7 +33,6 @@ public abstract class RootActivity extends AppCompatActivity implements DialogCl
     private FloatingActionButton fabUp2;
     private FloatingActionButton fabUp3;
 
-    private Map<Integer, ToDoModel> taskList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public abstract class RootActivity extends AppCompatActivity implements DialogCl
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        tasksAdapter = getTasksAdapter(db);
+        tasksAdapter = getTasksAdapter();
 
         tasksRecyclerView.setAdapter(tasksAdapter);
 
@@ -123,12 +123,12 @@ public abstract class RootActivity extends AppCompatActivity implements DialogCl
     protected abstract void fabOnClick();
 
 
-    protected abstract TaskAdapter getTasksAdapter(DatabaseHandler db);
+    protected abstract TaskAdapter getTasksAdapter();
 
 
     public void refreshData(Boolean refreskTaskList) {
         if (refreskTaskList) {
-            taskList = getTaskList(db);
+            taskList = db.getAllTasks();
         }
 
         Map<Integer, ToDoModel> orderedTaskList = new LinkedHashMap<>();
@@ -172,8 +172,6 @@ public abstract class RootActivity extends AppCompatActivity implements DialogCl
 
         tasksAdapter.setTasks(orderedAndFilteredTaskList);
     }
-
-    protected abstract Map<Integer, ToDoModel> getTaskList(DatabaseHandler db);
 
     @Override
     public void handleDialogClose(DialogInterface dialog) {

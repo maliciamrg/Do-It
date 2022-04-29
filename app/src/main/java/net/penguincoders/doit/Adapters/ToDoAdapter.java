@@ -7,13 +7,19 @@ import net.penguincoders.doit.Utils.DatabaseHandler;
 
 public class ToDoAdapter extends TaskAdapter {
 
-    private DatabaseHandler db;
-    private MainActivity activity;
 
     public ToDoAdapter(DatabaseHandler db, MainActivity activity) {
         super(db,activity);
-        this.db = db;
-        this.activity = activity;
+    }
+
+    @Override
+    protected void afterOnBindViewHolder(ViewHolder holder, ToDoModel item) {
+
+    }
+
+    @Override
+    protected boolean isChecked(ToDoModel item) {
+        return item.isStatus() && !item.isProject();
     }
 
     @Override

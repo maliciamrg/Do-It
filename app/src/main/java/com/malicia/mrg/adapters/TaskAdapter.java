@@ -23,7 +23,7 @@ import java.util.Map;
 public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     public static final int MARGINGLEVEL = 50;
-    private final DatabaseHandler db;
+    protected final DatabaseHandler db;
     private final RootActivity activity;
     private Integer detailVisibility = View.VISIBLE;
     private boolean hierarchicalView = true;
@@ -69,7 +69,8 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
         holder.task.setVisibility(item.isProject() ? View.GONE : View.VISIBLE);
 
         holder.task.setOnCheckedChangeListener(null);//evite le pb de refresh quand on ajoute une ligne
-        holder.task.setChecked(item.isStatus() && !item.isProject());
+        boolean checked = isChecked(item);
+        holder.task.setChecked(checked);
 
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.task.getLayoutParams();
         int levelHierarchical = 0;
@@ -164,7 +165,13 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
             text = text + sepa + ToDoModel.childListToString(childList);
         }
         holder.childList.setText(text);
+
+        afterOnBindViewHolder(holder,item);
     }
+
+    protected abstract void afterOnBindViewHolder(ViewHolder holder, ToDoModel item);
+
+    protected abstract boolean isChecked(ToDoModel item);
 
     private boolean createNewWithParent(int holderPosition) {
         ToDoModel item = (ToDoModel) todoList.values().toArray()[holderPosition];
@@ -252,9 +259,9 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
     protected abstract void checkedChanged(boolean isChecked, ToDoModel item);
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        CheckBox task;
+        public CheckBox task;
         TextView childList;
-        TextView project;
+        public TextView project;
         TextView nbSub;
         RelativeLayout rl1;
         LinearLayout ll1;

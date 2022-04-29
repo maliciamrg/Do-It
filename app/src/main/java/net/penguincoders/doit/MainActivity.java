@@ -13,11 +13,8 @@ import java.util.Map;
 public class MainActivity extends RootActivity {
 
     public static final String LOG_TAG = "DoIt_App";
+    private ToDoAdapter toDoAdapter;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     protected void fabOnClick() {
@@ -25,13 +22,9 @@ public class MainActivity extends RootActivity {
     }
 
     @Override
-    protected TaskAdapter getTasksAdapter(DatabaseHandler db) {
-        return new ToDoAdapter(db, MainActivity.this);
-    }
-
-    @Override
-    protected Map<Integer, ToDoModel> getTaskList(DatabaseHandler db) {
-        return db.getAllTasks();
+    protected TaskAdapter getTasksAdapter() {
+        toDoAdapter = new ToDoAdapter(db, MainActivity.this);
+        return toDoAdapter;
     }
 
 }

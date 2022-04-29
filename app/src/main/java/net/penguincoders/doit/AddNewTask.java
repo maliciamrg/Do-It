@@ -23,6 +23,7 @@ import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.Utils.DatabaseHandler;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -170,7 +171,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
             public void onClick(View v) {
                 if (newTaskText.getText().toString().compareTo("")!=0) {
                     Intent messageIntent = new Intent(v.getContext(), ParentActivity.class);
-                    messageIntent.putExtra(ParentActivity.EXTRA_ID, finalIsUpdate ? bundle.getInt("id") : 0);
+                    messageIntent.putExtra(ParentActivity.EXTRA_LIST_PARENT,(Serializable) (finalIsUpdate ? listParent : new ArrayList<ToDoModel>()));
                     messageIntent.putExtra(ParentActivity.EXTRA_TEXT, newTaskText.getText());
                     startActivityForResult(messageIntent, ParentActivity.TEXT_REQUEST);
                 }
