@@ -16,6 +16,7 @@ public class ToDoModel implements Serializable {
     private int hierarchicalRank;
     private int hierarchicalLevel;
     private int hierarchicalRootNbSubtask;
+    private boolean checkable;
 
     public ToDoModel(int id,
                      String task,
@@ -90,6 +91,13 @@ public class ToDoModel implements Serializable {
         this.parentList = parentList;
     }
 
+    private void setCheckable() {
+        checkable = true;
+        for (ToDoModel element : childList) {
+            checkable = checkable && element.isStatus();
+        }
+    }
+
     @Override
     public String toString() {
         return "ToDoModel{" +
@@ -113,6 +121,7 @@ public class ToDoModel implements Serializable {
 
     public void setChildList(List<ToDoModel> childList) {
         this.childList = childList;
+        setCheckable();
     }
 
     public int getId() {
@@ -178,5 +187,9 @@ public class ToDoModel implements Serializable {
 
     public void setHierarchicalRootNbSubtask(int hierarchicalRootNbSubtask) {
         this.hierarchicalRootNbSubtask = hierarchicalRootNbSubtask;
+    }
+
+    public boolean isCheckable() {
+        return checkable;
     }
 }

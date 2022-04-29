@@ -64,7 +64,8 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tasksText"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    android:nestedScrollingEnabled="true">
+                    android:nestedScrollingEnabled="true"
+            >
             </androidx.recyclerview.widget.RecyclerView>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

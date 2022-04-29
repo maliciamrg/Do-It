@@ -19,11 +19,16 @@ public class ToDoAdapter extends TaskAdapter {
 
     @Override
     protected boolean isChecked(ToDoModel item) {
-        return item.isStatus() && !item.isProject();
+        if(!item.isCheckable()) {
+            db.updateStatus(item.getId(), false);
+        }
+        return item.isStatus() && !item.isProject() && item.isCheckable();
     }
 
     @Override
     protected void checkedChanged(boolean isChecked, ToDoModel item) {
-            db.updateStatus(item.getId(), isChecked);
+            if(item.isCheckable()) {
+                db.updateStatus(item.getId(), isChecked);
+            }
     }
 }
