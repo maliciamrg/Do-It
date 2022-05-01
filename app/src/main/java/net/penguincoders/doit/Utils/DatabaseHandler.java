@@ -191,7 +191,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 for (Integer subTaskId : hierarchyTasks.keySet()) {
                     ToDoModel ele = taskList.get(subTaskId);
                     if (rank==0) {
-                        ele.setHierarchicalRootNbSubtask(hierarchyTasks.size());
+                        ele.setHierarchicalRootNbSubtask(hierarchyTasks.size()-1);
                     }
                     ele.setHierarchicalRoot(task.getId());
                     ele.setHierarchicalRank(rank);
