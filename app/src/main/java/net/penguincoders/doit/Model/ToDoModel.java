@@ -32,6 +32,7 @@ public class ToDoModel implements Serializable {
         this.backgroundColor = backgroundColor;
         this.childList = childList;
         this.parentList = parentList;
+        this.hierarchicalRoot = id;
     }
 
     public static String childListToString(List<ToDoModel> childList) {
