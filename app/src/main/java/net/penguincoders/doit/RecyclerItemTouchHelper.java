@@ -38,6 +38,19 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
             AlertDialog.Builder builder = new AlertDialog.Builder(adapter.getContext());
             builder.setTitle("Delete Task");
             builder.setMessage("Are you sure you want to delete this Task?");
+
+
+            if (adapter.getItem(position).isStatus()) {
+                builder.setNeutralButton("all Checked?",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                adapter.deleteAllChecked(position);
+                                adapter.notifyItemChanged(viewHolder.getAdapterPosition());
+                            }
+                        });
+            }
+
             builder.setPositiveButton("Confirm",
                     new DialogInterface.OnClickListener() {
                         @Override

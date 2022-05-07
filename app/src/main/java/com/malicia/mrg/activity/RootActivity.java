@@ -51,8 +51,7 @@ public abstract class RootActivity extends AppCompatActivity implements DialogCl
 
         tasksRecyclerView.setAdapter(tasksAdapter);
 
-        ItemTouchHelper itemTouchHelper = new
-                ItemTouchHelper(new RecyclerItemTouchHelper(tasksAdapter));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new RecyclerItemTouchHelper(tasksAdapter));
         itemTouchHelper.attachToRecyclerView(tasksRecyclerView);
 
         refreshData(true);

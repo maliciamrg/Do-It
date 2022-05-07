@@ -211,7 +211,18 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
         ToDoModel item = (ToDoModel) todoList.values().toArray()[position];
         db.deleteTask(item.getId());
         todoList.remove(item.getId());
-//        notifyItemRemoved(position);
+        notifyItemRemoved(position);
+        notifyDataSetChanged();
+    }
+
+    public void deleteAllChecked(int position) {
+        for (ToDoModel element : todoList.values()) {
+            if (!element.isProject() && element.isStatus()){
+                db.deleteTask(element.getId());
+            }
+        }
+        activity.refreshData(true);
+        notifyItemRemoved(position);
         notifyDataSetChanged();
     }
 
@@ -257,6 +268,10 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
     }
 
     protected abstract void checkedChanged(boolean isChecked, ToDoModel item);
+
+    public ToDoModel getItem(int position) {
+        return (ToDoModel) todoList.values().toArray()[position];
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public CheckBox task;
