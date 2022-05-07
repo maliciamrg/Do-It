@@ -211,6 +211,7 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
         ToDoModel item = (ToDoModel) todoList.values().toArray()[position];
         db.deleteTask(item.getId());
         todoList.remove(item.getId());
+        activity.refreshData(true);
         notifyItemRemoved(position);
         notifyDataSetChanged();
     }
