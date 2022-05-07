@@ -161,7 +161,9 @@ public class ToDoModel implements Serializable {
     public int getHierarchicalRoot() {
         return hierarchicalRoot;
     }
-
+    public boolean isRoot() {
+        return id == hierarchicalRoot;
+    }
     public void setHierarchicalRoot(int hierarchicalRoot) {
         this.hierarchicalRoot = hierarchicalRoot;
     }

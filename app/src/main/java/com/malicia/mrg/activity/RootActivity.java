@@ -177,4 +177,12 @@ public abstract class RootActivity extends AppCompatActivity implements DialogCl
         refreshData(true);
         tasksAdapter.notifyDataSetChanged();
     }
+
+    public void delAllChecked() {
+        for (ToDoModel element : taskList.values()) {
+            if (!element.isProject() && element.isStatus()){
+                db.deleteTask(element.getId());
+            }
+        }
+    }
 }

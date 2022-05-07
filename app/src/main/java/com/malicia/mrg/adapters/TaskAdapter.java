@@ -185,10 +185,12 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
 
 
     private void switcheExtendTask(ToDoModel item) {
-        if (isOnlyRootView() && expandInOnlyRootView != item.getId()) {
-            expandInOnlyRootView = item.getId();
-        } else {
-            expandInOnlyRootView = 0;
+        if (item.isRoot()) {
+            if (isOnlyRootView() && expandInOnlyRootView != item.getId()) {
+                expandInOnlyRootView = item.getId();
+            } else {
+                expandInOnlyRootView = 0;
+            }
         }
         activity.refreshData(false);
     }
@@ -217,11 +219,7 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
     }
 
     public void deleteAllChecked(int position) {
-        for (ToDoModel element : todoList.values()) {
-            if (!element.isProject() && element.isStatus()){
-                db.deleteTask(element.getId());
-            }
-        }
+        activity.delAllChecked();
         activity.refreshData(true);
         notifyItemRemoved(position);
         notifyDataSetChanged();
