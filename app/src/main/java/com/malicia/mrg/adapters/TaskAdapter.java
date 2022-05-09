@@ -28,7 +28,7 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
     private Integer detailVisibility = View.VISIBLE;
     private boolean hierarchicalView = true;
     private boolean onlyRootView = false;
-    private Map<Integer, ToDoModel> todoList;
+    private List<ToDoModel> todoList;
     private View itemView;
     private int expandInOnlyRootView = 0;
 
@@ -57,9 +57,9 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
     public void onBindViewHolder(@NonNull final TaskAdapter.ViewHolder holder,int position) {
         db.openDatabase();
         int holderPosition = holder.getAdapterPosition();
-        final ToDoModel item = (ToDoModel) todoList.values().toArray()[holderPosition];
+        final ToDoModel item = (ToDoModel) todoList.toArray()[holderPosition];
 
-        holder.rl1.setBackgroundColor(todoList.get(item.getHierarchicalRoot()).getBackgroundColor());
+        holder.rl1.setBackgroundColor(todoList.get(position).getBackgroundColor());
 
         String task = item.getTask();
         holder.project.setText(task);
@@ -174,7 +174,7 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
     protected abstract boolean isChecked(ToDoModel item);
 
     private boolean createNewWithParent(int holderPosition) {
-        ToDoModel item = (ToDoModel) todoList.values().toArray()[holderPosition];
+        ToDoModel item = (ToDoModel) todoList.toArray()[holderPosition];
         Bundle bundle = new Bundle();
         bundle.putSerializable("parentClass", item);
         AddNewTask fragment = new AddNewTask();
@@ -204,15 +204,15 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
         return activity;
     }
 
-    public void setTasks(Map<Integer, ToDoModel> todoList) {
+    public void setTasks(List<ToDoModel> todoList) {
         this.todoList = todoList;
         notifyDataSetChanged();
     }
 
     public void deleteItem(int position) {
-        ToDoModel item = (ToDoModel) todoList.values().toArray()[position];
+        ToDoModel item = (ToDoModel) todoList.toArray()[position];
         db.deleteTask(item.getId());
-        todoList.remove(item.getId());
+        todoList.remove(position);
         activity.refreshData(true);
         notifyItemRemoved(position);
         notifyDataSetChanged();
@@ -226,7 +226,7 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
     }
 
     public void editItem(int position) {
-        ToDoModel item = (ToDoModel) todoList.values().toArray()[position];
+        ToDoModel item = (ToDoModel) todoList.toArray()[position];
         Bundle bundle = new Bundle();
         bundle.putInt("id", item.getId());
         bundle.putString("task", item.getTask());
@@ -269,7 +269,7 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
     protected abstract void checkedChanged(boolean isChecked, ToDoModel item);
 
     public ToDoModel getItem(int position) {
-        return (ToDoModel) todoList.values().toArray()[position];
+        return (ToDoModel) todoList.toArray()[position];
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

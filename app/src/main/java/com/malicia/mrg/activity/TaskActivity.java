@@ -10,21 +10,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.malicia.mrg.adapters.TaskAdapter;
+import com.malicia.mrg.utils.BuildHierarchyTree;
 import net.penguincoders.doit.DialogCloseListener;
 import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.R;
 import net.penguincoders.doit.RecyclerItemTouchHelper;
 import net.penguincoders.doit.Utils.DatabaseHandler;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public abstract class TaskActivity extends AppCompatActivity implements DialogCloseListener {
 
     protected DatabaseHandler db;
-    protected Map<Integer, ToDoModel> taskList;
+    protected HashMap<Integer,ToDoModel> taskList;
     private RecyclerView tasksRecyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private TaskAdapter tasksAdapter;
@@ -130,37 +128,69 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
             taskList = db.getAllTasks();
         }
 
-        Map<Integer, ToDoModel> orderedTaskList = new LinkedHashMap<>();
+        List<ToDoModel> orderedTaskList = new ArrayList<>();
         if (tasksAdapter.isHierarchicalView()) {
             //tri hierarchically
-            Map<Integer, Map<Integer, ToDoModel>> hHerar = new LinkedHashMap<>();
-            for (ToDoModel todoEle : taskList.values()) {
-                Map<Integer, ToDoModel> hRank = new HashMap<>();
-                if (hHerar.containsKey(todoEle.getHierarchicalRoot())) {
-                    hRank = hHerar.get(todoEle.getHierarchicalRoot());
-                    hRank.put(todoEle.getHierarchicalRank(), todoEle);
-                    hHerar.put(todoEle.getHierarchicalRoot(), hRank);
-                } else {
-                    hRank.put(todoEle.getHierarchicalRank(), todoEle);
-                    hHerar.put(todoEle.getHierarchicalRoot(), hRank);
+
+
+            BuildHierarchyTree taskTree = new BuildHierarchyTree(db.getAllLinks());
+            for (ToDoModel task : taskList.values()) {
+
+                List<ToDoModel> childList = db.getAllChildTasks(task.getId());
+                task.setChildList(childList);
+
+                List<ToDoModel> parentList = db.getAllParentTasks(task.getId());
+                task.setParentList(parentList);
+
+                //, "HierarchyTree \n empty project:"
+                //, "HierarchyTree \n solo task:"
+                //, "HierarchyTree \n project:"
+                //, "HierarchyTree \n master task:"
+                if (task.getParentList().size() == 0 ) {
+                    taskTree.buildHierarchyTree(task.getId());
+                    Map<Integer, Integer> hierarchyTasks = taskTree.printHierarchyTree(task.getId(), 0);
+                    int rank = 0;
+                    for (Integer subTaskId : hierarchyTasks.keySet()) {
+                        ToDoModel ele = taskList.get(subTaskId);
+                        if (rank==0) {
+                            ele.setHierarchicalRootNbSubtask(hierarchyTasks.size()-1);
+                        }
+                        ele.setHierarchicalRoot(task.getId());
+                        ele.setHierarchicalRank(rank);
+                        ele.setHierarchicalLevel(hierarchyTasks.get(subTaskId));
+                        orderedTaskList.add(ele);
+                        rank++;
+                    }
                 }
             }
-            //mise en forme
-            for (Map<Integer, ToDoModel> hHerarEle : hHerar.values()) {
-                for (int i = 0; i < hHerarEle.size(); i++) {
-                    ToDoModel toDoModel = hHerarEle.get(i);
-                    orderedTaskList.put(toDoModel.getId(), toDoModel);
-                }
-            }
+//            Map<Integer, Map<Integer, ToDoModel>> hHerar = new LinkedHashMap<>();
+//            for (ToDoModel todoEle : taskList) {
+//                Map<Integer, ToDoModel> hRank = new HashMap<>();
+//                if (hHerar.containsKey(todoEle.getHierarchicalRoot())) {
+//                    hRank = hHerar.get(todoEle.getHierarchicalRoot());
+//                    hRank.put(todoEle.getHierarchicalRank(), todoEle);
+//                    hHerar.put(todoEle.getHierarchicalRoot(), hRank);
+//                } else {
+//                    hRank.put(todoEle.getHierarchicalRank(), todoEle);
+//                    hHerar.put(todoEle.getHierarchicalRoot(), hRank);
+//                }
+//            }
+//            //mise en forme
+//            for (Map<Integer, ToDoModel> hHerarEle : hHerar.values()) {
+//                for (int i = 0; i < hHerarEle.size(); i++) {
+//                    ToDoModel toDoModel = hHerarEle.get(i);
+//                    orderedTaskList.add(toDoModel);
+//                }
+//            }
         } else {
-            orderedTaskList = taskList;
+            orderedTaskList = new ArrayList<ToDoModel>(taskList.values());
         }
 
-        Map<Integer, ToDoModel> orderedAndFilteredTaskList = new LinkedHashMap<>();
+        List<ToDoModel> orderedAndFilteredTaskList = new ArrayList<>();
         if (tasksAdapter.isOnlyRootView()) {
-            for (ToDoModel todoEle : orderedTaskList.values()) {
+            for (ToDoModel todoEle : orderedTaskList) {
                 if(todoEle.getParentList().size()==0 || tasksAdapter.getExpandInOnlyRootView()==todoEle.getHierarchicalRoot()){
-                    orderedAndFilteredTaskList.put(todoEle.getId(), todoEle);
+                    orderedAndFilteredTaskList.add(todoEle);
                 }
             }
         } else {
@@ -179,7 +209,7 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
     }
 
     public void delAllChecked() {
-        for (ToDoModel element : taskList.values()) {
+        for (ToDoModel element : new ArrayList<ToDoModel>(taskList.values())) {
             if (!element.isProject() && element.isStatus()){
                 db.deleteTask(element.getId());
             }

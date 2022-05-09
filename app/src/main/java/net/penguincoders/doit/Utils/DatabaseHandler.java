@@ -142,9 +142,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
-    public Map<Integer, ToDoModel> getAllTasks() {
-        Map<Integer,ToDoModel> taskList = new LinkedHashMap<>();
-        Map<Integer,ToDoModel> taskListOut = new LinkedHashMap<>();
+    public HashMap<Integer,ToDoModel> getAllTasks() {
+        HashMap<Integer,ToDoModel> taskList = new LinkedHashMap<>();
+
         Cursor cur = null;
         db.beginTransaction();
         try {
@@ -171,43 +171,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cur.close();
         }
 
-
-        BuildHierarchyTree taskTree = new BuildHierarchyTree(getAllLinks());
-        for (ToDoModel task : taskList.values()) {
-
-            List<ToDoModel> childList = getAllChildTasks(task.getId());
-            task.setChildList(childList);
-
-            List<ToDoModel> parentList = getAllParentTasks(task.getId());
-            task.setParentList(parentList);
-
-            //, "HierarchyTree \n empty project:"
-            //, "HierarchyTree \n solo task:"
-            //, "HierarchyTree \n project:"
-            //, "HierarchyTree \n master task:"
-            if (task.getParentList().size() == 0 ) {
-                taskTree.buildHierarchyTree(task.getId());
-                Map<Integer, Integer> hierarchyTasks = taskTree.printHierarchyTree(task.getId(), 0);
-                int rank = 0;
-                for (Integer subTaskId : hierarchyTasks.keySet()) {
-                    ToDoModel ele = taskList.get(subTaskId);
-                    if (rank==0) {
-                        ele.setHierarchicalRootNbSubtask(hierarchyTasks.size()-1);
-                    }
-                    ele.setHierarchicalRoot(task.getId());
-                    ele.setHierarchicalRank(rank);
-                    ele.setHierarchicalLevel(hierarchyTasks.get(subTaskId));
-                    taskListOut.put(subTaskId,ele);
-                    rank++;
-                }
-            }
-
-        }
-
-        return taskListOut;
+        return taskList;
     }
 
-    private List<ToDoModel> getAllParentTasks(int id) {
+    public List<ToDoModel> getAllParentTasks(int id) {
         List<ToDoModel> parentList = new ArrayList<>();
         Cursor cur = null;
         db.beginTransaction();
@@ -236,7 +203,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return parentList;
     }
 
-    private List<ToDoModel> getAllChildTasks(int id) {
+    public List<ToDoModel> getAllChildTasks(int id) {
         List<ToDoModel> childList = new ArrayList<>();
         Cursor cur = null;
         db.beginTransaction();
