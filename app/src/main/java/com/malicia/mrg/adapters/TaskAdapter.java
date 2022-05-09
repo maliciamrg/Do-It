@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.malicia.mrg.activity.RootActivity;
+import com.malicia.mrg.activity.TaskActivity;
 import net.penguincoders.doit.AddNewTask;
 import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.R;
@@ -24,7 +24,7 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
 
     public static final int MARGINGLEVEL = 50;
     protected final DatabaseHandler db;
-    private final RootActivity activity;
+    private final TaskActivity activity;
     private Integer detailVisibility = View.VISIBLE;
     private boolean hierarchicalView = true;
     private boolean onlyRootView = false;
@@ -32,7 +32,7 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
     private View itemView;
     private int expandInOnlyRootView = 0;
 
-    public TaskAdapter(DatabaseHandler db, RootActivity activity) {
+    public TaskAdapter(DatabaseHandler db, TaskActivity activity) {
         this.db = db;
         this.activity = activity;
     }

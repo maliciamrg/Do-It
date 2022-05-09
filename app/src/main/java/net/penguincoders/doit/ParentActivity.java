@@ -3,7 +3,7 @@ package net.penguincoders.doit;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
-import com.malicia.mrg.activity.RootActivity;
+import com.malicia.mrg.activity.TaskActivity;
 import com.malicia.mrg.adapters.TaskAdapter;
 import net.penguincoders.doit.Adapters.ParentAdapter;
 import net.penguincoders.doit.Model.ToDoModel;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ParentActivity extends RootActivity {
+public class ParentActivity extends TaskActivity {
 
     public static final String EXTRA_LIST_PARENT = "EXTRA_LIST_PARENT";
     public static final String DATA_SERIALIZABLE_EXTRA = "RETURN_MESSAGE";

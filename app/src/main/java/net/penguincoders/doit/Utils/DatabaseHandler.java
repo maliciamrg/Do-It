@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import com.malicia.mrg.utils.BuildHierarchyTree;
 import net.penguincoders.doit.MainActivity;
-import net.penguincoders.doit.Model.ToDoLinkModel;
+import net.penguincoders.doit.Model.ParentModel;
 import net.penguincoders.doit.Model.ToDoModel;
 
 import java.util.*;
@@ -144,6 +144,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public Map<Integer, ToDoModel> getAllTasks() {
         Map<Integer,ToDoModel> taskList = new LinkedHashMap<>();
+        Map<Integer,ToDoModel> taskListOut = new LinkedHashMap<>();
         Cursor cur = null;
         db.beginTransaction();
         try {
@@ -196,14 +197,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     ele.setHierarchicalRoot(task.getId());
                     ele.setHierarchicalRank(rank);
                     ele.setHierarchicalLevel(hierarchyTasks.get(subTaskId));
-                    taskList.put(subTaskId,ele);
+                    taskListOut.put(subTaskId,ele);
                     rank++;
                 }
             }
 
         }
 
-        return taskList;
+        return taskListOut;
     }
 
     private List<ToDoModel> getAllParentTasks(int id) {
@@ -336,8 +337,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
-    public List<ToDoLinkModel> getAllLinks() {
-        List<ToDoLinkModel> linkList = new ArrayList<>();
+    public List<ParentModel> getAllLinks() {
+        List<ParentModel> linkList = new ArrayList<>();
 
         Cursor cur = null;
         db.beginTransaction();
@@ -346,7 +347,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             if (cur != null) {
                 if (cur.moveToFirst()) {
                     do {
-                        ToDoLinkModel linkModel = new ToDoLinkModel(
+                        ParentModel linkModel = new ParentModel(
                                 cur.getInt(cur.getColumnIndex(ID)),
                                 cur.getInt(cur.getColumnIndex(IDCHILD)),
                                 cur.getString(cur.getColumnIndex(TASK)),

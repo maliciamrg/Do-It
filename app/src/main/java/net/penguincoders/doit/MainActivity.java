@@ -1,16 +1,10 @@
 package net.penguincoders.doit;
 
-import android.os.Bundle;
-
-import com.malicia.mrg.activity.RootActivity;
+import com.malicia.mrg.activity.TaskActivity;
 import com.malicia.mrg.adapters.TaskAdapter;
 import net.penguincoders.doit.Adapters.ToDoAdapter;
-import net.penguincoders.doit.Model.ToDoModel;
-import net.penguincoders.doit.Utils.DatabaseHandler;
 
-import java.util.Map;
-
-public class MainActivity extends RootActivity {
+public class MainActivity extends TaskActivity {
 
     public static final String LOG_TAG = "DoIt_App";
     private ToDoAdapter toDoAdapter;

@@ -21,7 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public abstract class RootActivity extends AppCompatActivity implements DialogCloseListener {
+public abstract class TaskActivity extends AppCompatActivity implements DialogCloseListener {
 
     protected DatabaseHandler db;
     protected Map<Integer, ToDoModel> taskList;
