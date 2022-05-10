@@ -189,7 +189,7 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
         List<ToDoModel> orderedAndFilteredTaskList = new ArrayList<>();
         if (tasksAdapter.isOnlyRootView()) {
             for (ToDoModel todoEle : orderedTaskList) {
-                if(todoEle.getParentList().size()==0 || tasksAdapter.getExpandInOnlyRootView()==todoEle.getHierarchicalRoot()){
+                if(todoEle.getParentList().size()==0 || todoEle.isHierarchicalRoot(tasksAdapter.getExpandInOnlyRootView())){
                     orderedAndFilteredTaskList.add(todoEle);
                 }
             }
