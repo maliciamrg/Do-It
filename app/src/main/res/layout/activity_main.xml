@@ -14,7 +14,7 @@
                 android:layout_height="wrap_content" android:gravity="left">
             <TextView
                     android:id="@+id/tasksText"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
                     android:textColor="@android:color/black"
@@ -22,10 +22,10 @@
                     android:layout_marginBottom="16dp"
                     android:layout_marginTop="16dp"
                     android:textSize="32sp"
-                    android:text="@string/tasks"/>
+                    android:text="@string/tasks" android:layout_weight=".7"/>
             <LinearLayout
                     android:orientation="horizontal"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content" android:gravity="right">
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                         android:id="@+id/fabUp1"
@@ -64,7 +64,8 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tasksText"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    android:nestedScrollingEnabled="true">
+                    android:nestedScrollingEnabled="true"
+            >
             </androidx.recyclerview.widget.RecyclerView>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

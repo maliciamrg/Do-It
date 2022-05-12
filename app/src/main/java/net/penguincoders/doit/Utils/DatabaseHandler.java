@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import com.malicia.mrg.utils.BuildHierarchyTree;
 import net.penguincoders.doit.MainActivity;
-import net.penguincoders.doit.Model.ToDoLinkModel;
+import net.penguincoders.doit.Model.ParentModel;
 import net.penguincoders.doit.Model.ToDoModel;
 
 import java.util.*;
@@ -142,8 +142,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
-    public Map<Integer, ToDoModel> getAllTasks() {
-        Map<Integer,ToDoModel> taskList = new LinkedHashMap<>();
+    public HashMap<Integer,ToDoModel> getAllTasks() {
+        HashMap<Integer,ToDoModel> taskList = new LinkedHashMap<>();
+
         Cursor cur = null;
         db.beginTransaction();
         try {
@@ -170,43 +171,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cur.close();
         }
 
-
-        BuildHierarchyTree taskTree = new BuildHierarchyTree(getAllLinks());
-        for (ToDoModel task : taskList.values()) {
-
-            List<ToDoModel> childList = getAllChildTasks(task.getId());
-            task.setChildList(childList);
-
-            List<ToDoModel> parentList = getAllParentTasks(task.getId());
-            task.setParentList(parentList);
-
-            //, "HierarchyTree \n empty project:"
-            //, "HierarchyTree \n solo task:"
-            //, "HierarchyTree \n project:"
-            //, "HierarchyTree \n master task:"
-            if (task.getParentList().size() == 0 ) {
-                taskTree.buildHierarchyTree(task.getId());
-                Map<Integer, Integer> hierarchyTasks = taskTree.printHierarchyTree(task.getId(), 0);
-                int rank = 0;
-                for (Integer subTaskId : hierarchyTasks.keySet()) {
-                    ToDoModel ele = taskList.get(subTaskId);
-                    if (rank==0) {
-                        ele.setHierarchicalRootNbSubtask(hierarchyTasks.size());
-                    }
-                    ele.setHierarchicalRoot(task.getId());
-                    ele.setHierarchicalRank(rank);
-                    ele.setHierarchicalLevel(hierarchyTasks.get(subTaskId));
-                    taskList.put(subTaskId,ele);
-                    rank++;
-                }
-            }
-
-        }
-
         return taskList;
     }
 
-    private List<ToDoModel> getAllParentTasks(int id) {
+    public List<ToDoModel> getAllParentTasks(int id) {
         List<ToDoModel> parentList = new ArrayList<>();
         Cursor cur = null;
         db.beginTransaction();
@@ -235,7 +203,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return parentList;
     }
 
-    private List<ToDoModel> getAllChildTasks(int id) {
+    public List<ToDoModel> getAllChildTasks(int id) {
         List<ToDoModel> childList = new ArrayList<>();
         Cursor cur = null;
         db.beginTransaction();
@@ -336,8 +304,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
-    public List<ToDoLinkModel> getAllLinks() {
-        List<ToDoLinkModel> linkList = new ArrayList<>();
+    public List<ParentModel> getAllLinks() {
+        List<ParentModel> linkList = new ArrayList<>();
 
         Cursor cur = null;
         db.beginTransaction();
@@ -346,7 +314,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             if (cur != null) {
                 if (cur.moveToFirst()) {
                     do {
-                        ToDoLinkModel linkModel = new ToDoLinkModel(
+                        ParentModel linkModel = new ParentModel(
                                 cur.getInt(cur.getColumnIndex(ID)),
                                 cur.getInt(cur.getColumnIndex(IDCHILD)),
                                 cur.getString(cur.getColumnIndex(TASK)),

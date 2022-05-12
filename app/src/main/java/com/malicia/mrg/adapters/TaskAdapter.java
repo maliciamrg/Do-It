@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.malicia.mrg.activity.RootActivity;
+import com.malicia.mrg.activity.TaskActivity;
 import net.penguincoders.doit.AddNewTask;
 import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.R;
@@ -23,16 +23,16 @@ import java.util.Map;
 public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     public static final int MARGINGLEVEL = 50;
-    private final DatabaseHandler db;
-    private final RootActivity activity;
+    protected final DatabaseHandler db;
+    private final TaskActivity activity;
     private Integer detailVisibility = View.VISIBLE;
     private boolean hierarchicalView = true;
     private boolean onlyRootView = false;
-    private Map<Integer, ToDoModel> todoList;
+    private List<ToDoModel> todoList;
     private View itemView;
     private int expandInOnlyRootView = 0;
 
-    public TaskAdapter(DatabaseHandler db, RootActivity activity) {
+    public TaskAdapter(DatabaseHandler db, TaskActivity activity) {
         this.db = db;
         this.activity = activity;
     }
@@ -57,9 +57,9 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
     public void onBindViewHolder(@NonNull final TaskAdapter.ViewHolder holder,int position) {
         db.openDatabase();
         int holderPosition = holder.getAdapterPosition();
-        final ToDoModel item = (ToDoModel) todoList.values().toArray()[holderPosition];
+        final ToDoModel item = (ToDoModel) todoList.toArray()[holderPosition];
 
-        holder.rl1.setBackgroundColor(todoList.get(item.getHierarchicalRoot()).getBackgroundColor());
+        holder.rl1.setBackgroundColor(todoList.get(position).getBackgroundColor());
 
         String task = item.getTask();
         holder.project.setText(task);
@@ -69,7 +69,8 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
         holder.task.setVisibility(item.isProject() ? View.GONE : View.VISIBLE);
 
         holder.task.setOnCheckedChangeListener(null);//evite le pb de refresh quand on ajoute une ligne
-        holder.task.setChecked(item.isStatus() && !item.isProject());
+        boolean checked = isChecked(item);
+        holder.task.setChecked(checked);
 
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.task.getLayoutParams();
         int levelHierarchical = 0;
@@ -164,10 +165,16 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
             text = text + sepa + ToDoModel.childListToString(childList);
         }
         holder.childList.setText(text);
+
+        afterOnBindViewHolder(holder,item);
     }
 
+    protected abstract void afterOnBindViewHolder(ViewHolder holder, ToDoModel item);
+
+    protected abstract boolean isChecked(ToDoModel item);
+
     private boolean createNewWithParent(int holderPosition) {
-        ToDoModel item = (ToDoModel) todoList.values().toArray()[holderPosition];
+        ToDoModel item = (ToDoModel) todoList.toArray()[holderPosition];
         Bundle bundle = new Bundle();
         bundle.putSerializable("parentClass", item);
         AddNewTask fragment = new AddNewTask();
@@ -178,10 +185,12 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
 
 
     private void switcheExtendTask(ToDoModel item) {
-        if (isOnlyRootView() && expandInOnlyRootView != item.getId()) {
-            expandInOnlyRootView = item.getId();
-        } else {
-            expandInOnlyRootView = 0;
+        if (item.isRoot()) {
+            if (isOnlyRootView() && expandInOnlyRootView != item.getId()) {
+                expandInOnlyRootView = item.getId();
+            } else {
+                expandInOnlyRootView = 0;
+            }
         }
         activity.refreshData(false);
     }
@@ -195,21 +204,29 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
         return activity;
     }
 
-    public void setTasks(Map<Integer, ToDoModel> todoList) {
+    public void setTasks(List<ToDoModel> todoList) {
         this.todoList = todoList;
         notifyDataSetChanged();
     }
 
     public void deleteItem(int position) {
-        ToDoModel item = (ToDoModel) todoList.values().toArray()[position];
+        ToDoModel item = (ToDoModel) todoList.toArray()[position];
         db.deleteTask(item.getId());
-        todoList.remove(item.getId());
-//        notifyItemRemoved(position);
+        todoList.remove(position);
+        activity.refreshData(true);
+        notifyItemRemoved(position);
+        notifyDataSetChanged();
+    }
+
+    public void deleteAllChecked(int position) {
+        activity.delAllChecked();
+        activity.refreshData(true);
+        notifyItemRemoved(position);
         notifyDataSetChanged();
     }
 
     public void editItem(int position) {
-        ToDoModel item = (ToDoModel) todoList.values().toArray()[position];
+        ToDoModel item = (ToDoModel) todoList.toArray()[position];
         Bundle bundle = new Bundle();
         bundle.putInt("id", item.getId());
         bundle.putString("task", item.getTask());
@@ -251,10 +268,14 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
 
     protected abstract void checkedChanged(boolean isChecked, ToDoModel item);
 
+    public ToDoModel getItem(int position) {
+        return (ToDoModel) todoList.toArray()[position];
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        CheckBox task;
+        public CheckBox task;
         TextView childList;
-        TextView project;
+        public TextView project;
         TextView nbSub;
         RelativeLayout rl1;
         LinearLayout ll1;

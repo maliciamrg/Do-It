@@ -23,6 +23,7 @@ import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.Utils.DatabaseHandler;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -169,10 +170,10 @@ public class AddNewTask extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 if (newTaskText.getText().toString().compareTo("")!=0) {
-                    Intent messageIntent = new Intent(v.getContext(), ParentTask.class);
-                    messageIntent.putExtra(ParentTask.EXTRA_ID, finalIsUpdate ? bundle.getInt("id") : 0);
-                    messageIntent.putExtra(ParentTask.EXTRA_TEXT, newTaskText.getText());
-                    startActivityForResult(messageIntent, ParentTask.TEXT_REQUEST);
+                    Intent messageIntent = new Intent(v.getContext(), ParentActivity.class);
+                    messageIntent.putExtra(ParentActivity.EXTRA_LIST_PARENT,(Serializable) (finalIsUpdate ? listParent : new ArrayList<ToDoModel>()));
+                    messageIntent.putExtra(ParentActivity.EXTRA_TEXT, newTaskText.getText());
+                    startActivityForResult(messageIntent, ParentActivity.TEXT_REQUEST);
                 }
             }
         });
@@ -205,9 +206,9 @@ public class AddNewTask extends BottomSheetDialogFragment {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ParentTask.TEXT_REQUEST) {
+        if (requestCode == ParentActivity.TEXT_REQUEST) {
             if (resultCode == RESULT_OK) {
-                List<ToDoModel> parentList = (List<ToDoModel>) data.getSerializableExtra(ParentTask.DATA_SERIALIZABLE_EXTRA);
+                List<ToDoModel> parentList = (List<ToDoModel>) data.getSerializableExtra(ParentActivity.DATA_SERIALIZABLE_EXTRA);
                 listParent = parentList.size() > 0 ? parentList : new ArrayList<ToDoModel>();
                 textViewParent.setText(parentListToString(listParent));
             }

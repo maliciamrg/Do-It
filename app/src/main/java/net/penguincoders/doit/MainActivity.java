@@ -1,30 +1,24 @@
 package net.penguincoders.doit;
 
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.view.View;
-
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import com.malicia.mrg.activity.RootActivity;
+import com.malicia.mrg.activity.TaskActivity;
+import com.malicia.mrg.adapters.TaskAdapter;
 import net.penguincoders.doit.Adapters.ToDoAdapter;
-import net.penguincoders.doit.Model.ToDoModel;
-import net.penguincoders.doit.Utils.DatabaseHandler;
 
-import java.util.*;
-
-public class MainActivity extends RootActivity {
+public class MainActivity extends TaskActivity {
 
     public static final String LOG_TAG = "DoIt_App";
+    private ToDoAdapter toDoAdapter;
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void fabOnClick() {
+        AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
+    }
+
+    @Override
+    protected TaskAdapter getTasksAdapter() {
+        toDoAdapter = new ToDoAdapter(db, MainActivity.this);
+        return toDoAdapter;
     }
 
 }

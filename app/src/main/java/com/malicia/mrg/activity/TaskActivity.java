@@ -11,22 +11,18 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.malicia.mrg.adapters.TaskAdapter;
 import com.malicia.mrg.utils.BuildHierarchyTree;
-import net.penguincoders.doit.Adapters.ToDoAdapter;
-import net.penguincoders.doit.AddNewTask;
 import net.penguincoders.doit.DialogCloseListener;
 import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.R;
 import net.penguincoders.doit.RecyclerItemTouchHelper;
 import net.penguincoders.doit.Utils.DatabaseHandler;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
-public class RootActivity extends AppCompatActivity implements DialogCloseListener {
+public abstract class TaskActivity extends AppCompatActivity implements DialogCloseListener {
 
-    private DatabaseHandler db;
+    protected DatabaseHandler db;
+    protected HashMap<Integer,ToDoModel> taskList;
     private RecyclerView tasksRecyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private TaskAdapter tasksAdapter;
@@ -35,7 +31,6 @@ public class RootActivity extends AppCompatActivity implements DialogCloseListen
     private FloatingActionButton fabUp2;
     private FloatingActionButton fabUp3;
 
-    private Map<Integer, ToDoModel> taskList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +45,11 @@ public class RootActivity extends AppCompatActivity implements DialogCloseListen
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        tasksAdapter = new TaskAdapter(db, RootActivity.this);
+        tasksAdapter = getTasksAdapter();
 
         tasksRecyclerView.setAdapter(tasksAdapter);
 
-        ItemTouchHelper itemTouchHelper = new
-                ItemTouchHelper(new RecyclerItemTouchHelper(tasksAdapter));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new RecyclerItemTouchHelper(tasksAdapter));
         itemTouchHelper.attachToRecyclerView(tasksRecyclerView);
 
         refreshData(true);
@@ -75,7 +69,7 @@ public class RootActivity extends AppCompatActivity implements DialogCloseListen
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
+                fabOnClick();
             }
         });
 
@@ -123,42 +117,80 @@ public class RootActivity extends AppCompatActivity implements DialogCloseListen
         });
     }
 
+    protected abstract void fabOnClick();
+
+
+    protected abstract TaskAdapter getTasksAdapter();
+
+
     public void refreshData(Boolean refreskTaskList) {
         if (refreskTaskList) {
             taskList = db.getAllTasks();
         }
 
-        Map<Integer, ToDoModel> orderedTaskList = new LinkedHashMap<>();
+        List<ToDoModel> orderedTaskList = new ArrayList<>();
         if (tasksAdapter.isHierarchicalView()) {
             //tri hierarchically
-            Map<Integer, Map<Integer, ToDoModel>> hHerar = new LinkedHashMap<>();
-            for (ToDoModel todoEle : taskList.values()) {
-                Map<Integer, ToDoModel> hRank = new HashMap<>();
-                if (hHerar.containsKey(todoEle.getHierarchicalRoot())) {
-                    hRank = hHerar.get(todoEle.getHierarchicalRoot());
-                    hRank.put(todoEle.getHierarchicalRank(), todoEle);
-                    hHerar.put(todoEle.getHierarchicalRoot(), hRank);
-                } else {
-                    hRank.put(todoEle.getHierarchicalRank(), todoEle);
-                    hHerar.put(todoEle.getHierarchicalRoot(), hRank);
+
+
+            BuildHierarchyTree taskTree = new BuildHierarchyTree(db.getAllLinks());
+            for (ToDoModel task : taskList.values()) {
+
+                List<ToDoModel> childList = db.getAllChildTasks(task.getId());
+                task.setChildList(childList);
+
+                List<ToDoModel> parentList = db.getAllParentTasks(task.getId());
+                task.setParentList(parentList);
+
+                //, "HierarchyTree \n empty project:"
+                //, "HierarchyTree \n solo task:"
+                //, "HierarchyTree \n project:"
+                //, "HierarchyTree \n master task:"
+                if (task.getParentList().size() == 0 ) {
+                    taskTree.buildHierarchyTree(task.getId());
+                    Map<Integer, Integer> hierarchyTasks = taskTree.printHierarchyTree(task.getId(), 0);
+                    int rank = 0;
+                    for (Integer subTaskId : hierarchyTasks.keySet()) {
+                        ToDoModel ele = taskList.get(subTaskId);
+                        if (rank==0) {
+                            ele.setHierarchicalRootNbSubtask(hierarchyTasks.size()-1);
+                        }
+                        ele.setHierarchicalRoot(task.getId());
+                        ele.setHierarchicalRank(rank);
+                        ele.setHierarchicalLevel(hierarchyTasks.get(subTaskId));
+                        orderedTaskList.add(ele);
+                        rank++;
+                    }
                 }
             }
-            //mise en forme
-            for (Map<Integer, ToDoModel> hHerarEle : hHerar.values()) {
-                for (int i = 0; i < hHerarEle.size(); i++) {
-                    ToDoModel toDoModel = hHerarEle.get(i);
-                    orderedTaskList.put(toDoModel.getId(), toDoModel);
-                }
-            }
+//            Map<Integer, Map<Integer, ToDoModel>> hHerar = new LinkedHashMap<>();
+//            for (ToDoModel todoEle : taskList) {
+//                Map<Integer, ToDoModel> hRank = new HashMap<>();
+//                if (hHerar.containsKey(todoEle.getHierarchicalRoot())) {
+//                    hRank = hHerar.get(todoEle.getHierarchicalRoot());
+//                    hRank.put(todoEle.getHierarchicalRank(), todoEle);
+//                    hHerar.put(todoEle.getHierarchicalRoot(), hRank);
+//                } else {
+//                    hRank.put(todoEle.getHierarchicalRank(), todoEle);
+//                    hHerar.put(todoEle.getHierarchicalRoot(), hRank);
+//                }
+//            }
+//            //mise en forme
+//            for (Map<Integer, ToDoModel> hHerarEle : hHerar.values()) {
+//                for (int i = 0; i < hHerarEle.size(); i++) {
+//                    ToDoModel toDoModel = hHerarEle.get(i);
+//                    orderedTaskList.add(toDoModel);
+//                }
+//            }
         } else {
-            orderedTaskList = taskList;
+            orderedTaskList = new ArrayList<ToDoModel>(taskList.values());
         }
 
-        Map<Integer, ToDoModel> orderedAndFilteredTaskList = new LinkedHashMap<>();
+        List<ToDoModel> orderedAndFilteredTaskList = new ArrayList<>();
         if (tasksAdapter.isOnlyRootView()) {
-            for (ToDoModel todoEle : orderedTaskList.values()) {
-                if(todoEle.getParentList().size()==0 || tasksAdapter.getExpandInOnlyRootView()==todoEle.getHierarchicalRoot()){
-                    orderedAndFilteredTaskList.put(todoEle.getId(), todoEle);
+            for (ToDoModel todoEle : orderedTaskList) {
+                if(todoEle.getParentList().size()==0 || todoEle.isHierarchicalRoot(tasksAdapter.getExpandInOnlyRootView())){
+                    orderedAndFilteredTaskList.add(todoEle);
                 }
             }
         } else {
@@ -174,5 +206,13 @@ public class RootActivity extends AppCompatActivity implements DialogCloseListen
     public void handleDialogClose(DialogInterface dialog) {
         refreshData(true);
         tasksAdapter.notifyDataSetChanged();
+    }
+
+    public void delAllChecked() {
+        for (ToDoModel element : new ArrayList<ToDoModel>(taskList.values())) {
+            if (!element.isProject() && element.isStatus()){
+                db.deleteTask(element.getId());
+            }
+        }
     }
 }

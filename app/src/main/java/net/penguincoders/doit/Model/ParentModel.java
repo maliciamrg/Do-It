@@ -3,14 +3,14 @@ package net.penguincoders.doit.Model;
 
 import java.util.List;
 
-public class ToDoLinkModel {
+public class ParentModel {
     public int linkId;
     public int taskId;
     public String taskName;
     public int taskParentId;
-    private List<ToDoLinkModel> childList;
+    private List<ParentModel> childList;
 
-    public ToDoLinkModel(int linkId, int taskId, String taskName, int taskParentId) {
+    public ParentModel(int linkId, int taskId, String taskName, int taskParentId) {
         this.linkId = linkId;
         this.taskId = taskId;
         this.taskName = taskName;
@@ -49,11 +49,11 @@ public class ToDoLinkModel {
         this.taskParentId = taskParentId;
     }
 
-    public List<ToDoLinkModel> getChildList() {
+    public List<ParentModel> getChildList() {
         return childList;
     }
 
-    public void setChildList(List<ToDoLinkModel> childList) {
+    public void setChildList(List<ParentModel> childList) {
         this.childList = childList;
     }
 }

@@ -1,6 +1,7 @@
 package net.penguincoders.doit.Model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ToDoModel implements Serializable {
@@ -12,10 +13,11 @@ public class ToDoModel implements Serializable {
     private int backgroundColor;
     private List<ToDoModel> childList;
     private List<ToDoModel> parentList;
-    private int hierarchicalRoot;
+    private List<Integer> hierarchicalRoot = new ArrayList<>();
     private int hierarchicalRank;
     private int hierarchicalLevel;
     private int hierarchicalRootNbSubtask;
+    private boolean checkable;
 
     public ToDoModel(int id,
                      String task,
@@ -31,6 +33,7 @@ public class ToDoModel implements Serializable {
         this.backgroundColor = backgroundColor;
         this.childList = childList;
         this.parentList = parentList;
+        this.hierarchicalRoot.add(id);
     }
 
     public static String childListToString(List<ToDoModel> childList) {
@@ -90,6 +93,13 @@ public class ToDoModel implements Serializable {
         this.parentList = parentList;
     }
 
+    private void setCheckable() {
+        checkable = true;
+        for (ToDoModel element : childList) {
+            checkable = checkable && element.isStatus();
+        }
+    }
+
     @Override
     public String toString() {
         return "ToDoModel{" +
@@ -113,6 +123,7 @@ public class ToDoModel implements Serializable {
 
     public void setChildList(List<ToDoModel> childList) {
         this.childList = childList;
+        setCheckable();
     }
 
     public int getId() {
@@ -148,12 +159,12 @@ public class ToDoModel implements Serializable {
         isProject = project;
     }
 
-    public int getHierarchicalRoot() {
-        return hierarchicalRoot;
+    public void setHierarchicalRoot(int hierarchicalRoot) {
+        this.hierarchicalRoot.add(hierarchicalRoot);
     }
 
-    public void setHierarchicalRoot(int hierarchicalRoot) {
-        this.hierarchicalRoot = hierarchicalRoot;
+    public boolean isRoot() {
+        return hierarchicalRoot.contains(id);
     }
 
     public int getHierarchicalRank() {
@@ -178,5 +189,13 @@ public class ToDoModel implements Serializable {
 
     public void setHierarchicalRootNbSubtask(int hierarchicalRootNbSubtask) {
         this.hierarchicalRootNbSubtask = hierarchicalRootNbSubtask;
+    }
+
+    public boolean isCheckable() {
+        return checkable;
+    }
+
+    public boolean isHierarchicalRoot(int expandInOnlyRootView) {
+        return hierarchicalRoot.contains(expandInOnlyRootView);
     }
 }
