@@ -82,6 +82,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
         mColorPreview = getView().findViewById(R.id.preview_selected_color);
 
         boolean isUpdate = false;
+        boolean isListTask = false;
         listTaskParent = new ArrayList<TaskModel>();
 
         final Bundle bundle = getArguments();
@@ -99,6 +100,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
                     newTaskSaveButton.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()),
                             R.color.colorPrimaryDark));
             } else {
+                isListTask = true;
                 listTaskParent = new ArrayList<TaskModel>(Arrays.asList(itemParent));
             }
         }
@@ -132,6 +134,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
         });
 
         final boolean finalIsUpdate = isUpdate;
+        final boolean finalIsListTask = isListTask;
 
         if (finalIsUpdate) {
             checkBox.setChecked(item.isProject());
@@ -172,7 +175,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
             public void onClick(View v) {
                 if (newTaskText.getText().toString().compareTo("") != 0) {
                     Intent messageIntent = new Intent(v.getContext(), ParentActivity.class);
-                    messageIntent.putExtra(ParentActivity.EXTRA_LIST_PARENT, (Serializable) (finalIsUpdate ? listTaskParent : new ArrayList<TaskModel>()));
+                    messageIntent.putExtra(ParentActivity.EXTRA_LIST_PARENT, (Serializable) (finalIsUpdate || finalIsListTask ? listTaskParent : new ArrayList<TaskModel>()));
                     messageIntent.putExtra(ParentActivity.EXTRA_TEXT, newTaskText.getText());
                     startActivityForResult(messageIntent, ParentActivity.TEXT_REQUEST);
                 }
@@ -211,6 +214,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
             if (resultCode == RESULT_OK) {
                 List<TaskModel> parentList = (List<TaskModel>) data.getSerializableExtra(ParentActivity.DATA_SERIALIZABLE_EXTRA);
                 listTaskParent = parentList.size() > 0 ? parentList : new ArrayList<TaskModel>();
+                //todo sup doublon listTaskParent
                 textViewParent.setText(parentListToString(listTaskParent));
             }
         }

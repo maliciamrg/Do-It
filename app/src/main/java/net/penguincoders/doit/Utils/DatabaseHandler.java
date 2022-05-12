@@ -72,6 +72,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     "FROM " + TODO_TABLE + " t " +
                     " LEFT JOIN " + LINK_TABLE + " l " +
                     "  ON l." + IDCHILD + "=t." + ID + " ";
+
+    private final String SELECT_LINK =
+            "SELECT l." + ID + " " +
+                    "FROM " + LINK_TABLE + " l " +
+                    "  WHERE l." + IDPARENT + "=? " +
+                    "    AND l." + IDCHILD + "=? " ;
 /*
     private final String SELECT_PARENT_TODO =
             "SELECT " +
@@ -298,7 +304,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 ContentValues cv = new ContentValues();
                 cv.put(IDCHILD, childId);
                 cv.put(IDPARENT, element);
-                db.insert(LINK_TABLE, null, cv);
+                Cursor cur = db.rawQuery(SELECT_LINK, new String[]{String.valueOf(element), String.valueOf(childId)});
+                if (cur.getCount()==0) {
+                    db.insert(LINK_TABLE, null, cv);
+                }
             }
         }
     }

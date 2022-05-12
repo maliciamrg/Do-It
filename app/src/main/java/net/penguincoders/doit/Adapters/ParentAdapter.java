@@ -38,8 +38,8 @@ public class ParentAdapter extends TaskAdapter {
         checkBoxOut.put(item.getId(), isChecked);
     }
 
-    public void setlistParents(ArrayList<ToDoModel> listParents) {
-        for (ToDoModel todoEle : listParents) {
+    public void setlistParents(ArrayList<TaskModel> listParents) {
+        for (TaskModel todoEle : listParents) {
             checkBoxOut.put(todoEle.getId(), true);
         }
     }

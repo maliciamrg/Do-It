@@ -28,7 +28,7 @@ public class ParentActivity extends TaskActivity {
 
         Intent intent = getIntent();
         String stringExtra = intent.getExtras().get(EXTRA_TEXT).toString();
-        ArrayList<ToDoModel> listParents = (ArrayList<ToDoModel>) intent.getSerializableExtra(EXTRA_LIST_PARENT);
+        ArrayList<TaskModel> listParents = (ArrayList<TaskModel>) intent.getSerializableExtra(EXTRA_LIST_PARENT);
 
         TextView TaskText = findViewById(R.id.tasksText);
         String stringExtraMod = TaskModel.stringMax(stringExtra);
