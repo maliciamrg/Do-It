@@ -11,6 +11,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.malicia.mrg.adapters.TaskAdapter;
 import com.malicia.mrg.utils.BuildHierarchyTree;
+import com.malicia.mrg.utils.HierarchyData;
 import net.penguincoders.doit.DialogCloseListener;
 import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.R;
@@ -148,16 +149,21 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
                 //, "HierarchyTree \n master task:"
                 if (task.getParentList().size() == 0 ) {
                     taskTree.buildHierarchyTree(task.getId());
-                    Map<Integer, Integer> hierarchyTasks = taskTree.printHierarchyTree(task.getId(), 0);
+                    List<HierarchyData> hierarchyTasks = taskTree.printHierarchyTree(task.getId(), 0);
                     int rank = 0;
-                    for (Integer subTaskId : hierarchyTasks.keySet()) {
-                        ToDoModel ele = taskList.get(subTaskId);
+                    for (HierarchyData eleHierarchyTasks : hierarchyTasks) {
+                        ToDoModel ele = null;
+                        try {
+                            ele = (ToDoModel) (taskList.get(eleHierarchyTasks.getTaskId())).clone();
+                        } catch (CloneNotSupportedException e) {
+                            throw new RuntimeException(e);
+                        }
                         if (rank==0) {
                             ele.setHierarchicalRootNbSubtask(hierarchyTasks.size()-1);
                         }
                         ele.setHierarchicalRoot(task.getId());
                         ele.setHierarchicalRank(rank);
-                        ele.setHierarchicalLevel(hierarchyTasks.get(subTaskId));
+                        ele.setHierarchicalLevel(eleHierarchyTasks.getLevel());
                         orderedTaskList.add(ele);
                         rank++;
                     }

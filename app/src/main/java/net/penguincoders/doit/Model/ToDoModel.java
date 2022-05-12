@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ToDoModel implements Serializable {
+public class ToDoModel implements Serializable , Cloneable {
     private static final long serialVersionUID = 0;
     private int id;
     private boolean isProject;
@@ -151,6 +151,14 @@ public class ToDoModel implements Serializable {
         return false;
     }
 
+    public Object clone() throws CloneNotSupportedException
+    {
+        // Assign the shallow copy to
+        // new reference variable t
+        ToDoModel t = (ToDoModel)super.clone();
+
+        return t;
+    }
     public boolean isProject() {
         return isProject;
     }

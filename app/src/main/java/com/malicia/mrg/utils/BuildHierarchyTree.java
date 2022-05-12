@@ -55,8 +55,8 @@ public class BuildHierarchyTree {
     }
 
     //Print tree, Recursion, Time O(n), Space O(h)
-    public Map<Integer, Integer> printHierarchyTree(int id, int level) {
-        Map<Integer, Integer> hashRetour = new LinkedHashMap<>();
+    public List<HierarchyData> printHierarchyTree(int id, int level) {
+        List<HierarchyData> hashRetour = new ArrayList<>();
         StringBuilder str = new StringBuilder();
         str.append("<>\n" );
         printHierarchyTree(todoMapTree.get(id).get(0), level,hashRetour,str);
@@ -64,12 +64,12 @@ public class BuildHierarchyTree {
         return hashRetour;
     }
 
-    public void printHierarchyTree(ParentModel root, int level, Map<Integer,Integer> hashRetour,StringBuilder str) {
+    public void printHierarchyTree(ParentModel root, int level, List<HierarchyData> hashRetour,StringBuilder str) {
         for (int i = 0; i < level; i++) {
             str.append("+--");
         }
 
-        hashRetour.put(root.getTaskId(),level);
+        hashRetour.add(new HierarchyData(root.getTaskId(),level));
 
         str.append(root.getTaskId()+ " -- " + root.getTaskName());
         str.append("\n" );
