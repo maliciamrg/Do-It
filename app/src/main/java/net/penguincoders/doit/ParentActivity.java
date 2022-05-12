@@ -6,6 +6,7 @@ import android.widget.TextView;
 import com.malicia.mrg.activity.TaskActivity;
 import com.malicia.mrg.adapters.TaskAdapter;
 import net.penguincoders.doit.Adapters.ParentAdapter;
+import net.penguincoders.doit.Model.TaskModel;
 import net.penguincoders.doit.Model.ToDoModel;
 
 import java.io.Serializable;
@@ -30,7 +31,7 @@ public class ParentActivity extends TaskActivity {
         ArrayList<ToDoModel> listParents = (ArrayList<ToDoModel>) intent.getSerializableExtra(EXTRA_LIST_PARENT);
 
         TextView TaskText = findViewById(R.id.tasksText);
-        String stringExtraMod = ToDoModel.stringMax(stringExtra);
+        String stringExtraMod = TaskModel.stringMax(stringExtra);
         TaskText.setText("Parents of :\n" + stringExtraMod);
 
         parentAdapter.setlistParents(listParents);
@@ -40,16 +41,16 @@ public class ParentActivity extends TaskActivity {
     protected void fabOnClick() {
         Map checkOutBox = parentAdapter.getCheckBoxOut();
 
-        List<ToDoModel> todoList = new ArrayList<ToDoModel>();
-        for (ToDoModel element : taskList.values()) {
+        List<TaskModel> taskList = new ArrayList<TaskModel>();
+        for (TaskModel element : parentAdapter.getTaskList()) {
             Object o = checkOutBox.get(element.getId());
             if (o!=null && (Boolean) o){
-                todoList.add(element);
+                taskList.add(element);
             }
         }
 
         Intent returnIntent = new Intent();
-        returnIntent.putExtra(DATA_SERIALIZABLE_EXTRA, (Serializable) todoList);
+        returnIntent.putExtra(DATA_SERIALIZABLE_EXTRA, (Serializable) taskList);
         setResult(RESULT_OK, returnIntent);
         finish();
     }

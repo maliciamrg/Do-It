@@ -9,6 +9,7 @@ import android.util.Log;
 import com.malicia.mrg.utils.BuildHierarchyTree;
 import net.penguincoders.doit.MainActivity;
 import net.penguincoders.doit.Model.ParentModel;
+import net.penguincoders.doit.Model.TaskModel;
 import net.penguincoders.doit.Model.ToDoModel;
 
 import java.util.*;
@@ -157,9 +158,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                                 cur.getString(cur.getColumnIndex(TASK)),
                                 cur.getInt(cur.getColumnIndex(ISPROJECT)) > 0,
                                 cur.getInt(cur.getColumnIndex(STATUS)) > 0,
-                                cur.getInt(cur.getColumnIndex(NUMCOLOR)) ,
-                                new ArrayList<ToDoModel>(),
-                                new ArrayList<ToDoModel>());
+                                cur.getInt(cur.getColumnIndex(NUMCOLOR)) );
                         taskList.put(task.getId(),task);
                     }
                     while (cur.moveToNext());
@@ -174,8 +173,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return taskList;
     }
 
-    public List<ToDoModel> getAllParentTasks(int id) {
-        List<ToDoModel> parentList = new ArrayList<>();
+    public List<TaskModel> getAllParentTasks(int id) {
+        List<TaskModel> parentTaskList = new ArrayList<>();
         Cursor cur = null;
         db.beginTransaction();
         try {
@@ -183,14 +182,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             if (cur != null) {
                 if (cur.moveToFirst()) {
                     do {
-                        ToDoModel task = new ToDoModel(cur.getInt(cur.getColumnIndex(ID)),
+                        TaskModel task = new TaskModel(cur.getInt(cur.getColumnIndex(ID)),
                                 cur.getString(cur.getColumnIndex(TASK)),
                                 cur.getInt(cur.getColumnIndex(ISPROJECT)) > 0,
                                 cur.getInt(cur.getColumnIndex(STATUS)) > 0,
                                 cur.getInt(cur.getColumnIndex(NUMCOLOR)) ,
-                                new ArrayList<ToDoModel>(),
-                                new ArrayList<ToDoModel>());
-                        parentList.add(task);
+                                new ArrayList<TaskModel>(),
+                                new ArrayList<TaskModel>());
+                        parentTaskList.add(task);
                     }
                     while (cur.moveToNext());
                 }
@@ -200,11 +199,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             assert cur != null;
             cur.close();
         }
-        return parentList;
+        return parentTaskList;
     }
 
-    public List<ToDoModel> getAllChildTasks(int id) {
-        List<ToDoModel> childList = new ArrayList<>();
+    public List<TaskModel> getAllChildTasks(int id) {
+        List<TaskModel> childTaskList = new ArrayList<>();
         Cursor cur = null;
         db.beginTransaction();
         try {
@@ -212,14 +211,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             if (cur != null) {
                 if (cur.moveToFirst()) {
                     do {
-                        ToDoModel task = new ToDoModel(cur.getInt(cur.getColumnIndex(ID)),
+                        TaskModel task = new TaskModel(cur.getInt(cur.getColumnIndex(ID)),
                                 cur.getString(cur.getColumnIndex(TASK)),
                                 cur.getInt(cur.getColumnIndex(ISPROJECT)) > 0,
                                 cur.getInt(cur.getColumnIndex(STATUS)) > 0,
                                 cur.getInt(cur.getColumnIndex(NUMCOLOR)) ,
-                                new ArrayList<ToDoModel>(),
-                                new ArrayList<ToDoModel>());
-                        childList.add(task);
+                                new ArrayList<TaskModel>(),
+                                new ArrayList<TaskModel>());
+                        childTaskList.add(task);
                     }
                     while (cur.moveToNext());
                 }
@@ -229,7 +228,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             assert cur != null;
             cur.close();
         }
-        return childList;
+        return childTaskList;
     }
 
     /*

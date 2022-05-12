@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import net.penguincoders.doit.Model.TaskModel;
 import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.Utils.DatabaseHandler;
 import yuku.ambilwarna.AmbilWarnaDialog;
@@ -30,7 +31,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
-import static net.penguincoders.doit.Model.ToDoModel.parentListToString;
+import static net.penguincoders.doit.Model.TaskModel.parentListToString;
 
 public class AddNewTask extends BottomSheetDialogFragment {
 
@@ -42,9 +43,9 @@ public class AddNewTask extends BottomSheetDialogFragment {
     private View mColorPreview;
 
     private DatabaseHandler db;
-    private ToDoModel item;
-    private ToDoModel itemParent;
-    private List<ToDoModel> listParent;
+    private TaskModel item;
+    private TaskModel itemParent;
+    private List<TaskModel> listTaskParent;
 
 
     // this is the default color of the preview box
@@ -81,24 +82,24 @@ public class AddNewTask extends BottomSheetDialogFragment {
         mColorPreview = getView().findViewById(R.id.preview_selected_color);
 
         boolean isUpdate = false;
-        listParent = new ArrayList<ToDoModel>();
+        listTaskParent = new ArrayList<TaskModel>();
 
         final Bundle bundle = getArguments();
         if (bundle != null) {
 
-            itemParent = (ToDoModel) bundle.getSerializable("parentClass");
+            itemParent = (TaskModel) bundle.getSerializable("parentClass");
             if (itemParent == null) {
                 isUpdate = true;
-                item = (ToDoModel) bundle.getSerializable("taskClass");
-                listParent = item.getParentList();
+                item = (TaskModel) bundle.getSerializable("taskClass");
+                listTaskParent = item.getParentList();
                 String task = item.getTask();
                 newTaskText.setText(task);
                 assert task != null;
                 if (task.length() > 0)
                     newTaskSaveButton.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()),
                             R.color.colorPrimaryDark));
-            }else {
-                listParent = new ArrayList<ToDoModel>(Arrays.asList(itemParent));
+            } else {
+                listTaskParent = new ArrayList<TaskModel>(Arrays.asList(itemParent));
             }
         }
 
@@ -118,8 +119,8 @@ public class AddNewTask extends BottomSheetDialogFragment {
                     newTaskSaveButton.setEnabled(false);
                     newTaskSaveButton.setTextColor(Color.GRAY);
                 } else {
-  //                  checkBox.setEnabled(true);
-  //                  textViewParent.setEnabled(true);
+                    //                  checkBox.setEnabled(true);
+                    //                  textViewParent.setEnabled(true);
                     newTaskSaveButton.setEnabled(true);
                     newTaskSaveButton.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorPrimaryDark));
                 }
@@ -144,7 +145,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
                 String text = newTaskText.getText().toString();
 
                 List<Integer> parent = new ArrayList<Integer>();
-                for (ToDoModel element : listParent) {
+                for (TaskModel element : listTaskParent) {
                     parent.add(element.getId());
                 }
                 Integer[] parentArray = parent.toArray(new Integer[0]);
@@ -164,14 +165,14 @@ public class AddNewTask extends BottomSheetDialogFragment {
             }
         });
 
-//        listParent = isUpdate ? item.getParentList() : new ArrayList<ToDoModel>();
-        textViewParent.setText(ToDoModel.parentListToString(listParent));
+//        listParent = isUpdate ? item.getParentList() : new ArrayList<TaskModel>();
+        textViewParent.setText(parentListToString(listTaskParent));
         textViewParent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (newTaskText.getText().toString().compareTo("")!=0) {
+                if (newTaskText.getText().toString().compareTo("") != 0) {
                     Intent messageIntent = new Intent(v.getContext(), ParentActivity.class);
-                    messageIntent.putExtra(ParentActivity.EXTRA_LIST_PARENT,(Serializable) (finalIsUpdate ? listParent : new ArrayList<ToDoModel>()));
+                    messageIntent.putExtra(ParentActivity.EXTRA_LIST_PARENT, (Serializable) (finalIsUpdate ? listTaskParent : new ArrayList<TaskModel>()));
                     messageIntent.putExtra(ParentActivity.EXTRA_TEXT, newTaskText.getText());
                     startActivityForResult(messageIntent, ParentActivity.TEXT_REQUEST);
                 }
@@ -208,12 +209,13 @@ public class AddNewTask extends BottomSheetDialogFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ParentActivity.TEXT_REQUEST) {
             if (resultCode == RESULT_OK) {
-                List<ToDoModel> parentList = (List<ToDoModel>) data.getSerializableExtra(ParentActivity.DATA_SERIALIZABLE_EXTRA);
-                listParent = parentList.size() > 0 ? parentList : new ArrayList<ToDoModel>();
-                textViewParent.setText(parentListToString(listParent));
+                List<TaskModel> parentList = (List<TaskModel>) data.getSerializableExtra(ParentActivity.DATA_SERIALIZABLE_EXTRA);
+                listTaskParent = parentList.size() > 0 ? parentList : new ArrayList<TaskModel>();
+                textViewParent.setText(parentListToString(listTaskParent));
             }
         }
     }
+
     // the dialog functionality is handled separately
     // using openColorPickerDialog this is triggered as
     // soon as the user clicks on the Pick Color button And
