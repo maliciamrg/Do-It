@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ToDoModel implements Serializable , Cloneable {
+public class ToDoModel implements Serializable, Cloneable {
     private static final long serialVersionUID = 0;
     private int id;
     private boolean isProject;
@@ -13,12 +13,11 @@ public class ToDoModel implements Serializable , Cloneable {
     private int backgroundColor;
     private List<ToDoModel> childList;
     private List<ToDoModel> parentList;
-    private List<Integer> hierarchicalRoot = new ArrayList<>();
+    private Integer hierarchicalRoot;
     private int hierarchicalRank;
     private int hierarchicalLevel;
     private int hierarchicalRootNbSubtask;
     private boolean checkable;
-
     public ToDoModel(int id,
                      String task,
                      boolean isProject,
@@ -33,7 +32,7 @@ public class ToDoModel implements Serializable , Cloneable {
         this.backgroundColor = backgroundColor;
         this.childList = childList;
         this.parentList = parentList;
-        this.hierarchicalRoot.add(id);
+        this.hierarchicalRoot=id;
     }
 
     public static String childListToString(List<ToDoModel> childList) {
@@ -67,6 +66,14 @@ public class ToDoModel implements Serializable , Cloneable {
     public static String stringMax(String stringExtra) {
         int imax = 60;
         return stringExtra.length() > imax ? stringExtra.substring(0, imax) : stringExtra;
+    }
+
+    public Integer getHierarchicalRoot() {
+        return hierarchicalRoot;
+    }
+
+    public void setHierarchicalRoot(int hierarchicalRoot) {
+        this.hierarchicalRoot=hierarchicalRoot;
     }
 
     public int getBackgroundColor() {
@@ -151,14 +158,14 @@ public class ToDoModel implements Serializable , Cloneable {
         return false;
     }
 
-    public Object clone() throws CloneNotSupportedException
-    {
+    public Object clone() throws CloneNotSupportedException {
         // Assign the shallow copy to
         // new reference variable t
-        ToDoModel t = (ToDoModel)super.clone();
+        ToDoModel t = (ToDoModel) super.clone();
 
         return t;
     }
+
     public boolean isProject() {
         return isProject;
     }
@@ -167,12 +174,8 @@ public class ToDoModel implements Serializable , Cloneable {
         isProject = project;
     }
 
-    public void setHierarchicalRoot(int hierarchicalRoot) {
-        this.hierarchicalRoot.add(hierarchicalRoot);
-    }
-
     public boolean isRoot() {
-        return hierarchicalRoot.contains(id);
+        return hierarchicalRoot==id;
     }
 
     public int getHierarchicalRank() {
@@ -204,6 +207,6 @@ public class ToDoModel implements Serializable , Cloneable {
     }
 
     public boolean isHierarchicalRoot(int expandInOnlyRootView) {
-        return hierarchicalRoot.contains(expandInOnlyRootView);
+        return hierarchicalRoot==expandInOnlyRootView;
     }
 }
