@@ -213,8 +213,14 @@ public class AddNewTask extends BottomSheetDialogFragment {
         if (requestCode == ParentActivity.TEXT_REQUEST) {
             if (resultCode == RESULT_OK) {
                 List<TaskModel> parentList = (List<TaskModel>) data.getSerializableExtra(ParentActivity.DATA_SERIALIZABLE_EXTRA);
-                listTaskParent = parentList.size() > 0 ? parentList : new ArrayList<TaskModel>();
-                //todo sup doublon listTaskParent
+                listTaskParent = new ArrayList<TaskModel>();
+                for (TaskModel taskin : parentList){
+                    boolean isNonInUnique = true;
+                    for (TaskModel task : listTaskParent){
+                        isNonInUnique = isNonInUnique && (taskin.getId()!= task.getId());
+                    }
+                    if (isNonInUnique){listTaskParent.add(taskin);}
+                }
                 textViewParent.setText(parentListToString(listTaskParent));
             }
         }
