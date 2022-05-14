@@ -22,6 +22,9 @@ public class ToDoAdapter extends TaskAdapter {
     protected boolean isChecked(TaskModel item) {
         if(!item.isCheckable()) {
             db.updateStatus(item.getId(), false);
+            if (item.isStatus()){
+                activity.refreshData(true);
+            }
         }
         return item.isStatus() && !item.isProject() && item.isCheckable();
     }

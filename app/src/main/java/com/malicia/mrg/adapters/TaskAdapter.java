@@ -25,7 +25,7 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
 
     public static final int MARGINGLEVEL = 50;
     protected final DatabaseHandler db;
-    private final TaskActivity activity;
+    protected final TaskActivity activity;
     private Integer detailVisibility = View.VISIBLE;
     private boolean hierarchicalView = true;
     private boolean onlyRootView = false;
@@ -218,7 +218,6 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
 
     public void setTasks(List<TaskModel> taskList) {
         this.taskList = taskList;
-        notifyDataSetChanged();
     }
 
     public void setTodo(HashMap<Integer, ToDoModel> todoList) {

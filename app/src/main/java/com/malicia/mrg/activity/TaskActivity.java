@@ -211,12 +211,23 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
 
 
         tasksAdapter.setTasks(orderedAndFilteredTaskList);
+        notifyDataSetChanged();
+    }
+
+    private void notifyDataSetChanged() {
+        tasksRecyclerView.post(new Runnable()
+        {
+            @Override
+            public void run() {
+                tasksAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
     public void handleDialogClose(DialogInterface dialog) {
         refreshData(true);
-        tasksAdapter.notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     public void delAllChecked() {
