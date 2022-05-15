@@ -24,7 +24,7 @@ import java.util.*;
 public abstract class TaskActivity extends AppCompatActivity implements DialogCloseListener {
 
     protected DatabaseHandler db;
-    protected HashMap<Integer,ToDoModel> todoList;
+    protected HashMap<Integer, ToDoModel> todoList;
     private RecyclerView tasksRecyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private TaskAdapter tasksAdapter;
@@ -143,7 +143,7 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
                 //, "HierarchyTree \n solo task:"
                 //, "HierarchyTree \n project:"
                 //, "HierarchyTree \n master task:"
-                if (db.getAllParentTasks(todoIn.getId()).size() == 0 ) {
+                if (db.getAllParentTasks(todoIn.getId()).size() == 0) {
 
                     taskTree.buildHierarchyTree(todoIn.getId());
 
@@ -153,8 +153,8 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
                     for (HierarchyData eleHierarchyTasks : hierarchyTasks) {
 
                         TaskModel ele = new TaskModel(todoList.get(eleHierarchyTasks.getTaskId()));
-                        if (rank==0) {
-                            ele.setHierarchicalRootNbSubtask(hierarchyTasks.size()-1);
+                        if (rank == 0) {
+                            ele.setHierarchicalRootNbSubtask(hierarchyTasks.size() - 1);
                         }
                         ele.setHierarchicalRoot(todoIn.getId());
                         ele.setHierarchicalRank(rank);
@@ -166,6 +166,12 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
 
                     }
 
+                }
+                if (todoIn.isPostIt()) {
+                    TaskModel taskOut = new TaskModel(todoIn);
+                    taskOut.setChildList(db.getAllChildTasks(todoIn.getId()));
+                    taskOut.setParentList(db.getAllParentTasks(todoIn.getId()));
+                    orderedTaskList.add(0, taskOut);
                 }
             }
 //            Map<Integer, Map<Integer, TaskModel>> hHerar = new LinkedHashMap<>();
@@ -192,7 +198,12 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
                 TaskModel taskOut = new TaskModel(todoIn);
                 taskOut.setChildList(db.getAllChildTasks(todoIn.getId()));
                 taskOut.setParentList(db.getAllParentTasks(todoIn.getId()));
-                orderedTaskList.add(taskOut);
+                if (todoIn.isPostIt()) {
+                    orderedTaskList.add(0, taskOut);
+                } else {
+                    orderedTaskList.add(taskOut);
+                }
+
             }
 //            orderedTaskList = new ArrayList<TaskModel>(todoList.values());
         }
@@ -200,7 +211,7 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
         List<TaskModel> orderedAndFilteredTaskList = new ArrayList<>();
         if (tasksAdapter.isOnlyRootView()) {
             for (TaskModel todoEle : orderedTaskList) {
-                if(todoEle.getParentList().size()==0 || todoEle.isHierarchicalRoot(tasksAdapter.getExpandInOnlyRootView())){
+                if (todoEle.getParentList().size() == 0 || todoEle.isHierarchicalRoot(tasksAdapter.getExpandInOnlyRootView())) {
                     orderedAndFilteredTaskList.add(todoEle);
                 }
             }
@@ -215,8 +226,7 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
     }
 
     private void notifyDataSetChanged() {
-        tasksRecyclerView.post(new Runnable()
-        {
+        tasksRecyclerView.post(new Runnable() {
             @Override
             public void run() {
                 tasksAdapter.notifyDataSetChanged();
@@ -232,7 +242,7 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
 
     public void delAllChecked() {
         for (ToDoModel element : new ArrayList<ToDoModel>(todoList.values())) {
-            if (!element.isProject() && element.isStatus()){
+            if (!element.isProject() && element.isStatus()) {
                 db.deleteTask(element.getId());
             }
         }
