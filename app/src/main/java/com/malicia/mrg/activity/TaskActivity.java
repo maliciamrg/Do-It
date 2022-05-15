@@ -167,12 +167,6 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
                     }
 
                 }
-                if (todoIn.isPostIt()) {
-                    TaskModel taskOut = new TaskModel(todoIn);
-                    taskOut.setChildList(db.getAllChildTasks(todoIn.getId()));
-                    taskOut.setParentList(db.getAllParentTasks(todoIn.getId()));
-                    orderedTaskList.add(0, taskOut);
-                }
             }
 //            Map<Integer, Map<Integer, TaskModel>> hHerar = new LinkedHashMap<>();
 //            for (TaskModel todoEle : taskList) {
@@ -198,17 +192,22 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
                 TaskModel taskOut = new TaskModel(todoIn);
                 taskOut.setChildList(db.getAllChildTasks(todoIn.getId()));
                 taskOut.setParentList(db.getAllParentTasks(todoIn.getId()));
-                if (todoIn.isPostIt()) {
-                    orderedTaskList.add(0, taskOut);
-                } else {
-                    orderedTaskList.add(taskOut);
-                }
-
+                orderedTaskList.add(taskOut);
             }
 //            orderedTaskList = new ArrayList<TaskModel>(todoList.values());
         }
 
         List<TaskModel> orderedAndFilteredTaskList = new ArrayList<>();
+
+
+        for (int i = 0; i < orderedTaskList.size(); i++) {
+            TaskModel taskEle = orderedTaskList.get(i);
+            if (taskEle.isPostIt()) {
+                orderedTaskList.remove(i);
+                orderedTaskList.add(0, taskEle);
+            }
+        }
+
         if (tasksAdapter.isOnlyRootView()) {
             for (TaskModel todoEle : orderedTaskList) {
                 if (todoEle.getParentList().size() == 0 || todoEle.isHierarchicalRoot(tasksAdapter.getExpandInOnlyRootView())) {
