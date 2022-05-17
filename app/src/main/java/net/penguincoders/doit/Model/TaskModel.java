@@ -218,6 +218,9 @@ public class TaskModel implements Serializable {
     }
 
     public boolean isHierarchicalRoot(int expandInOnlyRootView) {
+        if(hierarchicalRoot==null) {
+            return false;
+        }
         return hierarchicalRoot == expandInOnlyRootView;
     }
 }

@@ -9,7 +9,7 @@ public class ToDoModel implements Serializable {
     private boolean isPostIt;
     private boolean status;
     private String task;
-    private int backgroundColor;
+    private Integer backgroundColor;
 
     public ToDoModel() {
     }
