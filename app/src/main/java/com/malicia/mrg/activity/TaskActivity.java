@@ -76,47 +76,61 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
         });
 
         fabUp1 = findViewById(R.id.fabUp1);
+        setImgDetailVivsibility();
         fabUp1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tasksAdapter.swapDetailVisibility();
-                if (tasksAdapter.isDetailVisible()) {
-                    fabUp1.setImageResource(android.R.drawable.arrow_down_float);
-                } else {
-                    fabUp1.setImageResource(android.R.drawable.arrow_up_float);
-                }
-
+                setImgDetailVivsibility();
                 refreshData(false);
             }
         });
 
         fabUp2 = findViewById(R.id.fabUp2);
+        setImgHierarchicalView();
         fabUp2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tasksAdapter.swapHierarchicalView();
-                if (tasksAdapter.isHierarchicalView()) {
-                    fabUp2.setImageResource(android.R.drawable.ic_menu_sort_by_size);
-                } else {
-                    fabUp2.setImageResource(android.R.drawable.ic_menu_sort_alphabetically);
-                }
+                setImgHierarchicalView();
                 refreshData(false);
             }
         });
 
         fabUp3 = findViewById(R.id.fabUp3);
+        setImgOnlyRootView();
         fabUp3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tasksAdapter.swapOnlyRootView();
-                if (tasksAdapter.isOnlyRootView()) {
-                    fabUp3.setImageResource(android.R.drawable.ic_media_rew);
-                } else {
-                    fabUp3.setImageResource(android.R.drawable.ic_media_ff);
-                }
+                setImgOnlyRootView();
                 refreshData(false);
             }
         });
+    }
+
+    private void setImgOnlyRootView() {
+        if (tasksAdapter.isOnlyRootView()) {
+            fabUp3.setImageResource(android.R.drawable.ic_media_rew);
+        } else {
+            fabUp3.setImageResource(android.R.drawable.ic_media_ff);
+        }
+    }
+
+    private void setImgHierarchicalView() {
+        if (tasksAdapter.isHierarchicalView()) {
+            fabUp2.setImageResource(android.R.drawable.ic_menu_sort_by_size);
+        } else {
+            fabUp2.setImageResource(android.R.drawable.ic_menu_sort_alphabetically);
+        }
+    }
+
+    private void setImgDetailVivsibility() {
+        if (tasksAdapter.isDetailVisible()) {
+            fabUp1.setImageResource(android.R.drawable.arrow_down_float);
+        } else {
+            fabUp1.setImageResource(android.R.drawable.arrow_up_float);
+        }
     }
 
     protected abstract void fabOnClick();

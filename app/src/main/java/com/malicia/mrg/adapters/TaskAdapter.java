@@ -26,9 +26,9 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
     public static final int MARGINGLEVEL = 50;
     protected final DatabaseHandler db;
     private final TaskActivity activity;
-    private Integer detailVisibility = View.VISIBLE;
+    private Integer detailVisibility = View.GONE;
     private boolean hierarchicalView = true;
-    private boolean onlyRootView = false;
+    private boolean onlyRootView = true;
     private List<TaskModel> taskList;
     private View itemView;
     private int expandInOnlyRootView = 0;
