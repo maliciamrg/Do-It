@@ -24,7 +24,7 @@ import java.util.*;
 public abstract class TaskActivity extends AppCompatActivity implements DialogCloseListener {
 
     protected DatabaseHandler db;
-    protected HashMap<Integer,ToDoModel> todoList;
+    protected HashMap<Integer, ToDoModel> todoList;
     private RecyclerView tasksRecyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private TaskAdapter tasksAdapter;
@@ -157,7 +157,7 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
                 //, "HierarchyTree \n solo task:"
                 //, "HierarchyTree \n project:"
                 //, "HierarchyTree \n master task:"
-                if (db.getAllParentTasks(todoIn.getId()).size() == 0 ) {
+                if (db.getAllParentTasks(todoIn.getId()).size() == 0) {
 
                     taskTree.buildHierarchyTree(todoIn.getId());
 
@@ -167,8 +167,8 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
                     for (HierarchyData eleHierarchyTasks : hierarchyTasks) {
 
                         TaskModel ele = new TaskModel(todoList.get(eleHierarchyTasks.getTaskId()));
-                        if (rank==0) {
-                            ele.setHierarchicalRootNbSubtask(hierarchyTasks.size()-1);
+                        if (rank == 0) {
+                            ele.setHierarchicalRootNbSubtask(hierarchyTasks.size() - 1);
                         }
                         ele.setHierarchicalRoot(todoIn.getId());
                         ele.setHierarchicalRank(rank);
@@ -212,9 +212,19 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
         }
 
         List<TaskModel> orderedAndFilteredTaskList = new ArrayList<>();
+
+
+        for (int i = 0; i < orderedTaskList.size(); i++) {
+            TaskModel taskEle = orderedTaskList.get(i);
+            if (taskEle.isPostIt()) {
+                orderedTaskList.remove(i);
+                orderedTaskList.add(0, taskEle);
+            }
+        }
+
         if (tasksAdapter.isOnlyRootView()) {
             for (TaskModel todoEle : orderedTaskList) {
-                if(todoEle.getParentList().size()==0 || todoEle.isHierarchicalRoot(tasksAdapter.getExpandInOnlyRootView())){
+                if (todoEle.getParentList().size() == 0 || todoEle.isHierarchicalRoot(tasksAdapter.getExpandInOnlyRootView())) {
                     orderedAndFilteredTaskList.add(todoEle);
                 }
             }
@@ -225,17 +235,27 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
 
 
         tasksAdapter.setTasks(orderedAndFilteredTaskList);
+        notifyDataSetChanged();
+    }
+
+    private void notifyDataSetChanged() {
+        tasksRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                tasksAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
     public void handleDialogClose(DialogInterface dialog) {
         refreshData(true);
-        tasksAdapter.notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     public void delAllChecked() {
         for (ToDoModel element : new ArrayList<ToDoModel>(todoList.values())) {
-            if (!element.isProject() && element.isStatus()){
+            if (!element.isProject() && element.isStatus()) {
                 db.deleteTask(element.getId());
             }
         }

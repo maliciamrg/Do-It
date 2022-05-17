@@ -38,6 +38,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
     public static final String TAG = "ActionBottomDialog";
     private EditText newTaskText;
     private CheckBox checkBox;
+    private CheckBox checkBoxPostIt;
     private TextView textViewParent;
     private Button newTaskSaveButton;
     private View mColorPreview;
@@ -79,6 +80,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
         newTaskSaveButton = getView().findViewById(R.id.newTaskButton);
         textViewParent = getView().findViewById(R.id.textViewParent);
         checkBox = getView().findViewById(R.id.checkBox);
+        checkBoxPostIt = getView().findViewById(R.id.checkBoxPostIt);
         mColorPreview = getView().findViewById(R.id.preview_selected_color);
 
         boolean isUpdate = false;
@@ -142,6 +144,12 @@ public class AddNewTask extends BottomSheetDialogFragment {
             checkBox.setChecked(false);
         }
 
+        if (finalIsUpdate) {
+            checkBoxPostIt.setChecked(item.isPostIt());
+        } else {
+            checkBoxPostIt.setChecked(false);
+        }
+
         newTaskSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,11 +165,13 @@ public class AddNewTask extends BottomSheetDialogFragment {
                             text,
                             parentArray,
                             checkBox.isChecked(),
+                            checkBoxPostIt.isChecked(),
                             mDefaultColor);
                 } else {
                     db.insertTask(text,
                             parentArray,
                             checkBox.isChecked(),
+                            checkBoxPostIt.isChecked(),
                             mDefaultColor);
                 }
                 dismiss();

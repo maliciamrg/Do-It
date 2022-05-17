@@ -1,12 +1,12 @@
 package net.penguincoders.doit.Model;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class ToDoModel implements Serializable {
 
     private int id;
     private boolean isProject;
+    private boolean isPostIt;
     private boolean status;
     private String task;
     private int backgroundColor;
@@ -17,10 +17,12 @@ public class ToDoModel implements Serializable {
     public ToDoModel(int id,
                      String task,
                      boolean isProject,
+                     boolean isPostIt,
                      boolean status,
                      int backgroundColor) {
         this.id = id;
         this.isProject = isProject;
+        this.isPostIt = isPostIt;
         this.status = status;
         this.task = task;
         this.backgroundColor = backgroundColor;
@@ -38,10 +40,15 @@ public class ToDoModel implements Serializable {
         return isProject;
     }
 
+    public boolean isPostIt() {
+        return isPostIt;
+    }
     public void setProject(boolean project) {
         isProject = project;
     }
-
+    public void setPostIt(boolean postit) {
+        isPostIt = postit;
+    }
     public boolean isStatus() {
         return status;
     }

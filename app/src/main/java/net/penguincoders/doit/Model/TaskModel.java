@@ -7,6 +7,7 @@ public class TaskModel implements Serializable {
     private static final long serialVersionUID = 0;
     private int id;
     private boolean isProject;
+    private boolean isPostIt;
     private boolean status;
     private String task;
     private int backgroundColor;
@@ -20,10 +21,12 @@ public class TaskModel implements Serializable {
     public TaskModel(int id,
                      String task,
                      boolean isProject,
+                     boolean isPostIt,
                      boolean status,
                      int backgroundColor,
                      List<TaskModel> childList,
                      List<TaskModel> parentList) {
+        this.setPostIt(isPostIt);
         this.setId(id);
         this.setTask(task);
         this.setProject(isProject);
@@ -31,13 +34,14 @@ public class TaskModel implements Serializable {
         this.setBackgroundColor(backgroundColor);
         this.childList = childList;
         this.parentList = parentList;
-        this.hierarchicalRoot=id;
+        this.hierarchicalRoot = id;
     }
 
     public TaskModel(ToDoModel todoIn) {
         this.setId(todoIn.getId());
         this.setTask(todoIn.getTask());
         this.setProject(todoIn.isProject());
+        this.setPostIt(todoIn.isPostIt());
         this.setStatus(todoIn.isStatus());
         this.setBackgroundColor(todoIn.getBackgroundColor());
     }
@@ -75,12 +79,20 @@ public class TaskModel implements Serializable {
         return stringExtra.length() > imax ? stringExtra.substring(0, imax) : stringExtra;
     }
 
+    public boolean isPostIt() {
+        return isPostIt;
+    }
+
+    public void setPostIt(boolean postIt) {
+        isPostIt = postIt;
+    }
+
     public Integer getHierarchicalRoot() {
         return hierarchicalRoot;
     }
 
     public void setHierarchicalRoot(int hierarchicalRoot) {
-        this.hierarchicalRoot=hierarchicalRoot;
+        this.hierarchicalRoot = hierarchicalRoot;
     }
 
     public int getBackgroundColor() {
@@ -174,7 +186,7 @@ public class TaskModel implements Serializable {
     }
 
     public boolean isRoot() {
-        return hierarchicalRoot== getId();
+        return hierarchicalRoot == getId();
     }
 
     public int getHierarchicalRank() {
@@ -206,6 +218,6 @@ public class TaskModel implements Serializable {
     }
 
     public boolean isHierarchicalRoot(int expandInOnlyRootView) {
-        return hierarchicalRoot==expandInOnlyRootView;
+        return hierarchicalRoot == expandInOnlyRootView;
     }
 }

@@ -22,6 +22,10 @@
                     android:text="Is Task-Projet"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" android:id="@+id/checkBox" android:minHeight="48dp" android:layout_weight=".9"/>
+            <CheckBox
+                    android:text="Is Post It"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" android:id="@+id/checkBoxPostIt" android:minHeight="48dp" android:layout_weight="1"/>
             <View
                     android:id="@+id/preview_selected_color"
                     android:layout_width="48dp"
