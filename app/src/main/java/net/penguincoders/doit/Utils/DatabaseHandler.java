@@ -5,12 +5,21 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.nfc.Tag;
+import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
+import net.penguincoders.doit.AddNewTask;
 import net.penguincoders.doit.MainActivity;
 import net.penguincoders.doit.Model.ParentModel;
 import net.penguincoders.doit.Model.TaskModel;
 import net.penguincoders.doit.Model.ToDoModel;
+import net.penguincoders.doit.R;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 import java.util.*;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
@@ -82,7 +91,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             "SELECT l." + ID + " " +
                     "FROM " + LINK_TABLE + " l " +
                     "  WHERE l." + IDPARENT + "=? " +
-                    "    AND l." + IDCHILD + "=? " ;
+                    "    AND l." + IDCHILD + "=? ";
 /*
     private final String SELECT_PARENT_TODO =
             "SELECT " +
@@ -160,8 +169,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
-    public HashMap<Integer,ToDoModel> getAllTasks() {
-        HashMap<Integer,ToDoModel> taskList = new LinkedHashMap<>();
+    public HashMap<Integer, ToDoModel> getAllTasks() {
+        HashMap<Integer, ToDoModel> taskList = new LinkedHashMap<>();
 
         Cursor cur = null;
         db.beginTransaction();
@@ -176,8 +185,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                                 cur.getInt(cur.getColumnIndex(ISPROJECT)) > 0,
                                 cur.getInt(cur.getColumnIndex(ISPOSTIT)) > 0,
                                 cur.getInt(cur.getColumnIndex(STATUS)) > 0,
-                                cur.getInt(cur.getColumnIndex(NUMCOLOR)) );
-                        taskList.put(task.getId(),task);
+                                cur.getInt(cur.getColumnIndex(NUMCOLOR)));
+                        taskList.put(task.getId(), task);
                     }
                     while (cur.moveToNext());
                 }
@@ -205,7 +214,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                                 cur.getInt(cur.getColumnIndex(ISPROJECT)) > 0,
                                 cur.getInt(cur.getColumnIndex(ISPOSTIT)) > 0,
                                 cur.getInt(cur.getColumnIndex(STATUS)) > 0,
-                                cur.getInt(cur.getColumnIndex(NUMCOLOR)) ,
+                                cur.getInt(cur.getColumnIndex(NUMCOLOR)),
                                 new ArrayList<TaskModel>(),
                                 new ArrayList<TaskModel>());
                         parentTaskList.add(task);
@@ -235,7 +244,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                                 cur.getInt(cur.getColumnIndex(ISPROJECT)) > 0,
                                 cur.getInt(cur.getColumnIndex(ISPOSTIT)) > 0,
                                 cur.getInt(cur.getColumnIndex(STATUS)) > 0,
-                                cur.getInt(cur.getColumnIndex(NUMCOLOR)) ,
+                                cur.getInt(cur.getColumnIndex(NUMCOLOR)),
                                 new ArrayList<TaskModel>(),
                                 new ArrayList<TaskModel>());
                         childTaskList.add(task);
@@ -320,7 +329,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 cv.put(IDCHILD, childId);
                 cv.put(IDPARENT, element);
                 Cursor cur = db.rawQuery(SELECT_LINK, new String[]{String.valueOf(element), String.valueOf(childId)});
-                if (cur.getCount()==0) {
+                if (cur.getCount() == 0) {
                     db.insert(LINK_TABLE, null, cv);
                 }
             }
@@ -355,5 +364,50 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
         return linkList;
+    }
+
+    public void exportDatabase() {
+        try {
+            File sd = Environment.getExternalStorageDirectory();
+            File data = Environment.getDataDirectory();
+
+            String currentDBPath = db.getPath();
+            String backupDBPath = "exportDatabase.db";
+            File currentDB = new File(data, currentDBPath);
+            File backupDB = new File(sd, backupDBPath);
+
+            FileChannel src = new FileInputStream(currentDB).getChannel();
+            FileChannel dst = new FileOutputStream(backupDB).getChannel();
+            dst.transferFrom(src, 0, src.size());
+            src.close();
+            dst.close();
+
+//            Toast.makeText(c, c.getResources().getString(R.string.exporterenToast), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+//            Toast.makeText(c, c.getResources().getString(R.string.portError), Toast.LENGTH_SHORT).show();
+            Log.d(AddNewTask.TAG, e.toString());
+        }
+    }
+
+    public void importDatabase() {
+        try {
+            File sd = Environment.getExternalStorageDirectory();
+            File data = Environment.getDataDirectory();
+
+            String currentDBPath = db.getPath();
+            String backupDBPath = "importDatabase.db";
+            File backupDB = new File(data, currentDBPath);
+            File currentDB = new File(sd, backupDBPath);
+
+            FileChannel src = new FileInputStream(currentDB).getChannel();
+            FileChannel dst = new FileOutputStream(backupDB).getChannel();
+            dst.transferFrom(src, 0, src.size());
+            src.close();
+            dst.close();
+//            Toast.makeText(c, c.getResources().getString(R.string.importerenToast), Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+//            Toast.makeText(c, c.getResources().getString(R.string.portError), Toast.LENGTH_SHORT).show();
+            Log.d(AddNewTask.TAG, e.toString());
+        }
     }
 }
