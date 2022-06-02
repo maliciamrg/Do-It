@@ -78,8 +78,8 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
         if (item.isPostIt()){holder.project.setTextSize(20);}
         holder.task.setText(task);
 
-        holder.project.setVisibility(item.isProject()||item.isPostIt() ? View.VISIBLE : View.GONE);
-        holder.task.setVisibility(item.isProject()||item.isPostIt() ? View.GONE : View.VISIBLE);
+        holder.project.setVisibility((item.isProject() && item.getHierarchicalRank()==0)||item.isPostIt() ? View.VISIBLE : View.GONE);
+        holder.task.setVisibility((item.isProject() && item.getHierarchicalRank()==0)||item.isPostIt() ? View.GONE : View.VISIBLE);
 
         holder.task.setOnCheckedChangeListener(null);//evite le pb de refresh quand on ajoute une ligne
         boolean checked = isChecked(item);

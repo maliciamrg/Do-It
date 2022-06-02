@@ -157,7 +157,7 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
                 //, "HierarchyTree \n solo task:"
                 //, "HierarchyTree \n project:"
                 //, "HierarchyTree \n master task:"
-                if (db.getAllParentTasks(todoIn.getId()).size() == 0) {
+                if (db.getAllParentTasks(todoIn.getId()).size() == 0 || todoIn.isProject()) {
 
                     taskTree.buildHierarchyTree(todoIn.getId());
 
@@ -224,7 +224,9 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
 
         if (tasksAdapter.isOnlyRootView()) {
             for (TaskModel todoEle : orderedTaskList) {
-                if (todoEle.getParentList().size() == 0 || todoEle.isHierarchicalRoot(tasksAdapter.getExpandInOnlyRootView())) {
+                if (todoEle.getParentList().size() == 0
+                        || todoEle.isHierarchicalRoot(tasksAdapter.getExpandInOnlyRootView())
+                        || (todoEle.isProject() && todoEle.getHierarchicalRank()==0)) {
                     orderedAndFilteredTaskList.add(todoEle);
                 }
             }
