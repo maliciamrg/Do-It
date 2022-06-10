@@ -3,8 +3,7 @@ package net.penguincoders.doit.Adapters;
 import com.malicia.mrg.adapters.TaskAdapter;
 import net.penguincoders.doit.MainActivity;
 import net.penguincoders.doit.Model.TaskModel;
-import net.penguincoders.doit.Model.ToDoModel;
-import net.penguincoders.doit.Utils.DatabaseHandler;
+import com.malicia.mrg.utils.DatabaseHandler;
 
 public class ToDoAdapter extends TaskAdapter {
 

@@ -1,4 +1,4 @@
-package net.penguincoders.doit.Utils;
+package com.malicia.mrg.utils;
 
 import android.content.ContentValues;
 import android.content.Context;

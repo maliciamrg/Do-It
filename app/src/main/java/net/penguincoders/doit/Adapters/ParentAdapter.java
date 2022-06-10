@@ -3,9 +3,8 @@ package net.penguincoders.doit.Adapters;
 import android.view.View;
 import com.malicia.mrg.adapters.TaskAdapter;
 import net.penguincoders.doit.Model.TaskModel;
-import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.ParentActivity;
-import net.penguincoders.doit.Utils.DatabaseHandler;
+import com.malicia.mrg.utils.DatabaseHandler;
 
 import java.util.ArrayList;
 import java.util.Hashtable;

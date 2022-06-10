@@ -20,8 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import net.penguincoders.doit.Model.TaskModel;
-import net.penguincoders.doit.Model.ToDoModel;
-import net.penguincoders.doit.Utils.DatabaseHandler;
+import com.malicia.mrg.utils.DatabaseHandler;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 import java.io.Serializable;

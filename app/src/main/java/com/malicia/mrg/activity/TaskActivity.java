@@ -17,7 +17,7 @@ import net.penguincoders.doit.Model.TaskModel;
 import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.R;
 import net.penguincoders.doit.RecyclerItemTouchHelper;
-import net.penguincoders.doit.Utils.DatabaseHandler;
+import com.malicia.mrg.utils.DatabaseHandler;
 
 import java.util.*;
 
