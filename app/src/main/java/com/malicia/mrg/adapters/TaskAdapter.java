@@ -1,6 +1,7 @@
 package com.malicia.mrg.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,6 +72,7 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
         if (hierarchicalRoot != null) {
             backgroundColor = todoList.get(hierarchicalRoot).getBackgroundColor();
         }
+        if (taskList.get(position).isInPostItZone()){backgroundColor = 0xFF8B8726;}
         holder.rl1.setBackgroundColor(backgroundColor);
 
         String task = item.getTask();
