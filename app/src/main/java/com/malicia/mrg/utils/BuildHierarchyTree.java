@@ -26,22 +26,23 @@ public class BuildHierarchyTree {
     }
 
     public void buildHierarchyTree(int id) {
-        buildHierarchyTree(todoMapTree.get(id).get(0));
+        buildHierarchyTree(todoMapTree.get(id).get(0), 0);
     }
 
-    public void buildHierarchyTree(ParentModel root) {
+    public void buildHierarchyTree(ParentModel root, int deep) {
+        deep ++;
         ParentModel todoMapElement = root;
         List<ParentModel> subs = getSubsById(todoMapElement.getTaskId());
         todoMapElement.setChildList(subs);
-        if (subs.size() == 0)
+        if (subs.size() == 0 || deep > 9)
             return;
         for (ParentModel em : subs)
-            buildHierarchyTree(em);
+            buildHierarchyTree(em, deep);
     }
 
     //Get subordinates list by given id, Time O(n), Space O(k) ~ O(n), k is number of subordinates
     private List<ParentModel> getSubsById(int parentId) {
-        List<ParentModel> subs = new ArrayList<ParentModel>();
+        final List<ParentModel> subs = new ArrayList<ParentModel>();
 
         for (List<ParentModel> lstEle : todoMapTree.values()) {
             for (ParentModel todoMapEle : lstEle) {
@@ -63,6 +64,7 @@ public class BuildHierarchyTree {
     }
 
     public void printHierarchyTree(ParentModel root, int level, List<HierarchyData> hashRetour,StringBuilder str) {
+        if (level>9) return;
         for (int i = 0; i < level; i++) {
             str.append("+--");
         }
