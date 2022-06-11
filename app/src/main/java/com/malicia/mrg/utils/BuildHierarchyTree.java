@@ -4,9 +4,7 @@ import android.util.Log;
 import net.penguincoders.doit.MainActivity;
 import net.penguincoders.doit.Model.ParentModel;
 
-import java.io.CharArrayWriter;
 import java.util.*;
-import java.util.logging.Logger;
 
 public class BuildHierarchyTree {
 

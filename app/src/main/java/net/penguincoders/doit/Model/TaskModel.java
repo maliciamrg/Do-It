@@ -18,6 +18,8 @@ public class TaskModel implements Serializable {
     private int hierarchicalLevel;
     private int hierarchicalRootNbSubtask;
     private boolean checkable;
+    private boolean inPostItZone = false;
+
     public TaskModel(int id,
                      String task,
                      boolean isProject,
@@ -35,6 +37,7 @@ public class TaskModel implements Serializable {
         this.childList = childList;
         this.parentList = parentList;
         this.hierarchicalRoot = id;
+        //setCheckable();
     }
 
     public TaskModel(ToDoModel todoIn) {
@@ -44,6 +47,20 @@ public class TaskModel implements Serializable {
         this.setPostIt(todoIn.isPostIt());
         this.setStatus(todoIn.isStatus());
         this.setBackgroundColor(todoIn.getBackgroundColor());
+        //setCheckable();
+    }
+
+    public TaskModel(TaskModel taskEle) {
+        this.setPostIt(taskEle.isPostIt());
+        this.setId(taskEle.getId());
+        this.setTask(taskEle.getTask());
+        this.setProject(taskEle.isProject());
+        this.setStatus(taskEle.isStatus());
+        this.setBackgroundColor(taskEle.getBackgroundColor());
+        this.childList = taskEle.getChildList();
+        this.parentList = taskEle.getParentList();
+        this.hierarchicalRoot = taskEle.getHierarchicalRoot();
+        setCheckable();
     }
 
     public static String childListToString(List<TaskModel> childList) {
@@ -77,6 +94,14 @@ public class TaskModel implements Serializable {
     public static String stringMax(String stringExtra) {
         int imax = 60;
         return stringExtra.length() > imax ? stringExtra.substring(0, imax) : stringExtra;
+    }
+
+    public boolean isInPostItZone() {
+        return inPostItZone;
+    }
+
+    public void setInPostItZone(boolean inPostItZone) {
+        this.inPostItZone = inPostItZone;
     }
 
     public boolean isPostIt() {
@@ -218,9 +243,10 @@ public class TaskModel implements Serializable {
     }
 
     public boolean isHierarchicalRoot(int expandInOnlyRootView) {
-        if(hierarchicalRoot==null) {
+        if (hierarchicalRoot == null) {
             return false;
         }
         return hierarchicalRoot == expandInOnlyRootView;
     }
+
 }

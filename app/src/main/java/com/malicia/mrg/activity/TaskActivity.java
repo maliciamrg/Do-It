@@ -217,8 +217,14 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
         for (int i = 0; i < orderedTaskList.size(); i++) {
             TaskModel taskEle = orderedTaskList.get(i);
             if (taskEle.isPostIt()) {
-                orderedTaskList.remove(i);
-                orderedTaskList.add(0, taskEle);
+                if (taskEle.getHierarchicalRank() == 0) {
+                    orderedTaskList.remove(i);
+                } else {
+                    i++;
+                }
+                TaskModel taskElePostItZone = new TaskModel(taskEle);
+                taskElePostItZone.setInPostItZone(true);
+                orderedTaskList.add(0, taskElePostItZone);
             }
         }
 
@@ -226,7 +232,8 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
             for (TaskModel todoEle : orderedTaskList) {
                 if (todoEle.getParentList().size() == 0
                         || todoEle.isHierarchicalRoot(tasksAdapter.getExpandInOnlyRootView())
-                        || (todoEle.isProject() && todoEle.getHierarchicalRank()==0)) {
+                        || (todoEle.isProject() && todoEle.getHierarchicalRank() == 0)
+                        || (todoEle.isPostIt() && todoEle.isInPostItZone())) {
                     orderedAndFilteredTaskList.add(todoEle);
                 }
             }

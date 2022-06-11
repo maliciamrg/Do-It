@@ -75,11 +75,11 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
 
         String task = item.getTask();
         holder.project.setText(task);
-        if (item.isPostIt()){holder.project.setTextSize(20);}
+        if ((item.isPostIt()&& item.isInPostItZone())){holder.project.setTextSize(20);}
         holder.task.setText(task);
 
-        holder.project.setVisibility((item.isProject() && item.getHierarchicalRank()==0)||item.isPostIt() ? View.VISIBLE : View.GONE);
-        holder.task.setVisibility((item.isProject() && item.getHierarchicalRank()==0)||item.isPostIt() ? View.GONE : View.VISIBLE);
+        holder.project.setVisibility((item.isProject() && item.getHierarchicalRank()==0)||(item.isPostIt()&& item.isInPostItZone()) ? View.VISIBLE : View.GONE);
+        holder.task.setVisibility((item.isProject() && item.getHierarchicalRank()==0)||(item.isPostIt()&& item.isInPostItZone()) ? View.GONE : View.VISIBLE);
 
         holder.task.setOnCheckedChangeListener(null);//evite le pb de refresh quand on ajoute une ligne
         boolean checked = isChecked(item);
@@ -165,7 +165,7 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
         String text = "";
         List<TaskModel> parentList = item.getParentList();
         List<TaskModel> childList = item.getChildList();
-        if (( (parentList != null && parentList.size() > 0) || (childList != null && childList.size() > 0) ) && !item.isPostIt()) {
+        if (( (parentList != null && parentList.size() > 0) || (childList != null && childList.size() > 0) ) && !(item.isPostIt()&& item.isInPostItZone())) {
             holder.childList.setVisibility(detailVisibility);
         } else {
             holder.childList.setVisibility(View.GONE);
