@@ -77,6 +77,17 @@ public class TaskModel implements Serializable {
         return str.toString();
     }
 
+    public static String rootToString(ToDoModel root) {
+        StringBuilder str = new StringBuilder();
+        str.append("Root:");
+        str.append("\n");
+        str.append(" ");
+        str.append(root.isStatus() ? "☒" : "☐");
+        str.append("-");
+        str.append(stringMax(root.getTask()));
+        return str.toString();
+    }
+
     public static String parentListToString(List<TaskModel> parentList) {
         StringBuilder str = new StringBuilder();
         str.append("Parent(s):");
