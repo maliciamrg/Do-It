@@ -1,7 +1,6 @@
 package com.malicia.mrg.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -236,11 +235,12 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
         notifyDataSetChanged();
     }
 
-    public void deleteAllChecked(int position) {
-        activity.delAllChecked();
+    public int deleteAllChecked(int position) {
+        int ret = activity.delAllChecked();
         activity.refreshData(true);
         notifyItemRemoved(position);
         notifyDataSetChanged();
+        return ret;
     }
 
     public void editItem(int position) {

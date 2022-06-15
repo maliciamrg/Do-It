@@ -262,11 +262,14 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
         notifyDataSetChanged();
     }
 
-    public void delAllChecked() {
+    public int delAllChecked() {
+        int n = 0;
         for (ToDoModel element : new ArrayList<ToDoModel>(todoList.values())) {
             if (!element.isProject() && element.isStatus()) {
                 db.deleteTask(element.getId());
+                n++;
             }
         }
+        return n;
     }
 }

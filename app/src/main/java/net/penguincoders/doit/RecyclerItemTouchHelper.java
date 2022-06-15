@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
@@ -45,7 +46,8 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                adapter.deleteAllChecked(position);
+                                int nbDel = adapter.deleteAllChecked(position);
+                                Toast.makeText(adapter.getContext(), nbDel + " todo deleted!", Toast.LENGTH_LONG).show();
                                 adapter.notifyItemChanged(viewHolder.getAdapterPosition());
                             }
                         });
