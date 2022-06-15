@@ -3,6 +3,7 @@ package com.malicia.mrg.activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -242,6 +243,8 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
             orderedAndFilteredTaskList = orderedTaskList;
         }
 
+        TextView TaskText = findViewById(R.id.tasksText);
+        TaskText.setText("Tasks :" + todoList.size());
 
         tasksAdapter.setTasks(orderedAndFilteredTaskList);
         notifyDataSetChanged();
