@@ -119,10 +119,14 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
     }
 
     private void setImgHierarchicalView() {
-        if (tasksAdapter.isHierarchicalView()) {
+        if (tasksAdapter.isHierarchical()) {
             fabUp2.setImageResource(android.R.drawable.ic_menu_sort_by_size);
-        } else {
+        }
+        if (tasksAdapter.isAlphabet()) {
             fabUp2.setImageResource(android.R.drawable.ic_menu_sort_alphabetically);
+        }
+        if (tasksAdapter.isFirstFirst()) {
+            fabUp2.setImageResource(android.R.drawable.ic_menu_day);
         }
     }
 
@@ -147,7 +151,7 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
         }
 
         List<TaskModel> orderedTaskList = new ArrayList<>();
-        if (tasksAdapter.isHierarchicalView()) {
+        if (tasksAdapter.isHierarchical()) {
             //tri hierarchically
 
             BuildHierarchyTree taskTree = new BuildHierarchyTree(db.getAllLinks());

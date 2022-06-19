@@ -21,13 +21,15 @@ import com.malicia.mrg.utils.DatabaseHandler;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.malicia.mrg.adapters.TaskAdapter.HierarchicalView.*;
+
 public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     public static final int MARGINGLEVEL = 50;
     protected final DatabaseHandler db;
     protected final TaskActivity activity;
     private Integer detailVisibility = View.GONE;
-    private boolean hierarchicalView = true;
+    private HierarchicalView hierarchicalView = HIERARCHICAL;
     private boolean onlyRootView = true;
     private List<TaskModel> taskList;
     private View itemView;
@@ -97,14 +99,14 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
 
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.task.getLayoutParams();
         int levelHierarchical = 0;
-        if (isHierarchicalView()) {
+        if (isHierarchical()) {
             levelHierarchical = item.getHierarchicalLevel() * MARGINGLEVEL;
         }
         params.setMarginStart(levelHierarchical);
         holder.task.setLayoutParams(params);
 
         int nbSubTask = item.getHierarchicalRootNbSubtask();
-        if (nbSubTask > 0 && isHierarchicalView()) {
+        if (nbSubTask > 0 && isHierarchical()) {
             holder.nbSub.setText(String.valueOf(nbSubTask));
         } else {
             holder.nbSub.setText("");
@@ -181,8 +183,10 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
             holder.childList.setVisibility(View.GONE);
         }
         if (isInPostItZone) {
-            String sepa = text != "" ? "\n" : "";
-            text = text + sepa + TaskModel.rootToString(todoList.get(hierarchicalRoot));
+            if (hierarchicalRoot != null) {
+                String sepa = text != "" ? "\n" : "";
+                text = text + sepa + TaskModel.rootToString(todoList.get(hierarchicalRoot));
+            }
         } else {
             if (parentList != null && parentList.size() > 0) {
                 String sepa = text != "" ? "\n" : "";
@@ -284,11 +288,29 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
     }
 
     public void swapHierarchicalView() {
-        hierarchicalView = !hierarchicalView;
+        switch(hierarchicalView) {
+            case HIERARCHICAL:
+                hierarchicalView=ALPHABET;
+                break;
+            case ALPHABET:
+                hierarchicalView=FIRSTFIRST;
+                break;
+            case FIRSTFIRST:
+                hierarchicalView=HIERARCHICAL;
+                break;
+            default:
+                hierarchicalView=HIERARCHICAL;
+        }
     }
 
-    public boolean isHierarchicalView() {
-        return hierarchicalView;
+    public boolean isHierarchical() {
+        return hierarchicalView == HIERARCHICAL;
+    }
+    public boolean isAlphabet() {
+        return hierarchicalView == ALPHABET;
+    }
+    public boolean isFirstFirst() {
+        return hierarchicalView == FIRSTFIRST;
     }
 
     public void swapOnlyRootView() {
@@ -324,5 +346,11 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
             rl1 = view.findViewById(R.id.rl1);
             cv = view.findViewById(R.id.cv);
         }
+    }
+
+    enum HierarchicalView {
+        HIERARCHICAL,
+        ALPHABET,
+        FIRSTFIRST
     }
 }

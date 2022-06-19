@@ -47,6 +47,7 @@ public class TaskModel implements Serializable {
         this.setPostIt(todoIn.isPostIt());
         this.setStatus(todoIn.isStatus());
         this.setBackgroundColor(todoIn.getBackgroundColor());
+        this.hierarchicalRoot = id;
         //setCheckable();
     }
 
