@@ -103,7 +103,7 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
         fabUp3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tasksAdapter.swapOnlyRootView();
+                tasksAdapter.swapViewFilter();
                 setImgOnlyRootView();
                 refreshData(false);
             }
@@ -111,9 +111,13 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
     }
 
     private void setImgOnlyRootView() {
-        if (tasksAdapter.isOnlyRootView()) {
+        if (tasksAdapter.isViewRoot()) {
             fabUp3.setImageResource(android.R.drawable.ic_media_rew);
-        } else {
+        }
+        if (tasksAdapter.isViewAll()) {
+            fabUp3.setImageResource(android.R.drawable.ic_media_pause);
+        }
+        if (tasksAdapter.isViewFirst()) {
             fabUp3.setImageResource(android.R.drawable.ic_media_ff);
         }
     }
@@ -124,9 +128,6 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
         }
         if (tasksAdapter.isAlphabet()) {
             fabUp2.setImageResource(android.R.drawable.ic_menu_sort_alphabetically);
-        }
-        if (tasksAdapter.isFirstFirst()) {
-            fabUp2.setImageResource(android.R.drawable.ic_menu_day);
         }
     }
 
@@ -233,18 +234,31 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
             }
         }
 
-        if (tasksAdapter.isOnlyRootView()) {
-            for (TaskModel todoEle : orderedTaskList) {
-                if (todoEle.getParentList().size() == 0
-                        || todoEle.isHierarchicalRoot(tasksAdapter.getExpandInOnlyRootView())
-                        || (todoEle.isProject() && todoEle.getHierarchicalRank() == 0)
-                        || (todoEle.isPostIt() && todoEle.isInPostItZone())) {
-                    orderedAndFilteredTaskList.add(todoEle);
+        switch (tasksAdapter.getViewFilter()) {
+            case ROOT:
+                for (TaskModel todoEle : orderedTaskList) {
+                    if (todoEle.getParentList().size() == 0
+                            || todoEle.isHierarchicalRoot(tasksAdapter.getExpandInOnlyRootView())
+                            || (todoEle.isProject() && todoEle.getHierarchicalRank() == 0)
+                            || (todoEle.isPostIt() && todoEle.isInPostItZone())) {
+                        orderedAndFilteredTaskList.add(todoEle);
+                    }
                 }
-            }
-        } else {
-            tasksAdapter.setExpandInOnlyRootView(0);
-            orderedAndFilteredTaskList = orderedTaskList;
+                break;
+            case ALL:
+                tasksAdapter.setExpandInOnlyRootView(0);
+                orderedAndFilteredTaskList = orderedTaskList;
+                break;
+            case FIRST:
+                for (TaskModel todoEle : orderedTaskList) {
+                    if (todoEle.getChildList().size() == 0
+                            || (todoEle.isPostIt() && todoEle.isInPostItZone())) {
+                        orderedAndFilteredTaskList.add(todoEle);
+                    }
+                }
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + tasksAdapter.getViewFilter());
         }
 
         TextView TaskText = findViewById(R.id.tasksText);

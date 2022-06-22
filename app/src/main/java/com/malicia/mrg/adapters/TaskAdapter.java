@@ -12,6 +12,8 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.malicia.mrg.activity.TaskActivity;
+import com.malicia.mrg.utils.ViewFilter;
+import com.malicia.mrg.utils.ViewOrder;
 import net.penguincoders.doit.AddNewTask;
 import net.penguincoders.doit.Model.TaskModel;
 import net.penguincoders.doit.Model.ToDoModel;
@@ -21,7 +23,8 @@ import com.malicia.mrg.utils.DatabaseHandler;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.malicia.mrg.adapters.TaskAdapter.HierarchicalView.*;
+import static com.malicia.mrg.utils.ViewFilter.*;
+import static com.malicia.mrg.utils.ViewOrder.*;
 
 public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
@@ -29,16 +32,19 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
     protected final DatabaseHandler db;
     protected final TaskActivity activity;
     private Integer detailVisibility = View.GONE;
-    private HierarchicalView hierarchicalView = HIERARCHICAL;
-    private boolean onlyRootView = true;
+    private ViewOrder viewOrder = HIERARCHICAL;
+    private ViewFilter viewFilter = ViewFilter.ALL;
     private List<TaskModel> taskList;
     private View itemView;
     private int expandInOnlyRootView = 0;
     private HashMap<Integer, ToDoModel> todoList;
-
     public TaskAdapter(DatabaseHandler db, TaskActivity activity) {
         this.db = db;
         this.activity = activity;
+    }
+
+    public ViewFilter getViewFilter() {
+        return viewFilter;
     }
 
     public List<TaskModel> getTaskList() {
@@ -219,7 +225,7 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
 
     private void switcheExtendTask(TaskModel item) {
         if (item.isRoot()) {
-            if (isOnlyRootView() && expandInOnlyRootView != item.getId()) {
+            if (isViewRoot() && expandInOnlyRootView != item.getId()) {
                 expandInOnlyRootView = item.getId();
             } else {
                 expandInOnlyRootView = 0;
@@ -288,37 +294,52 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
     }
 
     public void swapHierarchicalView() {
-        switch(hierarchicalView) {
+        switch (viewOrder) {
             case HIERARCHICAL:
-                hierarchicalView=ALPHABET;
+                viewOrder = ALPHABET;
                 break;
             case ALPHABET:
-                hierarchicalView=FIRSTFIRST;
-                break;
-            case FIRSTFIRST:
-                hierarchicalView=HIERARCHICAL;
+                viewOrder = HIERARCHICAL;
                 break;
             default:
-                hierarchicalView=HIERARCHICAL;
+                viewOrder = HIERARCHICAL;
         }
     }
 
     public boolean isHierarchical() {
-        return hierarchicalView == HIERARCHICAL;
+        return viewOrder == HIERARCHICAL;
     }
+
     public boolean isAlphabet() {
-        return hierarchicalView == ALPHABET;
-    }
-    public boolean isFirstFirst() {
-        return hierarchicalView == FIRSTFIRST;
+        return viewOrder == ALPHABET;
     }
 
-    public void swapOnlyRootView() {
-        onlyRootView = !onlyRootView;
+    public void swapViewFilter() {
+        switch (viewFilter) {
+            case ROOT:
+                viewFilter = ALL;
+                break;
+            case ALL:
+                viewFilter = FIRST;
+                break;
+            case FIRST:
+                viewFilter = ROOT;
+                break;
+            default:
+                viewFilter = ROOT;
+        }
     }
 
-    public boolean isOnlyRootView() {
-        return onlyRootView;
+    public boolean isViewRoot() {
+        return viewFilter == ROOT;
+    }
+
+    public boolean isViewAll() {
+        return viewFilter == ALL;
+    }
+
+    public boolean isViewFirst() {
+        return viewFilter == FIRST;
     }
 
     protected abstract void checkedChanged(boolean isChecked, TaskModel item);
@@ -346,11 +367,5 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
             rl1 = view.findViewById(R.id.rl1);
             cv = view.findViewById(R.id.cv);
         }
-    }
-
-    enum HierarchicalView {
-        HIERARCHICAL,
-        ALPHABET,
-        FIRSTFIRST
     }
 }
