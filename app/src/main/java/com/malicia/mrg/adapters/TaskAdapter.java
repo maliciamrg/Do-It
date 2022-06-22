@@ -75,6 +75,7 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
 
         boolean isInPostItZone = item.isPostIt() && item.isInPostItZone();
         boolean isHeadOfProject = item.isProject() && item.getHierarchicalRank() == 0;
+        boolean isAFirst = item.getChildList().size()==0;
 
 
         Integer hierarchicalRoot = taskList.get(position).getHierarchicalRoot();
@@ -89,14 +90,21 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
         holder.rl1.setBackgroundColor(backgroundColor);
 
         String task = item.getTask();
-        holder.project.setText(task);
+        if (((isViewFirst() && isAFirst))) {
+            holder.project.setText(todoList.get(hierarchicalRoot).getTask());
+        } else {
+            holder.project.setText(task);
+        }
 
         if (isInPostItZone) {
             holder.project.setTextSize(20);
+        } else {
+            holder.project.setTextSize(12);
         }
         holder.task.setText(task);
 
-        holder.project.setVisibility(isHeadOfProject || isInPostItZone ? View.VISIBLE : View.GONE);
+
+        holder.project.setVisibility(isHeadOfProject || isInPostItZone || (isViewFirst() && isAFirst )? View.VISIBLE : View.GONE);
         holder.task.setVisibility(isHeadOfProject || isInPostItZone ? View.GONE : View.VISIBLE);
 
         holder.task.setOnCheckedChangeListener(null);//evite le pb de refresh quand on ajoute une ligne
