@@ -374,8 +374,8 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskV
         do {
             fromPositionTask = taskList.get(fromPosition);
             toPositionTask = taskList.get(toPosition);
-            System.out.println("before" + "\n" + "fromPosition=" + fromPosition + " fromPositionTask=" + fromPositionTask.getTask() + "\n" + fromPositionTask.toString());
-            System.out.println("before" + "\n" + "toPosition=" + toPosition + " toPositionTask=" + toPositionTask.getTask() + "\n" + toPositionTask.toString());
+//            System.out.println("before" + "\n" + "fromPosition=" + fromPosition + " fromPositionTask=" + fromPositionTask.getTask() + "\n" + fromPositionTask.toString());
+//            System.out.println("before" + "\n" + "toPosition=" + toPosition + " toPositionTask=" + toPositionTask.getTask() + "\n" + toPositionTask.toString());
         } while (fromPositionTask == null || toPositionTask == null);
 
         if (fromPositionTask.getHierarchicalLevel() == toPositionTask.getHierarchicalLevel() && fromPositionTask.getChildList().size() == 0 && toPositionTask.getChildList().size() == 0) {
@@ -456,8 +456,8 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskV
         toPositionTask.setChildList(db.getAllChildTasks(toPositionTask.getId()));
         toPositionTask.setParentList(db.getAllParentTasks(toPositionTask.getId()));
 
-        System.out.println("after" + "\n" + "fromPosition=" + fromPosition + " fromPositionTask=" + fromPositionTask.getTask() + "\n" + fromPositionTask.toString());
-        System.out.println("after" + "\n" + "toPosition=" + toPosition + " toPositionTask=" + toPositionTask.getTask() + "\n" + toPositionTask.toString());
+//        System.out.println("after" + "\n" + "fromPosition=" + fromPosition + " fromPositionTask=" + fromPositionTask.getTask() + "\n" + fromPositionTask.toString());
+//        System.out.println("after" + "\n" + "toPosition=" + toPosition + " toPositionTask=" + toPositionTask.getTask() + "\n" + toPositionTask.toString());
 
     }
 
@@ -481,14 +481,14 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskV
         int child = ret.getId();
         if (newParent == null) {
             db.deleteLink(oldParent.getId(), child);
-            System.out.println("del: " + oldParent.getId() + "-" + child);
+//            System.out.println("del: " + oldParent.getId() + "-" + child);
         } else {
             if (oldParent == null) {
                 db.addLink(newParent.getId(), child);
-                System.out.println("add: " + newParent.getId() + "-" + child);
+//                System.out.println("add: " + newParent.getId() + "-" + child);
             } else {
                 db.movelink(oldParent.getId(), newParent.getId(), child);
-                System.out.println(oldParent.getId() + "-" + child + "=>" + newParent.getId() + "-" + child);
+//                System.out.println(oldParent.getId() + "-" + child + "=>" + newParent.getId() + "-" + child);
             }
         }
         indentCheckBox(viewHolder, newHLevel);
