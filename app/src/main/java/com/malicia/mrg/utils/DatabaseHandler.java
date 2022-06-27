@@ -325,15 +325,39 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void addlink(int childId, Integer[] parent) {
         for (int element : parent) {
             if (childId != element) {
-                ContentValues cv = new ContentValues();
-                cv.put(IDCHILD, childId);
-                cv.put(IDPARENT, element);
-                Cursor cur = db.rawQuery(SELECT_LINK, new String[]{String.valueOf(element), String.valueOf(childId)});
-                if (cur.getCount() == 0) {
-                    db.insert(LINK_TABLE, null, cv);
-                }
+                addLink(element, childId);
             }
         }
+    }
+
+    public void movelink(int oldParent, int newParent, int childId) {
+
+        if (childId != newParent) {
+
+            deleteLink(oldParent, childId);
+
+            addLink(newParent, childId);
+        }
+
+    }
+
+    public void addLink(int newParent, int childId) {
+        //add new link
+        ContentValues cv = new ContentValues();
+        cv.put(IDCHILD, childId);
+        cv.put(IDPARENT, newParent);
+        Cursor cur = db.rawQuery(SELECT_LINK, new String[]{String.valueOf(newParent), String.valueOf(childId)});
+        if (cur.getCount() == 0) {
+            db.insert(LINK_TABLE, null, cv);
+        }
+    }
+
+    public void deleteLink(int oldParent, int childId) {
+        //delete old link
+        String[] param = new String[2];
+        param[0] = String.valueOf(oldParent);
+        param[1] = String.valueOf(childId);
+        db.delete(LINK_TABLE, IDPARENT + " = ? AND " + IDCHILD + " = ? ", param);
     }
 
     public List<ParentModel> getAllLinks() {

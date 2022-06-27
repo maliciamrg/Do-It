@@ -13,7 +13,7 @@ public class ToDoAdapter extends TaskAdapter {
     }
 
     @Override
-    protected void afterOnBindViewHolder(ViewHolder holder, TaskModel item) {
+    protected void afterOnBindViewHolder(TaskViewHolder holder, TaskModel item) {
 
     }
 

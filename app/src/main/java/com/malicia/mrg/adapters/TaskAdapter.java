@@ -26,7 +26,7 @@ import java.util.List;
 import static com.malicia.mrg.utils.ViewFilter.*;
 import static com.malicia.mrg.utils.ViewOrder.*;
 
-public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
+public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
     public static final int MARGINGLEVEL = 50;
     protected final DatabaseHandler db;
@@ -38,6 +38,7 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
     private View itemView;
     private int expandInOnlyRootView = 0;
     private HashMap<Integer, ToDoModel> todoList;
+
     public TaskAdapter(DatabaseHandler db, TaskActivity activity) {
         this.db = db;
         this.activity = activity;
@@ -61,21 +62,21 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.task_layout, parent, false);
-        return new ViewHolder(itemView);
+        return new TaskViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final TaskAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final TaskViewHolder holder, int position) {
         db.openDatabase();
         int holderPosition = holder.getAdapterPosition();
         final TaskModel item = (TaskModel) taskList.toArray()[holderPosition];
 
         boolean isInPostItZone = item.isPostIt() && item.isInPostItZone();
         boolean isHeadOfProject = item.isProject() && item.getHierarchicalRank() == 0;
-        boolean isAFirst = item.getChildList().size()==0;
+        boolean isAFirst = item.getChildList().size() == 0;
 
 
         Integer hierarchicalRoot = taskList.get(position).getHierarchicalRoot();
@@ -90,7 +91,7 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
         holder.rl1.setBackgroundColor(backgroundColor);
 
         String task = item.getTask();
-        if (((isViewFirst() && isAFirst))) {
+        if (((isViewFirst() && isAFirst && !isInPostItZone))) {
             holder.project.setText(todoList.get(hierarchicalRoot).getTask());
         } else {
             holder.project.setText(task);
@@ -104,20 +105,14 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
         holder.task.setText(task);
 
 
-        holder.project.setVisibility(isHeadOfProject || isInPostItZone || (isViewFirst() && isAFirst )? View.VISIBLE : View.GONE);
+        holder.project.setVisibility(isHeadOfProject || isInPostItZone || (isViewFirst() && isAFirst) ? View.VISIBLE : View.GONE);
         holder.task.setVisibility(isHeadOfProject || isInPostItZone ? View.GONE : View.VISIBLE);
 
         holder.task.setOnCheckedChangeListener(null);//evite le pb de refresh quand on ajoute une ligne
         boolean checked = isChecked(item);
         holder.task.setChecked(checked);
 
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.task.getLayoutParams();
-        int levelHierarchical = 0;
-        if (isHierarchical()) {
-            levelHierarchical = item.getHierarchicalLevel() * MARGINGLEVEL;
-        }
-        params.setMarginStart(levelHierarchical);
-        holder.task.setLayoutParams(params);
+        indentCheckBox(holder, item.getHierarchicalLevel());
 
         int nbSubTask = item.getHierarchicalRootNbSubtask();
         if (nbSubTask > 0 && isHierarchical()) {
@@ -160,7 +155,6 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
                 switcheExtendTask(item);
             }
         });
-
 
         holder.task.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -216,18 +210,29 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
         afterOnBindViewHolder(holder, item);
     }
 
-    protected abstract void afterOnBindViewHolder(ViewHolder holder, TaskModel item);
+    public void indentCheckBox(TaskViewHolder holder, int hierarchicalLevel) {
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.task.getLayoutParams();
+        int levelHierarchical = 0;
+        if (isHierarchical()) {
+            levelHierarchical = hierarchicalLevel * MARGINGLEVEL;
+        }
+        params.setMarginStart(levelHierarchical);
+        holder.task.setLayoutParams(params);
+    }
+
+    protected abstract void afterOnBindViewHolder(TaskViewHolder holder, TaskModel item);
 
     protected abstract boolean isChecked(TaskModel item);
 
     private boolean createNewWithParent(int holderPosition) {
-        TaskModel item = (TaskModel) taskList.toArray()[holderPosition];
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("parentClass", item);
-        AddNewTask fragment = new AddNewTask();
-        fragment.setArguments(bundle);
-        fragment.show(activity.getSupportFragmentManager(), AddNewTask.TAG);
-        return true;
+        return false;
+//        TaskModel item = (TaskModel) taskList.toArray()[holderPosition];
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable("parentClass", item);
+//        AddNewTask fragment = new AddNewTask();
+//        fragment.setArguments(bundle);
+//        fragment.show(activity.getSupportFragmentManager(), AddNewTask.TAG);
+//        return true;
     }
 
 
@@ -356,7 +361,186 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
         return (TaskModel) taskList.toArray()[position];
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public void swapTaskList(int fromPosition, int toPosition) {
+        //before Collections.swap(adapter.getTaskList(), fromPosition, toPosition);
+        // fromPosition element en mouvement
+        TaskModel fromPositionTask = taskList.get(fromPosition);
+        TaskModel toPositionTask = taskList.get(toPosition);
+        do {
+            fromPositionTask = taskList.get(fromPosition);
+            toPositionTask = taskList.get(toPosition);
+            System.out.println("fromPosition=" + fromPosition + " fromPositionTask=" + fromPositionTask.getTask());
+            System.out.println("toPosition=" + toPosition + " toPositionTask=" + toPositionTask.getTask());
+        } while (fromPositionTask == null || toPositionTask == null);
+
+        if (fromPositionTask.getHierarchicalLevel() == toPositionTask.getHierarchicalLevel()) {
+            return;
+        }
+
+        int a;
+        if (fromPosition < toPosition) {
+            //swapDOWN
+            if (fromPositionTask.getHierarchicalLevel() > toPositionTask.getHierarchicalLevel()) {
+                //super lien du old parent avec le swapper
+                int child = fromPositionTask.getId();
+                db.deleteLink(toPositionTask.getId(), child);
+                //add link
+                TaskModel newParent = findNewParentInTaskList(fromPosition, fromPositionTask.getHierarchicalLevel());
+                db.addLink(newParent.getId(), child);
+            } else {
+                //super lien du old parent avec le swapper
+                int child = toPositionTask.getId();
+                TaskModel oldParent = findNewParentInTaskList(toPosition-1, toPositionTask.getHierarchicalLevel());
+                db.deleteLink(oldParent.getId(), child);
+                //add link
+                db.addLink(fromPositionTask.getId(), child);
+            }
+        } else {
+            //swapUP
+            if (fromPositionTask.getHierarchicalLevel() > toPositionTask.getHierarchicalLevel()) {
+                //super lien de parent avec le swapper
+                int child = fromPositionTask.getId();
+                TaskModel oldParent = findNewParentInTaskList(fromPosition-1, fromPositionTask.getHierarchicalLevel());
+                db.deleteLink(oldParent.getId(), child);
+                //Recherche le new parent et add link
+                db.addLink(toPositionTask.getId(), child);
+            } else {
+                //super lien de parent avec le swapper
+                int child = toPositionTask.getId();
+                db.deleteLink(fromPositionTask.getId(), child);
+                //Recherche le new parent et add link
+                TaskModel newParent = findNewParentInTaskList(toPosition, toPositionTask.getHierarchicalLevel());
+                db.addLink(newParent.getId(), child);
+            }
+        }
+
+//
+//
+//
+//        TaskModel fromPositionParent = findParentInTaskList(fromPosition);
+//
+//        TaskModel toPositionParent = findParentInTaskList(toPosition);
+//
+//        TaskModel ret = taskList.get(fromPosition);
+//
+//        oldParent = findParentInTaskList(viewHolderPos);
+//
+//        //find new parent
+//        int newHLevel = ret.getHierarchicalLevel() + sens;
+//        if (newHLevel < 0) {
+//            newHLevel = 0;
+//        }
+//        for (int p = viewHolderPos - 1; p >= 0; p--) {
+//            if (taskList.get(p).getHierarchicalLevel() < newHLevel) {
+//                newParent = taskList.get(p);
+//                break;
+//            }
+//        }
+//        newHLevel = newParent==null? newHLevel : newParent.getHierarchicalLevel() +1 ;
+//
+//        int child = ret.getId();
+//        if (newParent == null) {
+//            db.deleteLink(oldParent.getId(), child);
+//            System.out.println("del: " + oldParent.getId() + "-" + child);
+//        } else {
+//            if (oldParent == null) {
+//                db.addLink(newParent.getId(), child);
+//                System.out.println("add: " + newParent.getId() + "-" + child);
+//            } else {
+//                db.movelink(oldParent.getId(), newParent.getId(), child);
+//                System.out.println(oldParent.getId() + "-" + child + "=>" + newParent.getId() + "-" + child);
+//            }
+//        }
+//        indentCheckBox(viewHolder, newHLevel);
+////
+////        //fromPosition element en mouvement
+////        Integer[] ele = new Integer[4];
+////        ele[1] = fromPosition;
+////        ele[2] = toPosition;
+////        if (fromPosition > toPosition) {
+////            ele[1] = toPosition;
+////            ele[2] = fromPosition;
+////        }
+////        ele[0] = ele[1] - 1;
+////        ele[3] = ele[2] + 1;
+////
+////        //ele[1]
+////        Integer eleTraiter = ele[1];
+////
+////        TaskModel ele_0 = findParentInTaskList(ele[0]);
+////        TaskModel ele_1 = findParentInTaskList(ele[1]);
+////        TaskModel ele_2 = findParentInTaskList(ele[2]);
+////        TaskModel ele_3 = findParentInTaskList(ele[3]);
+////
+////        TaskModel eleEnMvt = taskList.get(fromPosition);
+////        TaskModel eleDepInc = taskList.get(toPosition);
+//
+//
+//        int a = 1;
+    }
+
+    public void editIdent(TaskViewHolder viewHolder, int viewHolderPos, Integer sens) {
+
+        TaskModel oldParent = null;
+        TaskModel newParent = null;
+
+        TaskModel ret = taskList.get(viewHolderPos);
+
+        oldParent = findOldParentInTaskList(viewHolderPos);
+
+        //find new parent
+        int newHLevel = ret.getHierarchicalLevel() + sens;
+        if (newHLevel < 0) {
+            newHLevel = 0;
+        }
+        newParent = findNewParentInTaskList(viewHolderPos, newHLevel);
+        newHLevel = newParent == null ? newHLevel : newParent.getHierarchicalLevel() + 1;
+
+        int child = ret.getId();
+        if (newParent == null) {
+            db.deleteLink(oldParent.getId(), child);
+            System.out.println("del: " + oldParent.getId() + "-" + child);
+        } else {
+            if (oldParent == null) {
+                db.addLink(newParent.getId(), child);
+                System.out.println("add: " + newParent.getId() + "-" + child);
+            } else {
+                db.movelink(oldParent.getId(), newParent.getId(), child);
+                System.out.println(oldParent.getId() + "-" + child + "=>" + newParent.getId() + "-" + child);
+            }
+        }
+        indentCheckBox(viewHolder, newHLevel);
+    }
+
+    private TaskModel findNewParentInTaskList(int viewHolderPos, int newHLevel) {
+        TaskModel newParent = null;
+        for (int p = viewHolderPos - 1; p >= 0; p--) {
+            if (taskList.get(p).getHierarchicalLevel() < newHLevel) {
+                newParent = taskList.get(p);
+                break;
+            }
+        }
+        return newParent;
+    }
+
+    private TaskModel findOldParentInTaskList(int viewHolderPos) {
+        //find old parent
+        TaskModel oldParent = null;
+        int id = taskList.get(viewHolderPos).getId();
+        for (int p = viewHolderPos - 1; p >= 0; p--) {
+            if (taskList.get(p).isParent(id)) {
+                oldParent = taskList.get(p);
+                break;
+            }
+        }
+        return oldParent;
+    }
+
+    public void refreshActivityData(boolean b) {
+        activity.refreshData(true);
+    }
+
+    public static class TaskViewHolder extends RecyclerView.ViewHolder {
         public CheckBox task;
         public TextView project;
         TextView childList;
@@ -365,7 +549,7 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewH
         LinearLayout ll1;
         CardView cv;
 
-        ViewHolder(View view) {
+        TaskViewHolder(View view) {
             super(view);
             task = view.findViewById(R.id.todoCheckBox);
             project = view.findViewById(R.id.textView3);

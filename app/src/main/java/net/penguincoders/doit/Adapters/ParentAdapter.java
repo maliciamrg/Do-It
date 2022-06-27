@@ -22,7 +22,7 @@ public class ParentAdapter extends TaskAdapter {
     }
 
     @Override
-    protected void afterOnBindViewHolder(ViewHolder holder, TaskModel item) {
+    protected void afterOnBindViewHolder(TaskViewHolder holder, TaskModel item) {
         holder.project.setText("---Project---");
         holder.task.setVisibility(View.VISIBLE);
     }
