@@ -29,6 +29,8 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     private boolean reloadReady;
     private boolean toRefresh;
 
+    private long timeActive;
+
     public RecyclerItemTouchHelper(TaskAdapter adapter) {
         super(ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         this.adapter = adapter;
@@ -92,6 +94,20 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     @Override
     public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+
+//        System.out.println("actionState=" + actionState + " isCurrentlyActive=" + isCurrentlyActive);
+        if (isCurrentlyActive) {
+            if (timeActive == 0) {
+                timeActive = System.currentTimeMillis();
+            }
+        }
+        if (timeActive != 0 && System.currentTimeMillis() - timeActive > 1200) {
+            //kill long press
+            adapter.removeFragmentByTag(AddNewTask.TAG);
+            timeActive = 0;
+        }
+
+
         Drawable icon;
         ColorDrawable background;
         View itemView = viewHolder.itemView;
@@ -159,8 +175,8 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
                         if (Math.abs(dX) > 1.5 * ecartBase) {
                             background = new ColorDrawable(Color.RED);
                             if (reloadReady) {
-                                adapter.editIdent((TaskAdapter.TaskViewHolder) viewHolder,viewHolder.getAdapterPosition(),sens);
-                                if (isCurrentlyActive){
+                                adapter.editIdent((TaskAdapter.TaskViewHolder) viewHolder, viewHolder.getAdapterPosition(), sens);
+                                if (isCurrentlyActive) {
                                     toRefresh = true;
                                 }
                                 reloadReady = false;
@@ -201,7 +217,8 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
         }
         if (toRefresh && !isCurrentlyActive) {
             adapter.refreshActivityData(true);
-            toRefresh=false;
+            toRefresh = false;
         }
     }
+
 }

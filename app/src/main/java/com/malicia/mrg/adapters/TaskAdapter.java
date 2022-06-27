@@ -1,5 +1,7 @@
 package com.malicia.mrg.adapters;
 
+import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +11,7 @@ import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.malicia.mrg.activity.TaskActivity;
@@ -226,14 +229,14 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskV
     protected abstract boolean isChecked(TaskModel item);
 
     private boolean createNewWithParent(int holderPosition) {
-        return false;
-//        TaskModel item = (TaskModel) taskList.toArray()[holderPosition];
-//        Bundle bundle = new Bundle();
-//        bundle.putSerializable("parentClass", item);
-//        AddNewTask fragment = new AddNewTask();
-//        fragment.setArguments(bundle);
-//        fragment.show(activity.getSupportFragmentManager(), AddNewTask.TAG);
-//        return true;
+//        return false;
+        TaskModel item = (TaskModel) taskList.toArray()[holderPosition];
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("parentClass", item);
+        AddNewTask fragment = new AddNewTask();
+        fragment.setArguments(bundle);
+        fragment.show(activity.getSupportFragmentManager(), AddNewTask.TAG);
+        return true;
     }
 
 
@@ -520,6 +523,21 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskV
 
     public void refreshActivityData(boolean b) {
         activity.refreshData(true);
+    }
+    public Boolean removeFragmentByTag(String tag) {
+        Context context = activity;
+        int exitTansaction = 0;
+        Fragment fragment = activity.getSupportFragmentManager().findFragmentByTag(tag);
+        if (fragment != null) {
+            fragment.onStop();
+//            FragmentTransaction ft = ((Activity) context)
+//                    .getFragmentManager().beginTransaction();
+//            ft.setCustomAnimations(0, exitTansaction);
+//            ft.remove(fragment);
+//            ft.commit();
+            return true;
+        }
+        return false;
     }
 
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
