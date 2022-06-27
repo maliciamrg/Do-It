@@ -19,6 +19,9 @@ public class ParentAdapter extends TaskAdapter {
     public ParentAdapter(DatabaseHandler db, ParentActivity activity) {
         super(db,activity);
         this.activity = activity;
+        do {
+            swapViewFilter();
+        } while (!isViewRoot());
     }
 
     @Override
