@@ -165,18 +165,21 @@ public class TaskModel implements Serializable {
 
     @Override
     public String toString() {
-        return "ToDoModel{" +
-                "id=" + getId() +
-                ", isProject=" + isProject() +
-                ", status=" + isStatus() +
-                ", task='" + getTask() + '\'' +
-                ", backgroundColor=" + getBackgroundColor() +
-                ", childList=" + childList +
-                ", parentList=" + parentList +
+        return "TaskModel{" +
+                "id=" + id +
+                ", isProject=" + isProject +
+                ", isPostIt=" + isPostIt +
+                ", status=" + status +
+                ", task='" + task + '\'' +
+                ", backgroundColor=" + backgroundColor +
+                ", childList=" + childList.size() +
+                ", parentList=" + parentList.size() +
                 ", hierarchicalRoot=" + hierarchicalRoot +
                 ", hierarchicalRank=" + hierarchicalRank +
                 ", hierarchicalLevel=" + hierarchicalLevel +
                 ", hierarchicalRootNbSubtask=" + hierarchicalRootNbSubtask +
+                ", checkable=" + checkable +
+                ", inPostItZone=" + inPostItZone +
                 '}';
     }
 

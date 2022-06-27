@@ -329,7 +329,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             }
         }
     }
-
+    public void addlink(Integer[] childId,int parent) {
+        for (int element : childId) {
+            if (parent != element) {
+                addLink(parent, element);
+            }
+        }
+    }
     public void movelink(int oldParent, int newParent, int childId) {
 
         if (childId != newParent) {

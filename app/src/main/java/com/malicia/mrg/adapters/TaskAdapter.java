@@ -20,6 +20,7 @@ import net.penguincoders.doit.Model.ToDoModel;
 import net.penguincoders.doit.R;
 import com.malicia.mrg.utils.DatabaseHandler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -362,6 +363,10 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskV
     }
 
     public void swapTaskList(int fromPosition, int toPosition) {
+        TaskModel newParent = null;
+        TaskModel oldParent = null;
+        List<TaskModel> childsEmpty = new ArrayList<>();
+
         //before Collections.swap(adapter.getTaskList(), fromPosition, toPosition);
         // fromPosition element en mouvement
         TaskModel fromPositionTask = taskList.get(fromPosition);
@@ -369,114 +374,91 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskV
         do {
             fromPositionTask = taskList.get(fromPosition);
             toPositionTask = taskList.get(toPosition);
-            System.out.println("fromPosition=" + fromPosition + " fromPositionTask=" + fromPositionTask.getTask());
-            System.out.println("toPosition=" + toPosition + " toPositionTask=" + toPositionTask.getTask());
+            System.out.println("before" + "\n" + "fromPosition=" + fromPosition + " fromPositionTask=" + fromPositionTask.getTask() + "\n" + fromPositionTask.toString());
+            System.out.println("before" + "\n" + "toPosition=" + toPosition + " toPositionTask=" + toPositionTask.getTask() + "\n" + toPositionTask.toString());
         } while (fromPositionTask == null || toPositionTask == null);
 
-        if (fromPositionTask.getHierarchicalLevel() == toPositionTask.getHierarchicalLevel()) {
+        if (fromPositionTask.getHierarchicalLevel() == toPositionTask.getHierarchicalLevel() && fromPositionTask.getChildList().size() == 0 && toPositionTask.getChildList().size() == 0) {
             return;
         }
 
-        int a;
-        if (fromPosition < toPosition) {
-            //swapDOWN
-            if (fromPositionTask.getHierarchicalLevel() > toPositionTask.getHierarchicalLevel()) {
-                //super lien du old parent avec le swapper
-                int child = fromPositionTask.getId();
-                db.deleteLink(toPositionTask.getId(), child);
-                //add link
-                TaskModel newParent = findNewParentInTaskList(fromPosition, fromPositionTask.getHierarchicalLevel());
-                db.addLink(newParent.getId(), child);
+        if (fromPositionTask.getHierarchicalLevel() == toPositionTask.getHierarchicalLevel()) {
+
+            TaskModel fromTask;
+            TaskModel toTask;
+            if (fromPositionTask.getChildList().size() > 0) {
+                fromTask = fromPositionTask;
+                toTask = toPositionTask;
             } else {
-                //super lien du old parent avec le swapper
-                int child = toPositionTask.getId();
-                TaskModel oldParent = findNewParentInTaskList(toPosition-1, toPositionTask.getHierarchicalLevel());
-                db.deleteLink(oldParent.getId(), child);
-                //add link
-                db.addLink(fromPositionTask.getId(), child);
+                fromTask = toPositionTask;
+                toTask = fromPositionTask;
             }
+
+            List<TaskModel> childs = db.getAllChildTasks(fromTask.getId());
+            List<Integer> childID = new ArrayList<>();
+            for (TaskModel child : childs) {
+                childID.add(child.getId());
+            }
+            Integer[] childIDInt = new Integer[childID.size()];
+            childIDInt = childID.toArray(childIDInt);
+            db.deleteLinkParent(fromTask.getId());
+            db.addlink(childIDInt, toTask.getId());
+
         } else {
-            //swapUP
-            if (fromPositionTask.getHierarchicalLevel() > toPositionTask.getHierarchicalLevel()) {
-                //super lien de parent avec le swapper
-                int child = fromPositionTask.getId();
-                TaskModel oldParent = findNewParentInTaskList(fromPosition-1, fromPositionTask.getHierarchicalLevel());
-                db.deleteLink(oldParent.getId(), child);
-                //Recherche le new parent et add link
-                db.addLink(toPositionTask.getId(), child);
+            if (fromPosition < toPosition) {
+                //swapDOWN
+                if (fromPositionTask.getHierarchicalLevel() > toPositionTask.getHierarchicalLevel()) {
+                    //super lien du old parent avec le swapper
+                    int child = fromPositionTask.getId();
+                    db.deleteLink(toPositionTask.getId(), child);
+                    //add link
+                    newParent = findNewParentInTaskList(fromPosition, fromPositionTask.getHierarchicalLevel());
+                    db.addLink(newParent.getId(), child);
+                } else {
+                    //super lien du old parent avec le swapper
+                    int child = toPositionTask.getId();
+                    oldParent = findNewParentInTaskList(toPosition - 1, toPositionTask.getHierarchicalLevel());
+                    db.deleteLink(oldParent.getId(), child);
+                    //add link
+                    db.addLink(fromPositionTask.getId(), child);
+                }
             } else {
-                //super lien de parent avec le swapper
-                int child = toPositionTask.getId();
-                db.deleteLink(fromPositionTask.getId(), child);
-                //Recherche le new parent et add link
-                TaskModel newParent = findNewParentInTaskList(toPosition, toPositionTask.getHierarchicalLevel());
-                db.addLink(newParent.getId(), child);
+                //swapUP
+                if (fromPositionTask.getHierarchicalLevel() > toPositionTask.getHierarchicalLevel()) {
+                    //super lien de parent avec le swapper
+                    int child = fromPositionTask.getId();
+                    oldParent = findNewParentInTaskList(fromPosition - 1, fromPositionTask.getHierarchicalLevel());
+                    db.deleteLink(oldParent.getId(), child);
+                    //Recherche le new parent et add link
+                    db.addLink(toPositionTask.getId(), child);
+                } else {
+                    //super lien de parent avec le swapper
+                    int child = toPositionTask.getId();
+                    db.deleteLink(fromPositionTask.getId(), child);
+                    //Recherche le new parent et add link
+                    newParent = findNewParentInTaskList(toPosition, toPositionTask.getHierarchicalLevel());
+                    db.addLink(newParent.getId(), child);
+                }
             }
         }
 
-//
-//
-//
-//        TaskModel fromPositionParent = findParentInTaskList(fromPosition);
-//
-//        TaskModel toPositionParent = findParentInTaskList(toPosition);
-//
-//        TaskModel ret = taskList.get(fromPosition);
-//
-//        oldParent = findParentInTaskList(viewHolderPos);
-//
-//        //find new parent
-//        int newHLevel = ret.getHierarchicalLevel() + sens;
-//        if (newHLevel < 0) {
-//            newHLevel = 0;
-//        }
-//        for (int p = viewHolderPos - 1; p >= 0; p--) {
-//            if (taskList.get(p).getHierarchicalLevel() < newHLevel) {
-//                newParent = taskList.get(p);
-//                break;
-//            }
-//        }
-//        newHLevel = newParent==null? newHLevel : newParent.getHierarchicalLevel() +1 ;
-//
-//        int child = ret.getId();
-//        if (newParent == null) {
-//            db.deleteLink(oldParent.getId(), child);
-//            System.out.println("del: " + oldParent.getId() + "-" + child);
-//        } else {
-//            if (oldParent == null) {
-//                db.addLink(newParent.getId(), child);
-//                System.out.println("add: " + newParent.getId() + "-" + child);
-//            } else {
-//                db.movelink(oldParent.getId(), newParent.getId(), child);
-//                System.out.println(oldParent.getId() + "-" + child + "=>" + newParent.getId() + "-" + child);
-//            }
-//        }
-//        indentCheckBox(viewHolder, newHLevel);
-////
-////        //fromPosition element en mouvement
-////        Integer[] ele = new Integer[4];
-////        ele[1] = fromPosition;
-////        ele[2] = toPosition;
-////        if (fromPosition > toPosition) {
-////            ele[1] = toPosition;
-////            ele[2] = fromPosition;
-////        }
-////        ele[0] = ele[1] - 1;
-////        ele[3] = ele[2] + 1;
-////
-////        //ele[1]
-////        Integer eleTraiter = ele[1];
-////
-////        TaskModel ele_0 = findParentInTaskList(ele[0]);
-////        TaskModel ele_1 = findParentInTaskList(ele[1]);
-////        TaskModel ele_2 = findParentInTaskList(ele[2]);
-////        TaskModel ele_3 = findParentInTaskList(ele[3]);
-////
-////        TaskModel eleEnMvt = taskList.get(fromPosition);
-////        TaskModel eleDepInc = taskList.get(toPosition);
-//
-//
-//        int a = 1;
+        //refresh maj child parent
+        if (newParent!=null) {
+            newParent.setChildList(db.getAllChildTasks(fromPositionTask.getId()));
+            newParent.setParentList(db.getAllParentTasks(fromPositionTask.getId()));
+        }
+        if (oldParent!=null) {
+            oldParent.setChildList(db.getAllChildTasks(fromPositionTask.getId()));
+            oldParent.setParentList(db.getAllParentTasks(fromPositionTask.getId()));
+        }
+        fromPositionTask.setChildList(db.getAllChildTasks(fromPositionTask.getId()));
+        fromPositionTask.setParentList(db.getAllParentTasks(fromPositionTask.getId()));
+        toPositionTask.setChildList(db.getAllChildTasks(toPositionTask.getId()));
+        toPositionTask.setParentList(db.getAllParentTasks(toPositionTask.getId()));
+
+        System.out.println("after" + "\n" + "fromPosition=" + fromPosition + " fromPositionTask=" + fromPositionTask.getTask() + "\n" + fromPositionTask.toString());
+        System.out.println("after" + "\n" + "toPosition=" + toPosition + " toPositionTask=" + toPositionTask.getTask() + "\n" + toPositionTask.toString());
+
     }
 
     public void editIdent(TaskViewHolder viewHolder, int viewHolderPos, Integer sens) {

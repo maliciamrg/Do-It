@@ -43,6 +43,7 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
             adapter.swapTaskList(fromPosition, toPosition);
             recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
         }
+        //adapter.refreshActivityData(true);
         return false;
     }
 
