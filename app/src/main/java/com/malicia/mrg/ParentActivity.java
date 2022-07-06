@@ -1,13 +1,13 @@
-package net.penguincoders.doit;
+package com.malicia.mrg;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import com.malicia.mrg.activity.TaskActivity;
 import com.malicia.mrg.adapters.TaskAdapter;
-import net.penguincoders.doit.Adapters.ParentAdapter;
-import net.penguincoders.doit.Model.TaskModel;
-import net.penguincoders.doit.Model.ToDoModel;
+import com.malicia.mrg.adapters.ParentAdapter;
+import com.malicia.mrg.Model.TaskModel;
+import com.malicia.mrg.R;
 
 import java.io.Serializable;
 import java.util.ArrayList;

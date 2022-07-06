@@ -1,4 +1,4 @@
-package net.penguincoders.doit.Model;
+package com.malicia.mrg.Model;
 
 import java.io.Serializable;
 

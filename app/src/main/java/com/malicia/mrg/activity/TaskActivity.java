@@ -13,11 +13,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.malicia.mrg.adapters.TaskAdapter;
 import com.malicia.mrg.utils.BuildHierarchyTree;
 import com.malicia.mrg.utils.HierarchyData;
-import net.penguincoders.doit.DialogCloseListener;
-import net.penguincoders.doit.Model.TaskModel;
-import net.penguincoders.doit.Model.ToDoModel;
-import net.penguincoders.doit.R;
-import net.penguincoders.doit.RecyclerItemTouchHelper;
+import com.malicia.mrg.DialogCloseListener;
+import com.malicia.mrg.Model.TaskModel;
+import com.malicia.mrg.Model.ToDoModel;
+import com.malicia.mrg.R;
+import com.malicia.mrg.RecyclerItemTouchHelper;
 import com.malicia.mrg.utils.DatabaseHandler;
 
 import java.util.*;

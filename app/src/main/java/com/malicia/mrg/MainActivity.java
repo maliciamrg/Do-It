@@ -1,8 +1,8 @@
-package net.penguincoders.doit;
+package com.malicia.mrg;
 
 import com.malicia.mrg.activity.TaskActivity;
 import com.malicia.mrg.adapters.TaskAdapter;
-import net.penguincoders.doit.Adapters.ToDoAdapter;
+import com.malicia.mrg.adapters.ToDoAdapter;
 
 public class MainActivity extends TaskActivity {
 

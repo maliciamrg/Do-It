@@ -1,7 +1,5 @@
 package com.malicia.mrg.adapters;
 
-import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,10 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.malicia.mrg.activity.TaskActivity;
 import com.malicia.mrg.utils.ViewFilter;
 import com.malicia.mrg.utils.ViewOrder;
-import net.penguincoders.doit.AddNewTask;
-import net.penguincoders.doit.Model.TaskModel;
-import net.penguincoders.doit.Model.ToDoModel;
-import net.penguincoders.doit.R;
+import com.malicia.mrg.AddNewTask;
+import com.malicia.mrg.Model.TaskModel;
+import com.malicia.mrg.Model.ToDoModel;
+import com.malicia.mrg.R;
 import com.malicia.mrg.utils.DatabaseHandler;
 
 import java.util.ArrayList;

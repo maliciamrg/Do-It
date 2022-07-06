@@ -1,9 +1,8 @@
-package net.penguincoders.doit.Adapters;
+package com.malicia.mrg.adapters;
 
 import android.view.View;
-import com.malicia.mrg.adapters.TaskAdapter;
-import net.penguincoders.doit.Model.TaskModel;
-import net.penguincoders.doit.ParentActivity;
+import com.malicia.mrg.Model.TaskModel;
+import com.malicia.mrg.ParentActivity;
 import com.malicia.mrg.utils.DatabaseHandler;
 
 import java.util.ArrayList;

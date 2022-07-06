@@ -1,8 +1,7 @@
-package net.penguincoders.doit.Adapters;
+package com.malicia.mrg.adapters;
 
-import com.malicia.mrg.adapters.TaskAdapter;
-import net.penguincoders.doit.MainActivity;
-import net.penguincoders.doit.Model.TaskModel;
+import com.malicia.mrg.MainActivity;
+import com.malicia.mrg.Model.TaskModel;
 import com.malicia.mrg.utils.DatabaseHandler;
 
 public class ToDoAdapter extends TaskAdapter {

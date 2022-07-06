@@ -1,4 +1,4 @@
-package net.penguincoders.doit;
+package com.malicia.mrg;
 
 import android.content.DialogInterface;
 import android.graphics.Canvas;
@@ -15,11 +15,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.malicia.mrg.adapters.TaskAdapter;
-import net.penguincoders.doit.Adapters.ToDoAdapter;
+import com.malicia.mrg.R;
 
 import java.util.Collections;
-
-import static androidx.appcompat.graphics.drawable.DrawerArrowDrawable.ARROW_DIRECTION_END;
 
 public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 

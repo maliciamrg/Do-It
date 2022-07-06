@@ -1,4 +1,4 @@
-package net.penguincoders.doit;
+package com.malicia.mrg;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -19,8 +19,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import net.penguincoders.doit.Model.TaskModel;
+import com.malicia.mrg.Model.TaskModel;
 import com.malicia.mrg.utils.DatabaseHandler;
+import com.malicia.mrg.R;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 import java.io.Serializable;
@@ -30,7 +31,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
-import static net.penguincoders.doit.Model.TaskModel.parentListToString;
+import static com.malicia.mrg.Model.TaskModel.parentListToString;
 
 public class AddNewTask extends BottomSheetDialogFragment {
 

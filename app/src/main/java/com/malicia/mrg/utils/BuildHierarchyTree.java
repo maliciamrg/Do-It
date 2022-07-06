@@ -1,8 +1,8 @@
 package com.malicia.mrg.utils;
 
 import android.util.Log;
-import net.penguincoders.doit.MainActivity;
-import net.penguincoders.doit.Model.ParentModel;
+import com.malicia.mrg.MainActivity;
+import com.malicia.mrg.Model.ParentModel;
 
 import java.util.*;
 
