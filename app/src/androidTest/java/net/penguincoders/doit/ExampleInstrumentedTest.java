@@ -1,4 +1,4 @@
-package net.penguincoders.doit;
+package com.malicia.mrg;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("net.penguincoders.doit", appContext.getPackageName());
+        assertEquals("com.malicia.mrg", appContext.getPackageName());
     }
 }

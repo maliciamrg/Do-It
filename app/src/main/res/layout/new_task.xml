@@ -1,26 +1,57 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="16dp">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp">
 
-    <EditText
-        android:id="@+id/newTaskText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:hint="@string/new_task" />
-
-    <Button
-        android:id="@+id/newTaskButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/newTaskText"
-        android:textSize="16sp"
-        android:layout_alignParentEnd="true"
-        android:background="@android:color/transparent"
-        android:text="@string/save"
-        android:textAllCaps="false"
-        android:textColor="@android:color/darker_gray" />
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:gravity="right">
+        <EditText
+                android:id="@+id/newTaskText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:hint="@string/new_task" android:minHeight="48dp"/>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <CheckBox
+                    android:text="Is Task-Projet"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" android:id="@+id/checkBox" android:minHeight="48dp" android:layout_weight=".9"/>
+            <CheckBox
+                    android:text="Is Post It"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" android:id="@+id/checkBoxPostIt" android:minHeight="48dp" android:layout_weight="1"/>
+            <View
+                    android:id="@+id/preview_selected_color"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@color/colorAccent"
+                    android:layout_gravity="right" android:foreground="@drawable/logo"
+                    android:foregroundTint="#000000"/>
+            <!--sample view to preview selected color by user-->
+            <!--by default this has been set to darker gery-->
+            <!--this can be overridden after user chose the
+                 color from color picker-->
+            <!--which has been handled in the MainActivity.java-->
+        </LinearLayout>
+        <TextView
+                android:text="TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/textViewParent"/>
+        <Button
+                android:id="@+id/newTaskButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:background="@android:color/transparent"
+                android:text="@string/save"
+                android:textAllCaps="false"
+                android:textColor="@android:color/darker_gray"/>
+    </LinearLayout>
 
 </RelativeLayout>

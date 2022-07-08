@@ -1,4 +1,4 @@
-package net.penguincoders.doit;
+package com.malicia.mrg;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package net.penguincoders.doit;
+package com.malicia.mrg;
 
 import android.content.DialogInterface;
 
