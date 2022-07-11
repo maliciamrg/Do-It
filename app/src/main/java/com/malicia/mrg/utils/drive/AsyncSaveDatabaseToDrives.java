@@ -40,9 +40,6 @@ class AsyncSaveDatabaseToDrives extends CommonAsyncTask {
     @Override
     protected void doInBackground() throws IOException {
 
-
-
-
         File fileMetadata = new File();
         String database = "toDoListDatabase";
         fileMetadata.setName(database);
@@ -50,9 +47,6 @@ class AsyncSaveDatabaseToDrives extends CommonAsyncTask {
 
         java.io.File filePath = new java.io.File("/data/data/com.malicia.mrg/databases/toDoListDatabase");
         FileContent mediaContent = new FileContent("application/vnd.sqlite3", filePath);
-
-
-
 
         FileList result = service.files().list()
                 //                  .setQ("mimeType='"+ fileMetadata.getMimeType() + "'")
@@ -65,17 +59,18 @@ class AsyncSaveDatabaseToDrives extends CommonAsyncTask {
         List<File> files = result.getFiles();
         if (files != null && files.size() > 0) {
 
+            File file = files.get(0);
             switch (drivePopUp.getAction()) {
                 case SAVE:
-                    service.files().update(files.get(0).getId(), fileMetadata, mediaContent)
+                    service.files().update(file.getId(), fileMetadata, mediaContent)
                             .setFields("id")
                             .execute();
 
-                    System.out.println("File ID: " + files.get(0).getId());
+                    System.out.println("File ID: " + file.getId());
                     break;
                 case LOAD:
                     OutputStream outputStream = new FileOutputStream(filePath.getPath());
-                    service.files().get(files.get(0).getId())
+                    service.files().get(file.getId())
                             .executeMediaAndDownloadTo(outputStream);
 //                    try(OutputStream fileOutputStream = new FileOutputStream(filePath.getPath())) {
 //                        outputStream.writeTo(fileOutputStream);
@@ -102,7 +97,6 @@ class AsyncSaveDatabaseToDrives extends CommonAsyncTask {
                     File file = service.files().create(fileMetadata, mediaContent)
                             .setFields("id")
                             .execute();
-
                     System.out.println("File ID: " + file.getId());
                     break;
                 case LOAD:

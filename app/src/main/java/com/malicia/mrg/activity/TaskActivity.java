@@ -1,5 +1,6 @@
 package com.malicia.mrg.activity;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
@@ -10,16 +11,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.malicia.mrg.*;
+import com.malicia.mrg.DialogCloseListener;
+import com.malicia.mrg.R;
+import com.malicia.mrg.RecyclerItemTouchHelper;
 import com.malicia.mrg.adapters.TaskAdapter;
-import com.malicia.mrg.utils.BuildHierarchyTree;
-import com.malicia.mrg.utils.HierarchyData;
 import com.malicia.mrg.model.TaskModel;
 import com.malicia.mrg.model.ToDoModel;
+import com.malicia.mrg.utils.BuildHierarchyTree;
 import com.malicia.mrg.utils.DatabaseHandler;
+import com.malicia.mrg.utils.HierarchyData;
 import com.malicia.mrg.utils.drive.DrivePopUp;
 
-import java.util.*;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 public abstract class TaskActivity extends AppCompatActivity implements DialogCloseListener {
 
@@ -89,7 +96,25 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
         fabUp4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DrivePopUp.newInstance(DrivePopUp.DriveAction.LOAD).show(getSupportFragmentManager(), DrivePopUp.TAG);
+
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                OutputStream outputStream = null;
+                                DrivePopUp.newInstance(DrivePopUp.DriveAction.LOAD).show(getSupportFragmentManager(), DrivePopUp.TAG);
+                                break;
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+                                break;
+                        }
+                    }
+                };
+                AlertDialog.Builder builder = new AlertDialog.Builder(tasksAdapter.getContext());
+                builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
+
             }
         });
 

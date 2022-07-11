@@ -32,14 +32,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:gravity="right">
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
-                            android:id="@+id/fabUp3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:backgroundTint="@android:color/holo_green_dark"
-                            android:src="@android:drawable/ic_media_ff" android:layout_marginTop="2dp" android:layout_marginStart="2dp"
-                            android:layout_marginEnd="2dp"
-                            android:layout_marginBottom="2dp" app:maxImageSize="48dp" android:layout_weight="1"/>
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
                             android:id="@+id/fabUp1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -55,6 +47,14 @@
                             android:src="@android:drawable/ic_menu_sort_by_size" android:layout_marginTop="2dp" android:layout_marginStart="2dp"
                             android:layout_marginEnd="2dp"
                             android:layout_marginBottom="2dp" app:maxImageSize="48dp"/>
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            android:id="@+id/fabUp3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/holo_green_dark"
+                            android:src="@android:drawable/ic_media_ff" android:layout_marginTop="2dp" android:layout_marginStart="2dp"
+                            android:layout_marginEnd="2dp"
+                            android:layout_marginBottom="2dp" app:maxImageSize="48dp" android:layout_weight="1"/>
                 </LinearLayout>
                 <LinearLayout
                         android:orientation="horizontal"

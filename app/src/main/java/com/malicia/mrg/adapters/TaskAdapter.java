@@ -95,11 +95,15 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskV
         if (((isViewFirst() && isAFirst && !isInPostItZone))) {
             holder.project.setText(todoList.get(hierarchicalRoot).getTask());
         } else {
-            holder.project.setText(task);
+            if (isInPostItZone) {
+                holder.project.setText(todoList.get(hierarchicalRoot).getTask() + "\n" + "     " + task);
+            } else {
+                holder.project.setText(task);
+            }
         }
 
         if (isInPostItZone) {
-            holder.project.setTextSize(20);
+            holder.project.setTextSize(16);
         } else {
             holder.project.setTextSize(12);
         }
