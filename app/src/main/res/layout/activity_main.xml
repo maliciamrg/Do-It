@@ -14,7 +14,7 @@
                 android:layout_height="wrap_content" android:gravity="left">
             <TextView
                     android:id="@+id/tasksText"
-                    android:layout_width="0dp"
+                    android:layout_width="72dp"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
                     android:textColor="@android:color/black"
@@ -24,49 +24,59 @@
                     android:textSize="32sp"
                     android:text="@string/tasks" android:layout_weight=".7"/>
             <LinearLayout
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" android:gravity="right">
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/fabUp"
+                <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:backgroundTint="@color/colorPrimaryDark"
-                        android:src="@android:drawable/ic_menu_save"
-                        app:maxImageSize="48dp" app:useCompatPadding="false" app:fabSize="auto" android:layout_marginStart="2dp"
-                        android:layout_marginTop="2dp" android:layout_marginBottom="2dp" android:layout_marginEnd="2dp" android:layout_weight="1"/>
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/fabUp4"
+                        android:layout_height="wrap_content" android:gravity="right">
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            android:id="@+id/fabUp3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/holo_green_dark"
+                            android:src="@android:drawable/ic_media_ff" android:layout_marginTop="2dp" android:layout_marginStart="2dp"
+                            android:layout_marginEnd="2dp"
+                            android:layout_marginBottom="2dp" app:maxImageSize="48dp" android:layout_weight="1"/>
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            android:id="@+id/fabUp1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@color/colorPrimaryDark"
+                            android:src="@android:drawable/arrow_down_float"
+                            app:maxImageSize="48dp" app:useCompatPadding="false" app:fabSize="auto" android:layout_marginStart="2dp"
+                            android:layout_marginTop="2dp" android:layout_marginBottom="2dp" android:layout_marginEnd="2dp"/>
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            android:id="@+id/fabUp2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/holo_green_dark"
+                            android:src="@android:drawable/ic_menu_sort_by_size" android:layout_marginTop="2dp" android:layout_marginStart="2dp"
+                            android:layout_marginEnd="2dp"
+                            android:layout_marginBottom="2dp" app:maxImageSize="48dp"/>
+                </LinearLayout>
+                <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:backgroundTint="@color/colorPrimaryDark"
-                        android:src="@android:drawable/stat_sys_download"
-                        app:maxImageSize="48dp" app:useCompatPadding="false" app:fabSize="auto" android:layout_marginStart="2dp"
-                        android:layout_marginTop="2dp" android:layout_marginBottom="2dp" android:layout_marginEnd="2dp" android:layout_weight="1"/>
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/fabUp1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:backgroundTint="@color/colorPrimaryDark"
-                        android:src="@android:drawable/arrow_down_float"
-                        app:maxImageSize="48dp" app:useCompatPadding="false" app:fabSize="auto" android:layout_marginStart="2dp"
-                        android:layout_marginTop="2dp" android:layout_marginBottom="2dp" android:layout_marginEnd="2dp"/>
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/fabUp2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:backgroundTint="@android:color/holo_green_dark"
-                        android:src="@android:drawable/ic_menu_sort_by_size" android:layout_marginTop="2dp" android:layout_marginStart="2dp"
-                        android:layout_marginEnd="2dp"
-                        android:layout_marginBottom="2dp" app:maxImageSize="48dp"/>
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/fabUp3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:backgroundTint="@android:color/holo_green_dark"
-                        android:src="@android:drawable/ic_media_ff" android:layout_marginTop="2dp" android:layout_marginStart="2dp"
-                        android:layout_marginEnd="2dp"
-                        android:layout_marginBottom="2dp" app:maxImageSize="48dp" android:layout_weight="1"/>
+                        android:layout_height="wrap_content" android:gravity="right">
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            android:id="@+id/fabUp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@color/colorPrimaryDark"
+                            android:src="@android:drawable/ic_menu_save"
+                            app:maxImageSize="48dp" app:useCompatPadding="false" app:fabSize="auto" android:layout_marginStart="2dp"
+                            android:layout_marginTop="2dp" android:layout_marginBottom="2dp" android:layout_marginEnd="2dp" android:layout_weight="1"/>
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            android:id="@+id/fabUp4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@color/colorPrimaryDark"
+                            android:src="@android:drawable/stat_sys_download"
+                            app:maxImageSize="48dp" app:useCompatPadding="false" app:fabSize="auto" android:layout_marginStart="2dp"
+                            android:layout_marginTop="2dp" android:layout_marginBottom="2dp" android:layout_marginEnd="2dp" android:layout_weight="1"/>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
