@@ -1,7 +1,7 @@
 package com.malicia.mrg.adapters;
 
 import android.view.View;
-import com.malicia.mrg.Model.TaskModel;
+import com.malicia.mrg.model.TaskModel;
 import com.malicia.mrg.ParentActivity;
 import com.malicia.mrg.utils.DatabaseHandler;
 

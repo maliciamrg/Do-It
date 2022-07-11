@@ -12,4 +12,6 @@
     <string name="error">Error</string>
     <string name="error_format">[Error] %s</string>
     <string name="default_web_client_id">164592367958-vjl3eqgk3kca2b55gndg1ceumu00n6o4.apps.googleusercontent.com</string>
+    <string name="drive_text_save">Sauvegarde Database en cours</string>
+    <string name="drive_text_load">Restauration Database en cours</string>
 </resources>

@@ -10,15 +10,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.malicia.mrg.*;
 import com.malicia.mrg.adapters.TaskAdapter;
 import com.malicia.mrg.utils.BuildHierarchyTree;
 import com.malicia.mrg.utils.HierarchyData;
-import com.malicia.mrg.DialogCloseListener;
-import com.malicia.mrg.Model.TaskModel;
-import com.malicia.mrg.Model.ToDoModel;
-import com.malicia.mrg.R;
-import com.malicia.mrg.RecyclerItemTouchHelper;
+import com.malicia.mrg.model.TaskModel;
+import com.malicia.mrg.model.ToDoModel;
 import com.malicia.mrg.utils.DatabaseHandler;
+import com.malicia.mrg.utils.drive.DrivePopUp;
 
 import java.util.*;
 
@@ -30,6 +29,8 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
     private SwipeRefreshLayout swipeRefreshLayout;
     private TaskAdapter tasksAdapter;
     private FloatingActionButton fab;
+    private FloatingActionButton fabUp;
+    private FloatingActionButton fabUp4;
     private FloatingActionButton fabUp1;
     private FloatingActionButton fabUp2;
     private FloatingActionButton fabUp3;
@@ -73,6 +74,22 @@ public abstract class TaskActivity extends AppCompatActivity implements DialogCl
             @Override
             public void onClick(View v) {
                 fabOnClick();
+            }
+        });
+
+        fabUp = findViewById(R.id.fabUp);
+        fabUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DrivePopUp.newInstance(DrivePopUp.DriveAction.SAVE).show(getSupportFragmentManager(), DrivePopUp.TAG);
+            }
+        });
+
+        fabUp4 = findViewById(R.id.fabUp4);
+        fabUp4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DrivePopUp.newInstance(DrivePopUp.DriveAction.LOAD).show(getSupportFragmentManager(), DrivePopUp.TAG);
             }
         });
 

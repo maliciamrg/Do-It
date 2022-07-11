@@ -1,4 +1,4 @@
-package com.malicia.mrg;/*
+package com.malicia.mrg.utils.drive;/*
  * Copyright (c) 2012 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -13,13 +13,18 @@ package com.malicia.mrg;/*
  */
 
 
-import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
-import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
-
 import android.os.AsyncTask;
 import android.view.View;
+import android.widget.EditText;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
+import com.google.api.services.drive.Drive;
+import com.malicia.mrg.R;
+import com.malicia.mrg.Utils;
 
 import java.io.IOException;
+
+import static com.malicia.mrg.utils.drive.DrivePopUp.*;
 
 /**
  * Asynchronous task that also takes care of common needs, such as displaying progress,
@@ -29,20 +34,32 @@ import java.io.IOException;
  */
 abstract class CommonAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
-    final SplashActivity activity;
-    final com.google.api.services.tasks.Tasks client;
-    private final View progressBar;
+    final DrivePopUp drivePopUp;
+    final Drive service;
+    private final EditText progressBar;
 
-    CommonAsyncTask(SplashActivity activity) {
-        this.activity = activity;
-        client = activity.service;
-        progressBar = activity.findViewById(R.id.title_refresh_progress);
+    CommonAsyncTask(DrivePopUp drivePopUp) {
+        this.drivePopUp = drivePopUp;
+        service = drivePopUp.service;
+        progressBar = drivePopUp.getView().findViewById(R.id.driveText);
+        switch (drivePopUp.getAction()) {
+            case SAVE:
+                progressBar.setText(R.string.drive_text_save);
+                break;
+            case LOAD:
+                progressBar.setText(R.string.drive_text_load);
+                break;
+            case DELETE:
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + drivePopUp.getAction());
+        }
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        activity.numAsyncTasks++;
+        drivePopUp.numAsyncDrives++;
         progressBar.setVisibility(View.VISIBLE);
     }
 
@@ -52,13 +69,13 @@ abstract class CommonAsyncTask extends AsyncTask<Void, Void, Boolean> {
             doInBackground();
             return true;
         } catch (final GooglePlayServicesAvailabilityIOException availabilityException) {
-            activity.showGooglePlayServicesAvailabilityErrorDialog(
+            drivePopUp.showGooglePlayServicesAvailabilityErrorDialog(
                     availabilityException.getConnectionStatusCode());
         } catch (UserRecoverableAuthIOException userRecoverableException) {
-            activity.startActivityForResult(
-                    userRecoverableException.getIntent(), SplashActivity.REQUEST_AUTHORIZATION);
+            drivePopUp.startActivityForResult(
+                    userRecoverableException.getIntent(), REQUEST_AUTHORIZATION);
         } catch (IOException e) {
-            Utils.logAndShow(activity, SplashActivity.TAG, e);
+            Utils.logAndShow(drivePopUp.getActivity(), TAG, e);
         }
         return false;
     }
@@ -66,11 +83,12 @@ abstract class CommonAsyncTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected final void onPostExecute(Boolean success) {
         super.onPostExecute(success);
-        if (0 == --activity.numAsyncTasks) {
+        if (0 == --drivePopUp.numAsyncDrives) {
             progressBar.setVisibility(View.GONE);
+            drivePopUp.dismiss();
         }
         if (success) {
-            activity.refreshView();
+            drivePopUp.refreshView();
         }
     }
 

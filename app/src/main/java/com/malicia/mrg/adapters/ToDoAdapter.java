@@ -1,7 +1,7 @@
 package com.malicia.mrg.adapters;
 
 import com.malicia.mrg.MainActivity;
-import com.malicia.mrg.Model.TaskModel;
+import com.malicia.mrg.model.TaskModel;
 import com.malicia.mrg.utils.DatabaseHandler;
 
 public class ToDoAdapter extends TaskAdapter {

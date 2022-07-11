@@ -1,4 +1,4 @@
-package com.malicia.mrg.Model;
+package com.malicia.mrg.model;
 
 
 import java.util.List;

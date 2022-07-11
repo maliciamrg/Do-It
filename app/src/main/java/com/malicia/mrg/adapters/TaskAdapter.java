@@ -6,27 +6,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-
+import com.malicia.mrg.AddNewTask;
+import com.malicia.mrg.R;
 import com.malicia.mrg.activity.TaskActivity;
+import com.malicia.mrg.model.TaskModel;
+import com.malicia.mrg.model.ToDoModel;
+import com.malicia.mrg.utils.DatabaseHandler;
 import com.malicia.mrg.utils.ViewFilter;
 import com.malicia.mrg.utils.ViewOrder;
-import com.malicia.mrg.AddNewTask;
-import com.malicia.mrg.Model.TaskModel;
-import com.malicia.mrg.Model.ToDoModel;
-import com.malicia.mrg.R;
-import com.malicia.mrg.utils.DatabaseHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import static com.malicia.mrg.utils.ViewFilter.*;
-import static com.malicia.mrg.utils.ViewOrder.*;
+import static com.malicia.mrg.utils.ViewOrder.ALPHABET;
+import static com.malicia.mrg.utils.ViewOrder.HIERARCHICAL;
 
 public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
@@ -231,9 +230,7 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskV
         TaskModel item = (TaskModel) taskList.toArray()[holderPosition];
         Bundle bundle = new Bundle();
         bundle.putSerializable("parentClass", item);
-        AddNewTask fragment = new AddNewTask();
-        fragment.setArguments(bundle);
-        fragment.show(activity.getSupportFragmentManager(), AddNewTask.TAG);
+        AddNewTask.newInstance(bundle).show(activity.getSupportFragmentManager(), AddNewTask.TAG);
         return true;
     }
 
@@ -289,9 +286,9 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskV
         bundle.putInt("id", item.getId());
         bundle.putString("task", item.getTask());
         bundle.putSerializable("taskClass", item);
-        AddNewTask fragment = new AddNewTask();
-        fragment.setArguments(bundle);
-        fragment.show(activity.getSupportFragmentManager(), AddNewTask.TAG);
+
+        AddNewTask.newInstance(bundle).show(activity.getSupportFragmentManager(), AddNewTask.TAG);
+
 //        notifyDataSetChanged();
     }
 
@@ -444,11 +441,11 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskV
         }
 
         //refresh maj child parent
-        if (newParent!=null) {
+        if (newParent != null) {
             newParent.setChildList(db.getAllChildTasks(fromPositionTask.getId()));
             newParent.setParentList(db.getAllParentTasks(fromPositionTask.getId()));
         }
-        if (oldParent!=null) {
+        if (oldParent != null) {
             oldParent.setChildList(db.getAllChildTasks(fromPositionTask.getId()));
             oldParent.setParentList(db.getAllParentTasks(fromPositionTask.getId()));
         }
@@ -522,6 +519,7 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskV
     public void refreshActivityData(boolean b) {
         activity.refreshData(true);
     }
+
     public Boolean removeFragmentByTag(String tag) {
         Context context = activity;
         int exitTansaction = 0;

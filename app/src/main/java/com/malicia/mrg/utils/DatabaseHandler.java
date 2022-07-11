@@ -9,9 +9,9 @@ import android.os.Environment;
 import android.util.Log;
 import com.malicia.mrg.AddNewTask;
 import com.malicia.mrg.MainActivity;
-import com.malicia.mrg.Model.ParentModel;
-import com.malicia.mrg.Model.TaskModel;
-import com.malicia.mrg.Model.ToDoModel;
+import com.malicia.mrg.model.ParentModel;
+import com.malicia.mrg.model.TaskModel;
+import com.malicia.mrg.model.ToDoModel;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,7 +20,7 @@ import java.nio.channels.FileChannel;
 import java.util.*;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
-
+    public static final String TAG = "DatabaseHandler";
     private static final int VERSION = 5;
     private static final String NAME = "toDoListDatabase";
     private static final String TODO_TABLE = "todo";
@@ -412,7 +412,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //            Toast.makeText(c, c.getResources().getString(R.string.exporterenToast), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
 //            Toast.makeText(c, c.getResources().getString(R.string.portError), Toast.LENGTH_SHORT).show();
-            Log.d(AddNewTask.TAG, e.toString());
+            Log.d(TAG, e.toString());
         }
     }
 
@@ -434,7 +434,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //            Toast.makeText(c, c.getResources().getString(R.string.importerenToast), Toast.LENGTH_LONG).show();
         } catch (Exception e) {
 //            Toast.makeText(c, c.getResources().getString(R.string.portError), Toast.LENGTH_SHORT).show();
-            Log.d(AddNewTask.TAG, e.toString());
+            Log.d(TAG, e.toString());
         }
     }
 }

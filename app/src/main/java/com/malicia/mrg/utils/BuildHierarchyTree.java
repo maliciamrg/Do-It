@@ -2,7 +2,7 @@ package com.malicia.mrg.utils;
 
 import android.util.Log;
 import com.malicia.mrg.MainActivity;
-import com.malicia.mrg.Model.ParentModel;
+import com.malicia.mrg.model.ParentModel;
 
 import java.util.*;
 

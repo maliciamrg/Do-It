@@ -19,9 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.malicia.mrg.Model.TaskModel;
+import com.malicia.mrg.model.TaskModel;
 import com.malicia.mrg.utils.DatabaseHandler;
-import com.malicia.mrg.R;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 import java.io.Serializable;
@@ -31,11 +30,11 @@ import java.util.List;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
-import static com.malicia.mrg.Model.TaskModel.parentListToString;
+import static com.malicia.mrg.model.TaskModel.parentListToString;
 
 public class AddNewTask extends BottomSheetDialogFragment {
 
-    public static final String TAG = "ActionBottomDialog";
+    public static final String TAG = "AddNewTaskBottomDialog";
     private EditText newTaskText;
     private CheckBox checkBox;
     private CheckBox checkBoxPostIt;
@@ -56,6 +55,11 @@ public class AddNewTask extends BottomSheetDialogFragment {
         return new AddNewTask();
     }
 
+    public static AddNewTask newInstance(Bundle bundle) {
+        AddNewTask addNewTask = new AddNewTask();
+        addNewTask.setArguments(bundle);
+        return addNewTask;
+    }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

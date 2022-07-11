@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.malicia.mrg.adapters.TaskAdapter;
-import com.malicia.mrg.R;
 
 import java.util.Collections;
 

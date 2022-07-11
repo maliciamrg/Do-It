@@ -6,8 +6,7 @@ import android.widget.TextView;
 import com.malicia.mrg.activity.TaskActivity;
 import com.malicia.mrg.adapters.TaskAdapter;
 import com.malicia.mrg.adapters.ParentAdapter;
-import com.malicia.mrg.Model.TaskModel;
-import com.malicia.mrg.R;
+import com.malicia.mrg.model.TaskModel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
