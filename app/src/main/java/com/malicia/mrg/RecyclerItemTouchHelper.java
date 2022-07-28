@@ -93,7 +93,7 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
 
 //        System.out.println("actionState=" + actionState + " isCurrentlyActive=" + isCurrentlyActive);
-        if (isCurrentlyActive) {
+/*        if (isCurrentlyActive) {
             if (timeActive == 0) {
                 timeActive = System.currentTimeMillis();
             }
@@ -103,7 +103,7 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
             adapter.removeFragmentByTag(AddNewTask.TAG);
             timeActive = 0;
         }
-
+*/
 
         Drawable icon;
         ColorDrawable background;
